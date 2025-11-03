@@ -1,95 +1,85 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const AqsCostEstimation = () => {
-  const [selectedSite, setSelectedSite] = useState('MRM Site');
+  const [selectedSite, setSelectedSite] = useState("MRM Site");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const sites = ['MRM Site', 'Second Site', 'Third Site'];
+  const sites = ["MRM Site", "Second Site", "Third Site"];
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
+  const [blocks, setBlocks] = useState([
+    {
+      id: "CL00024",
+      name: "A Block (CE)",
+      time: "02:54 pm",
+      date: "14/05/2024",
+      status: "Inactive",
+      approvedBy: "Quality Surveyor",
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
+    },
+     {
+      id: "CL00024",
+      name: "A Block (CE)",
+      time: "02:54 pm",
+      date: "14/05/2024",
+      status: "Inactive",
+      approvedBy: "Quality Surveyor",
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
+    },
+     {
+      id: "CL00024",
+      name: "A Block (CE)",
+      time: "02:54 pm",
+      date: "14/05/2024",
+      status: "Inactive",
+      approvedBy: "Quality Surveyor",
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
+    },
+    {
+      id: "CL00024",
+      name: "A Block (CE)",
+      time: "02:54 pm",
+      date: "14/05/2024",
+      status: "Inactive",
+      approvedBy: "Quality Surveyor",
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
+    },
+  ]);
 
-  const selectSite = (site) => {
-    setSelectedSite(site);
-    setIsDropdownOpen(false);
-  };
+  // ✅ Fixed useEffect: prevent duplicates when React StrictMode triggers double render
+  useEffect(() => {
+    if (location.state?.newData) {
+      const newData = location.state.newData;
 
-  // Sample data matching exactly what's in the image
-  const blocks = [
-    {
-      id: 'CL00024',
-      name: 'A Block (CE)',
-      time: '02:54 pm',
-      date: '14/05/2024',
-      status: 'Inactive',
-      approvedBy: 'Quality Surveyor',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip.'
-    },
-    {
-      id: 'CL00024',
-      name: 'A Block (CE)',
-      time: '02:54 pm',
-      date: '14/05/2024',
-      status: 'Inactive',
-      approvedBy: 'Quality Surveyor',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.'
-    },
-    {
-      id: 'CL00024',
-      name: 'B Block (CE)',
-      time: '02:54 pm',
-      date: '14/05/2024',
-      status: 'Inactive',
-      approvedBy: 'Quality Surveyor',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.'
-    },
-    {
-      id: 'CL00024',
-      name: 'A Block (CE)',
-      time: '02:54 pm',
-      date: '14/05/2024',
-      status: 'Inactive',
-      approvedBy: 'Quality Surveyor',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.'
-    },
-    {
-      id: 'CL00024',
-      name: 'E block',
-      time: '02:54 pm',
-      date: '14/05/2024',
-      approvedBy: 'Quality Surveyor',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.'
-    },
-    {
-      id: 'CL00024',
-      name: 'C Block',
-      time: '02:54 pm',
-      date: '14/05/2024',
-      approvedBy: 'Quality Surveyor',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.'
-    },
-    {
-      id: 'CL00024',
-      name: 'D block',
-      time: '02:54 pm',
-      date: '14/05/2024',
-      approvedBy: 'Quality Surveyor',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.'
-    },
-    {
-      id: 'CL00024',
-      name: 'D block',
-      time: '02:54 pm',
-      date: '14/05/2024',
-      approvedBy: 'Quality Surveyor',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.'
+      setBlocks((prev) => {
+        // prevent adding duplicate
+        const alreadyExists = prev.some(
+          (b) => b.name === `${newData.projectName} (${newData.title})`
+        );
+        if (alreadyExists) return prev;
+
+        const newBlock = {
+          id: "CL00025",
+          name: `${newData.projectName} (${newData.title})`,
+          time: new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+          date: new Date().toLocaleDateString(),
+          status: "Pending",
+          approvedBy: newData.approval || "Pending Approval",
+          description: `Budget: ₹${newData.totalBudget}, Remaining: ₹${newData.remainingBudget}`,
+        };
+        return [newBlock, ...prev];
+      });
     }
-  ];
+  }, [location.state]);
 
   return (
     <div className="container-fluid p-3">
@@ -98,12 +88,14 @@ const AqsCostEstimation = () => {
           <div className="d-flex justify-content-between align-items-center mb-3">
             <select
               className="form-select select-custom"
-              style={{ backgroundColor: '#E8E8E8' }}
+              style={{ backgroundColor: "#E8E8E8" }}
               value={selectedSite}
               onChange={(e) => setSelectedSite(e.target.value)}
             >
               {sites.map((site, index) => (
-                <option key={index} value={site}>{site}</option>
+                <option key={index} value={site}>
+                  {site}
+                </option>
               ))}
             </select>
           </div>
@@ -125,8 +117,9 @@ const AqsCostEstimation = () => {
           </button>
 
           <button
-            onClick={() => navigate('/aqs/aqscostestimationcreate')}
-            className="create-button">
+            onClick={() => navigate("/aqs/aqscostestimationcreate")}
+            className="create-button btn btn-warning"
+          >
             + Create
           </button>
         </div>
@@ -137,30 +130,52 @@ const AqsCostEstimation = () => {
           <div
             className="col-md-6"
             key={index}
-            onClick={() => navigate('/aqs/aqscostestimationopen')}
-            style={{ cursor: 'pointer' }}
+            onClick={() => navigate("/aqs/aqscostestimationopen")}
+            style={{ cursor: "pointer" }}
           >
-            <div className="block-card">
-              <div className="card-header-info">
+            <div className="block-card border p-3 rounded">
+              <div className="d-flex justify-content-between">
                 <div className="id-text">ID - {block.id}</div>
-                <div className="time-text">{block.time} • {block.date}</div>
+                <div className="time-text">
+                  {block.time} • {block.date}
+                </div>
               </div>
 
-              <div className="card-title-row justify-content-start">
+              <div className="card-title-row justify-content-start mt-2">
                 <h5 className="block-name">{block.name}</h5>
                 {block.status && (
-                  <span className="inactive-badge">{block.status}</span>
+                  <span
+                    className="inactive-badge"
+                    style={{
+                      backgroundColor: "#ccc",
+                      padding: "2px 6px",
+                      borderRadius: "4px",
+                      fontSize: "12px",
+                      marginLeft: "8px",
+                    }}
+                  >
+                    {block.status}
+                  </span>
                 )}
               </div>
 
-              <div className="approval-row">
-                <span className="approval-text">Approved by</span>
-                <span className="surveyor-badge">{block.approvedBy}</span>
+              <div className="approval-row mt-2">
+                <span className="approval-text">Approved by </span>
+                <span
+                  className="surveyor-badge"
+                  style={{
+                    backgroundColor: "#007bff",
+                    color: "white",
+                    padding: "2px 6px",
+                    borderRadius: "4px",
+                    fontSize: "12px",
+                  }}
+                >
+                  {block.approvedBy}
+                </span>
               </div>
 
-              <p className="description-text">
-                {block.description}
-              </p>
+              <p className="description-text mt-2">{block.description}</p>
             </div>
           </div>
         ))}

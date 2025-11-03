@@ -1,0 +1,221 @@
+{
+    "translation":{
+        "common": {
+            "orion": "Orion",
+            "support_system": "Support System",
+            "welcome": "Welcome",
+            "loading": "Loading",
+            "kanban": "Kanban",
+            "calendar": "Calendar",
+            "create": "Create",
+            "edit": "Edit",
+            "edited": "Edited",
+            "update": "Update",
+            "hey": "Hey",
+            "keyword": "Keyword",
+            "members": "Members",
+            "due_date": "Due Date",
+            "labels": "Labels",
+            "archive": "Archive",
+            "cancel": "Cancel",
+            "delete": "Delete",
+            "select": "Select",
+            "enter_reason" : "*Enter reason to continue",
+            "continue_btn" : "Continue",
+            "title_agent_board":"Agent Board",
+            "new_filed": "New Field",
+            "submit": "Submit",
+            "save": "Save",
+            "search": "Search",
+            "no_records": "No records",
+            "home": "Home"
+        },
+        "login": {
+            "inprogress": "Logging in progress",
+            "with_eurolandID": "Login",
+            "forgot_password": "Forgot Password?",
+            "success_msg": "You have successfully logged in to your account",
+            "inactive_user": "You are inactive state. Kindly contact administrator.",            
+            "agency_login": "Agency Login",
+            "no_account": "Don't have an account",
+            "signup": "Signup",
+            "signup_access_orion": "Signup to access Orion",
+            "have_you_account": "You have account",
+            "sign_up": "Sign Up",
+            "back_to_login": "Sign In",
+            "accept_terms_conditions": "By clicking you accept to terms and conditons",
+            "error": {
+                "firstname": "Please enter your first name.",
+                "lastname": "Please enter your last name.",
+                "email": "Please enter your email address.",
+                "invalidEmail": "Please enter a valid email address.",
+                "agency": "Please enter your agency.",
+                "country": "Please select your country.",
+                "phone": "Please enter a valid phone number.",
+                "agencyNotFound": "Agency not found",
+                "invalid": "Invalid username or password"
+            },
+            "label": {
+                "userName":"User Name",
+                "password":"Password",
+                "firstname": "First name",
+                "lastname": "Last name",
+                "email": "Official Email",
+                "agency": "Agency",
+                "country": "Country",
+                "phone": "Phone",
+                "jobTitle": "Job Title / Role",
+                "jobTitle_placeholder":"Member, Team Lead, Manager"
+            },
+            "successfully_registered": "Successfully registered",
+            "waiting_for_response": "Waiting for admin to respond",
+            "for_queries_reach_us": "For other queries reach us at"
+        },
+        "kanban": {
+            "create_board": "Create Board",
+            "create_new_board_or_project": "Create new board for your team or project",
+            "create_new_board": "Create New board",
+            "no_board_msg": "No board created for your department. Kindly contact your admin.",
+            "send_request": "Send Request",
+            "no_access_permission": "You have no access permission please contact your administrator.",
+            "create_your_first_board": "Create your first board",
+            "board": "Board",
+            "switch_board": "Switch Board",
+            "add_board": "Add board",
+            "edit_board": "Edit board",
+            "archive_board": "Archive board",
+            "create_new_list": "Create new list",
+            "create_list": "Create List",
+            "archive_board_confirmation": "All content and data associated with this board will be archived.",
+            "delete_board": "Delete Board",
+            "delete_board_status": "Edit/Delete Board Status",
+            "add_ticket": "Add Ticket",
+            "edit_list": "Edit List",
+            "enter_card_title": "Enter card title",
+            "create_new_requirement": "Create New Requirement",
+            "showing_all_ticket": "Showing all tickets",
+            "archive_board_status_confirmation": "All content and data associated with this Board Status will be archived.",
+            "default_board": "Default Board",
+            "error": {
+                "complete_atleast_one_tool_field": "Please ensure at least one Tool Field is <b>Completed</b>.",
+                "add_assignee_missing": "Please add <b>Assignee</b> and move to InProgress.",
+                "create_order_date": "Please Create <b>Order Date</b> and then move.",
+                "no_dependency_tag": "<b>No Dependency Tool</b> available on the ticket. Kindly update and proceed to <b>Updates Team</b>.",
+                "complete_atleast_one_tool": "Please complete atleast one tool to proceed further.",
+                "ticket_movement_restricted": "Ticket movement is restricted; please do not bypass the stage progression.",
+                "ticket_movement_restricted_agency": "Ticket movement is restricted; you do not have access to move it.",
+                "movement_restricted_from_standard_labels": "Ticket movement restricted, from Standard Labels to Custom Labels.",
+                "movement_restricted_from_custom_labels": "Ticket movement restricted, from Custom Labels to Standard Labels.",
+                "no_matching_criteria": "No matching criteria found for any ticket.",
+                "filter_option_empty": "Filter options not selected.",
+                "new_card_title": "Please enter 3 or more characters.",
+                "periodic_tools_due_date_missing": "Please add <b>Due Date</b> for tools and then move.",
+                "periodic_tools_assignee_missing": "Please add <b>Assignee</b> for tools and then move.",
+                "periodic_tools_complete_missing": "Please complete all the tools and proceed further.",
+                "agency_sales_assignee_missing": "Please add <b>Sales Assignee</b> and then move."
+            },
+            "filter": {
+                "card_assigned_to_me": "Card assigned to me",
+                "no_dates": "No dates",
+                "overdue": "Overdue",
+                "due_nxt_day": "Due in the next day",
+                "due_nxt_week": "Due in the next week",
+                "due_nxt_month": "Due in the next month",
+                "search_placeholder": "Input Text",
+                "click_here_to_reset": "Click here to reset"
+            }
+        },
+        "ticket": {
+            "paused": "Paused",
+            "description": "Description",
+            "overview": "Overview",
+            "general_information": "General Information",
+            "IR_services": "IR Services (Tools)",
+            "completed": "Completed",
+            "incomplete": "Incomplete",
+            "file_uploads": "File Uploads",
+            "download_file": "Download File",
+            "archive_file" :"Archive File",
+            "no_attachments": "No Attachments",
+            "tools": "Tools",
+            "assign_to": "Assign to",
+            "assignee": {
+                "title": "Assignee",
+                "cancel_save": "Cancel assignee save"
+            }
+        },
+        "layout": {
+            "header": {
+                "current": "current",
+                "user_settings": "User Settings",
+                "logout": "Logout",
+                "workspace_switch": "Workspace Switch"
+            }
+        },
+        "team" :{
+            "reject_user": "Would you like to reject the user ?",
+            "create_new_board_or_project": "Create new board for your team or project",
+            "enter_reason" : "*Enter reason to continue"
+        },
+        "agency" : {
+            "enquire_details": "Enquire Details",
+            "general_information": "General Information",
+            "detailed_information": "Detailed Information",
+            "design_information": "Design information",
+            "update_enquire_details":"Update Enquire Details",
+            "delete_new_field": "All content and data associated with this field will be deleted"
+            },
+        "notFound" : {
+            "404": "404",
+            "page_not_found": "Oops! Page not found.",
+            "content": "The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.",
+            "back_to_home": "Back To Home"
+        },
+        "contactus": {
+            "title": "Contact Us",
+            "label": {
+                "userDetail": "User Details",
+                "issueType": "Issue Type",
+                "department": "Department",
+                "selectUser": "Select User",
+                "description": "Description"
+            },
+            "error": {
+                "issueType": "Please select the issue type",
+                "department": "Please select the department",
+                "departmentUser": "Please select the user",
+                "description": "Please enter a description"
+            },
+            "success": {
+                "content1": "Thank you for contacting us",
+                "content2": "Our team will get back to you soon"
+            }
+        },
+        "about_us": {
+            "title": "About Us",
+            "description": "is an innovative ticket tracking and management application designed to enhance <b>team collaboration and productivity within organizations</b>. By centralizing the management of <b>work items</b>, known as tickets, the application streamlines the process of&#160;<b>tracking, assigning</b>, and <b>resolving tasks, issues</b>, and other actionable items. With features such as user authentication, personalized dashboards, detailed ticket management, collaborative communication tools, automated notifications, robust search and filtering capabilities, and insightful reporting and analytics, \"Orion\" offers a comprehensive solution for <b>optimizing workflow processes</b>. By empowering teams to work more efficiently, communicate seamlessly, and make informed decisions, \"Orion\" facilitates project success and fosters a culture of <b>productivity and collaboration</b>.",
+            "team": "Zealous and Technology",
+            "pda": "PDA",
+            "team_pda": "VISIONARY VANGUARD",
+            "team_pda_description": "<p>The product development team plays a pivotal role in our web&#160;<b>application's lifecycle</b>. Comprised of visionary thinkers and innovative problem solvers, this team is responsible for shaping the direction and features of the application. They work closely with stakeholders to gather requirements, analyze market trends, and prioritize features that align with the project's goals and objectives. </p><p>Throughout the development process, the product development team collaborates with other departments, including <b>design, engineering, and testing</b>, to ensure a holistic approach to product development. They oversee the implementation of <b>new features, monitor progress</b>, and make strategic decisions to optimize user experience and drive business value. </p><p>Additionally, the product development team conducts market research and gathers user feedback to iterate on existing features and identify opportunities for improvement. They stay abreast of emerging technologies and industry best practices to maintain the <b>application's competitiveness in the market</b>. </p><p> Ultimately, the product development team's efforts are integral to the success of our web application, as they strive to <b>deliver innovative solutions</b> that meet the needs of our users and drive sustainable growth for the business. </p>",
+            "design": "Design",
+            "team_design": "CREATIVE CASCADE",
+            "team_design_description": "<p> The design team serves as the <b>creative</b> backbone of our web application, responsible for crafting the <b>visual identity</b> and&#160;<b>user experience</b> that define our brand. With a keen eye for aesthetics and a deep understanding of user behavior, the team collaborates closely with stakeholders to conceptualize and execute designs that resonate with our target audience. From&#160;<b>wireframes</b> to <b>high-fidelity mockups</b>, every aspect of the user interface is meticulously crafted to prioritize usability, accessibility, and visual appeal. By integrating user feedback and industry best practices, the design team ensures that our application not only meets but exceeds user expectations, fostering engagement and loyalty.</p> <p>Beyond aesthetics, the design team plays a strategic role in driving business outcomes and achieving our organizational goals. By aligning design decisions with business objectives, the team contributes to the overall success and competitiveness of our web application. Whether it's optimizing conversion rates, enhancing brand recognition, or&#160;<b>improving user satisfaction</b>, the design team's contributions have a direct impact on key performance metrics and the bottom line. Through continuous iteration and innovation, the team remains at the forefront of design trends and technologies, ensuring that our application remains relevant and compelling in a rapidly evolving digital landscape. </p>",
+            "dotnet": ".Net",
+            "team_dotnet": "HARD COOLERS",
+            "team_dotnet_description": "<p> By leveraging their expertise in <b>.NET</b> development, a .NET developer can play a pivotal role in the success and continuous improvement of the \"<b>Orion</b>\" web application, contributing to its <b>functionality, reliability, and scalability</b>. A .NET developer could contribute in various ways, leveraging their expertise in <b>.NET</b> technologies to enhance the application's functionality, performance, and security. Here are some areas where a <b>.NET</b> developer could make significant contributions: </p> <ul> <li>Integration with External Systems</li> <li>Real-Time Communication</li> <li>Security Enhancements</li> <li>Performance Optimization</li> <li>Error Handling and Logging</li> <li>Code Reviews and Collaboration</li> </ul>",
+            "front_end": "Front End",
+            "team_front_end": "INTERFACE INNOVATORS",
+            "team_front_end_description": "<p> The front-end development team is instrumental in bringing the design vision to life and delivering a seamless user experience in our web application. Comprising skilled developers proficient in <b>HTML, CSS</b>, and <b>JavaScript</b> frameworks such as <b>React.js</b>, this team is responsible for implementing the user interface and ensuring its functionality across various devices and browsers. They work closely with designers to translate static mockups and prototypes into dynamic, interactive web pages that engage and delight users. </p> <p> With a focus on usability and performance, the <b>front-end developers</b> leverage their expertise to optimize the application's responsiveness and loading speed. They utilize&#160;<b>modern web development</b> practices, including responsive design and progressive enhancement, to ensure a consistent experience across desktop, mobile, and tablet devices. Through continuous testing and refinement, the front-end team strives to deliver a polished and intuitive interface that meets the needs and expectations of our users. </p> <p> Beyond technical proficiency, the front-end development team plays a crucial role in fostering collaboration and communication within the broader project team. They collaborate closely with back-end developers, designers, and product managers to align <b>technical implementation with design requirements</b> and user needs. Their ability to effectively communicate technical concepts and provide valuable input throughout the development process contributes to the overall success of the project. </p>",
+            "testing": "Testing",
+            "team_testing": "GLITCH GUARDIANS",
+            "team_testing_description": "<p> The testing team serves as a critical safeguard in our web application's development journey, meticulously ensuring its quality and reliability. Comprised of skilled <b>QA</b> engineers and testers, this team employs a comprehensive approach to evaluate every aspect of the application's <b>functionality, performance, and security</b>. Through systematic testing processes, including manual and automated techniques, they rigorously assess the application's features and functionalities to uncover any potential defects or discrepancies. By documenting test cases, executing test scripts, and analyzing test results, the testing team ensures that the application meets specified requirements and adheres to established quality standards. Their efforts contribute to the identification and resolution of issues before they impact end-users, ultimately enhancing the application's stability and usability. </p> <p> Beyond functional testing, the testing team also focuses on non-functional aspects such as performance and security. They conduct performance testing to evaluate the application's responsiveness under varying load conditions and identify opportunities for optimization. Additionally, they perform security testing to identify and mitigate potential vulnerabilities, ensuring that sensitive data remains protected. By collaborating closely with other teams throughout the development lifecycle, the <b>testing team</b> plays a vital role in delivering a <b>high-quality</b>, reliable web application that meets user expectations and maintains our commitment to excellence. </p>"
+        },
+        "unauthorized" : {
+            "401": "401",
+            "unauthorized": "UserId is invalid or not approved.",
+            "content": "The UserId you are looking for might have been removed, had its name changed, or is temporarily unavailable.",
+            "back_to_login": "Back To Login"
+        }
+    }
+}

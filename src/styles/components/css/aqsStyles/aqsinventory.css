@@ -1,0 +1,160 @@
+
+.page-aqs-inventory.inventory-container {
+  width: auto;
+  height: auto;
+  background-color: #FFFFFF;
+  padding: 20px;
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* MRM Site Dropdown */
+.page-aqs-inventory .site-header {
+  height: 52px;
+  width: 400px;
+  padding: 10px 20px 10px;
+  font-size: 24px;
+  font-weight: 700;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.page-aqs-inventory .site-dropdown {
+  width: 300px;
+  height: 50px;
+  font-size: 18px;
+  padding: 5px;
+  margin-left: 10px;
+  font-weight: 700;
+  font-family: 'DM Sans', sans-serif;
+  color: #333333;
+  background-color: #E8E8E8;
+  border: none;
+  border-radius: 4px;
+}
+
+.page-aqs-inventory .site-dropdown-container {
+  position: relative;
+  display: inline-block;
+  right: 24px;
+}
+
+/* Table Headers */
+.page-aqs-inventory .table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 15px 0;
+}
+
+.page-aqs-inventory .table-header h3 {
+  font-size: 28px;
+  font-weight: bold;
+}
+
+/* Add & Issue Stock Buttons */
+.page-aqs-inventory .add-stock-btn,
+.page-aqs-inventory .issue-stock-btn {
+  background-color: #FFFFFF;
+  color: #FF6F00;
+  border: 1px solid #FFFFFF;
+  padding: 8px 15px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Table Styling */
+.page-aqs-inventory .table-container {
+  border: 1px solid #C3C3C3;
+  background: white;
+  margin-bottom: 20px;
+  overflow-x: auto;
+}
+
+.page-aqs-inventory table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Table Header */
+.page-aqs-inventory th {
+  background-color: #D6D6D6;
+  padding: 12px;
+  text-align: left;
+  border: 1px solid #ddd;
+  font-weight: 600;
+}
+
+/* Table Row & Column Borders */
+.page-aqs-inventory td {
+  padding: 12px;
+  width: 246px;
+  height: 66px;
+  border: 1px solid #DEDEDE;
+  vertical-align: middle;
+}
+
+/* Row Hover Effect */
+.page-aqs-inventory tr:hover {
+  background-color: #f9f9f9;
+}
+
+/* Status Colors */
+.page-aqs-inventory .status {
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.page-aqs-inventory .status.approved {
+  color: #30A335;
+}
+
+.page-aqs-inventory .status.pending {
+  color: #F1C300;
+}
+
+.page-aqs-inventory .status.rejected {
+  color: #D00416;
+}
+
+.page-aqs-inventory .status.reorder {
+  color: #D00416;
+}
+
+/* View Action */
+.page-aqs-inventory .view-action {
+  color: #0456D0;
+  cursor: pointer;
+}
+
+.page-aqs-inventory .view-action a {
+  color: #0456D0;
+  text-decoration: none;
+}
+
+.page-aqs-inventory .view-action a:hover {
+  text-decoration: underline;
+}
+
+.page-aqs-inventory .vendor-image {
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.page-aqs-inventory .d-flex-inventory {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 400;
+  margin-top: 4px;
+}

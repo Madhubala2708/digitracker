@@ -1,0 +1,138 @@
+/* Work Delays Component Styles */
+.pending-approvel-conatiner {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  background-color: #fff;
+}
+
+.pending-scroll-container {
+  max-height: 400px; /* or whatever height you prefer */
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+.pending-scroll-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.pending-scroll-container::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.pending-scroll-container::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+  
+  .pending-approvel-conatiner.task-conatiner {
+    border: 1px solid var(--gray-color);
+    border-radius: 10px;
+    padding: 24px;
+    width: 100%;
+  }
+  .btn-link-clean {
+  background: transparent !important;
+  border: none !important;
+  color: #0456D0 !important;   /* bright royal‑blue */
+  text-decoration: underline;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+  .task-conatiner .task-content {
+    overflow-y: scroll;
+    max-height: 306px;
+  }
+  
+  .task-content.scrollbar-none {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  
+  .task-content.scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .card-pending-approvel {
+    background-color: #fff;
+    border-radius: 8px;
+    margin-bottom: 16px;
+  }
+  
+  .work-delays-header {
+    padding: 16px 16px 0 16px;
+  }
+  
+  .fs-18-500 {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 0;
+  }
+  
+  .mb-0 {
+    margin-bottom: 0;
+  }
+  
+  .fs-16-500 {
+    font-size: 16px;
+    font-weight: 500;
+  }
+  
+  .text-crimson-red {
+    color: #dc3545;
+  }
+  
+  .work-delays-body {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #C6C6C6;
+    padding: 16px 0;
+    margin: 0 16px;
+  }
+  
+  /* The date divider line */
+  .date-divider {
+    width: 1px;
+    height: 40px;
+    background-color: #C6C6C6;
+    margin: 0 10px;
+  }
+  
+  .work-delays-body .start-date,
+  .work-delays-body .planned-date,
+  .work-delays-body .completed-date {
+    flex: 1;
+    padding: 0;
+  }
+  
+  .fs-10-400 {
+    font-size: 10px;
+    font-weight: 400;
+    color: #6c757d;
+    display: block;
+    margin-bottom: 4px;
+  }
+  
+  .fs-16-500 {
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0;
+  }
+  
+  main .task-conatiner::-webkit-scrollbar {
+    width: 0px;
+    height: 10px;
+    background-color: #b6b6b6;
+  }
+  
+  main .task-conatiner::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: var(--primary-color);
+  }
+  
+  .mb-4 {
+    margin-bottom: 1rem;
+  }

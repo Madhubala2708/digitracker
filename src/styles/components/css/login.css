@@ -1,0 +1,112 @@
+.main-login {
+    background-image: url(../../../assets/images/login/loginbg.png);
+    height: 100%;
+    width: 100%;
+    background-size: cover;
+    position: fixed; /* Changed to fixed positioning */
+    top: 0;
+    left: 0;
+    overflow: hidden; /* This ensures no scrolling occurs */
+}
+
+.login-form-container {
+    width: 600px;
+    overflow: hidden;
+    background: #ffffff;
+    border-radius: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 0px;
+}
+.login-page {
+    height: 100%;
+}
+.login-form {
+    max-width: 80%;
+    margin: 0px auto;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    height: 100%;
+}
+
+.login-form-container-button {
+    width: 340px;
+    height: 428px;
+    text-align: center;
+}
+
+.login-form-container-button input {
+    height: 48px;
+    width: 100%;
+    border: 1px solid #BBBBBB;
+    padding-left: 10px;
+    border-radius: 4px;
+}
+
+.login-form-container-button input:focus-visible {
+    box-shadow: unset;
+    outline: unset;
+}
+
+.user-row {
+    margin-bottom: 40px;
+    position: relative;
+    border-color: #BBBBBB;
+}
+
+.forgot-password {
+    text-align: right;
+    margin-top: 1px;
+    font-size: 12px;
+    color: #0080FF;
+}
+
+.user-row label {
+    position: absolute;
+    background-color: #ffffff;
+    padding: 0px 5px;
+    left: 20px;
+    top: -12px;
+    font-size: 16px;
+    color: #606060;
+    font-weight: 500;
+}
+
+.errorMsg {
+    position: absolute;
+    color: red;
+    font-size: 12px;
+}
+
+.btn-login {
+    width: 180px;
+    height: 42px;
+    background-color: #FF6F00;
+    border-radius: 2px;
+    padding: 10px;
+    color: #ffffff;
+    border: 1px solid #FF6F00;
+    box-shadow: unset;
+}
+.btn-switch-role {
+    border: 0px;
+    background-color: var(--off-white-gray);
+    color: var(--text-dark-gray);
+    width: 340px;
+}
+/* .google {
+    border-top: 1px solid #E3E3E3;
+    padding-top: 30px;
+}
+
+.google a {
+    width: 100%;
+    background-color: #E3E3E3;
+    color: #606060;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+} */

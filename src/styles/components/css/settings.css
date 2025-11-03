@@ -1,0 +1,77 @@
+.page-settings .nav-tabs {
+    border: 0px;
+}
+.page-settings .nav-tabs .nav-link:hover, .page-settings .nav-tabs .nav-link:focus {
+    border: 0px;
+    border-bottom: 4px solid transparent;
+}
+.page-settings .nav-tabs .nav-link {
+    font-size: 22px;
+    font-weight: 700;
+    border: 0px;
+    border-bottom: 4px solid transparent;
+    color: #333333;
+    background-color: transparent !important;
+    font-size: 22px;
+} 
+.page-settings .table-container {
+    border-radius: 0px;
+}
+.page-settings .nav-link:focus-visible {
+    box-shadow: unset;
+    border: 0px;
+    border-bottom: 4px solid transparent;
+}
+.page-settings .nav-tabs .nav-link.active {    
+    color:#FF6F00 !important;
+    border: 0px;
+    border-bottom: 3px solid #FF6F00 !important;
+    background-color: transparent !important;
+}
+.page-settings .img-profile {
+    height: 60px;
+}
+.page-settings .profile-details h2 {
+    margin: 32px 0px 24px;
+    font-size: 24px;
+    font-weight: 700;
+}
+.page-settings .profile-details h4 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    margin-left: 8px;
+}
+.page-settings .profile-details p {
+    font-size: 14px;
+    font-weight: 400;
+    margin-bottom: 8px;
+    margin-left: 8px;
+}
+.page-settings .profile-details {
+    border-bottom: 1px solid #E2E2E2;
+    padding-bottom: 20px;
+}
+.page-settings .btn.btn-logut {
+    background-color: #FF0000;
+    color: #ffffff;
+    width: 220px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 22px;
+    border-radius: 4px;
+    margin-top: 80px;
+}
+.page-settings button.btn.btn-logut img {
+    margin-right: 10px;
+}
+.page-settings .content-wrapper {
+    flex-grow: 1;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 30px;
+    width: 100%;
+}

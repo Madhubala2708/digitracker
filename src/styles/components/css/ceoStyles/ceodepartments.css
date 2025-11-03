@@ -1,0 +1,110 @@
+.page-ceo-department .nav-tabs {
+  padding: 0px 0px 20px;
+}
+
+.page-ceo-department .nav-item {
+  width: fit-content;
+}
+
+.page-ceo-department .nav-item .nav-link {
+  padding: 0px 20px !important;
+  height: 42px !important;
+  color: var(--dark-gray-color) !important;
+  background-color: transparent !important;
+  border: 0px !important;
+  border-radius: 2px !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  margin-right: 28px !important;
+}
+
+.page-ceo-department .nav-item .nav-link.active {
+  background-color: var(--primary-color) !important;
+  color: #ffffff !important;
+}
+
+.page-ceo-department button.btn-sort-by {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  border: 0px;
+  height: 40px;
+  width: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  background-color: #BBBBBB;
+  border-radius: 2px;
+}
+
+.page-ceo-department .department-table {
+  text-align: center;
+}
+
+.page-ceo-department button.save-button {
+  margin-top: 20px;
+  background-color: var(--primary-color);
+  border: 0px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  width: 120px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 16px 0px 0px auto;
+  border-radius: 2px;
+}
+
+.page-ceo-department .edit-button {
+  color: var(--primary-color);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.page-ceo-department .tbl th {
+  text-align: center;
+  color: var(--dark-color);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.page-ceo-department .tbl td {
+  text-align: center;
+  font-size: 16px;
+  color: var(--dark-gray-color);
+  font-weight: 500;
+}
+
+.page-ceo-department td.status-active {
+  color: var(--green);
+}
+
+.page-ceo-department td.status-inactive {
+  color: var(--crimson-red);
+}
+
+.page-ceo-department select.sort-dropdown {
+  width: 400px;
+  height: 52px;
+  background: #E8E8E8;
+  border: 0px;
+  border-radius: 4px;
+  margin: 8px 0px 28px;
+  padding: 0px 20px;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--dark-color);
+  background-position-x: 90%;
+}
+
+.page-ceo-department select.sort-dropdown {
+  font-size: 16px;
+  font-weight: 500;
+}

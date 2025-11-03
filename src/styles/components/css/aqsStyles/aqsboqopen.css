@@ -1,0 +1,139 @@
+
+
+/* Navigation Styling */
+.page-boq-open nav {
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.page-boq-open nav .text-muted {
+  color: #6c757d;
+}
+
+.page-boq-open nav span[style] {
+  color: #FF6F00 !important; /* Orange color for "Open BOQ" */
+  font-weight: 500;
+}
+
+/* Heading Styling */
+.page-boq-open h3 {
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #212529;
+}
+
+/* Form Elements */
+.page-boq-open .form-label {
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #495057;
+}
+
+.page-boq-open .form-control {
+  border-radius: 4px;
+  border: 1px solid #ced4da;
+  padding: 8px 12px;
+  height: auto;
+}
+
+.page-boq-open .form-control:focus {
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.page-boq-open textarea.form-control {
+  min-height: 38px;
+}
+
+/* Custom Dropdown Styling */
+.page-boq-open .custom-dropdown {
+  background-color: white !important;
+  border: 1px solid #ced4da !important;
+  border-radius: 4px !important;
+  color: #212529 !important;
+  padding: 8px 12px !important;
+  text-align: left !important;
+  box-shadow: none !important;
+}
+
+.page-boq-open .custom-dropdown::after {
+  float: right;
+  margin-top: 8px;
+}
+
+.page-boq-open .custom-dropdown:focus, .custom-dropdown:hover {
+  background-color: #f8f9fa !important;
+  border-color: #80bdff !important;
+}
+
+/* Red Dot for Vendor */
+.page-boq-open .text-danger.me-2 {
+  color: #dc3545;
+  font-size: 10px;
+  margin-right: 8px !important;
+}
+
+/* Table Styling */
+.page-boq-open .table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 1rem;
+  border: 1px solid #dee2e6;
+  overflow-x: auto;
+}
+
+.page-boq-open .table-light {
+  background-color: #f8f9fa;
+}
+
+.page-boq-open .table th {
+  vertical-align: middle;
+  padding: 12px 8px;
+  border: 1px solid #dee2e6;
+  font-weight: 500;
+  color: #495057;
+}
+
+.page-boq-open .table td {
+  padding: 10px 8px;
+  vertical-align: middle;
+  border: 1px solid #dee2e6;
+}
+
+.page-boq-open .table tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Required Field Indicator */
+.page-boq-open .text-danger {
+  color: #dc3545;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .page-boq-open .table-responsive {
+    overflow-x: auto;
+  }
+  
+  .page-boq-open .col-md-6 {
+    margin-bottom: 15px;
+  }
+}
+
+/* Dropdown Menu Styling */
+.page-boq-open .dropdown-menu {
+  padding: 0.5rem 0;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 0.25rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.page-boq-open .dropdown-item {
+  padding: 0.5rem 1.5rem;
+  color: #212529;
+}
+
+.page-boq-open .dropdown-item:hover, .page-boq-open .dropdown-item:focus {
+  background-color: #f8f9fa;
+  color: #16181b;
+}

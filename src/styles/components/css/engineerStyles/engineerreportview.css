@@ -1,0 +1,80 @@
+
+.report-container {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: auto;
+  height: auto;
+  margin: 0 auto;
+}
+
+.header-section {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+  
+}
+
+.view{
+
+}
+
+
+.input-group {
+  flex: 1;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #333;
+}
+
+.input-group input,
+.input-group select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.styled-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.styled-table th,
+.styled-table td {
+  padding: 12px;
+  text-align: left;
+  border: 1px solid #C3C3C3;
+  
+}
+
+.styled-table th {
+  background-color: #DEDEDE;
+  color: #333333;
+}
+
+.styled-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+
+.low-stock {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+.attached-files {
+  margin-top: 10px;
+}
+
+.attached-files label {
+  display: block;
+  margin-bottom: 5px;
+}

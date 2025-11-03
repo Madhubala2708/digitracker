@@ -1,0 +1,50 @@
+.headr-projectemployeeslist {
+    position: fixed;
+    height: 56px;
+}
+.project-employees-list {
+    position: fixed;
+    height: calc(100vh - 180px);
+    overflow-y: scroll;
+    top: 180px;
+    padding-bottom: 40px;
+    width: 100%;
+    max-width: 400px;
+}
+.project-employees-list::-webkit-scrollbar {
+    width: 0px;
+}
+.project-employees-list .employee-card {
+    height: 83px;
+    border-bottom: 1px solid #D6D6D6;
+    width: 100%;
+}
+.project-employees-list .employee-img {
+    height: 40px;
+    margin-right: 5px;
+}
+.project-employees-list .employee-name {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+.project-employees-list .employee-name span {
+    background-color: #494949;
+    height: 25px;
+    width: 75px;
+    color: #FFFFFF;
+    display: flex;
+    margin-left: 10px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 2px;
+    font-size: 10px;
+    font-weight: 600;
+}
+h6.employee-name {
+    font-size: 12px;
+    color: #606060;
+    font-weight: 400;
+    margin-bottom: 0px;
+}
+

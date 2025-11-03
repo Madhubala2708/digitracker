@@ -1,0 +1,130 @@
+.breadcrumb-container {
+  border-bottom: 1px solid #dee2e6;
+  background-color: white;
+}
+
+.breadcrumb {
+  padding: 0;
+  margin: 0;
+  background-color: transparent;
+}
+
+.breadcrumb-item a {
+  color: #6c757d;
+  text-decoration: none;
+}
+
+.breadcrumb-item.active {
+  color: #ff6b35;
+  font-weight: 500;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+  content: ">";
+  color: #6c757d;
+}
+
+.content-container {
+  background-color: white;
+}
+
+.vendor-header {
+  margin-bottom: 20px;
+}
+
+.logo-circle {
+  width: 40px;
+  height: 40px;
+  background-color: #0000ff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.vendor-title {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.form-label {
+  color: #6c757d;
+  font-weight: 500;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.form-control-vendor {
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  height: 38px;
+  font-size: 14px;
+}
+
+.input-group-text {
+  background-color: white;
+  border-left: none;
+  cursor: pointer;
+}
+
+.dropdown-toggle-icon::after {
+  display: inline-block;
+  content: "";
+  border-top: 0.3em solid;
+  border-right: 0.3em solid transparent;
+  border-bottom: 0;
+  border-left: 0.3em solid transparent;
+  vertical-align: middle;
+}
+
+.material-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #212529;
+}
+
+.material-table {
+  font-size: 14px;
+}
+
+.material-table thead th {
+  background-color: #f5f5f5;
+  color: #495057;
+  font-weight: 500;
+  border-color: #dee2e6;
+  padding: 10px 15px;
+}
+
+.material-table tbody td {
+  padding: 10px 15px;
+  border-color: #dee2e6;
+  vertical-align: middle;
+}
+
+.percentage-tag {
+  color: #28a745;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Add this to make form fields editable when focused */
+.form-control:focus {
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Make the table rows editable */
+.material-table td[contenteditable="true"]:focus {
+  outline: none;
+  background-color: #f8f9fa;
+}
+
+/* For smaller screens */
+@media (max-width: 768px) {
+  .col-md-4 {
+    margin-bottom: 15px;
+  }
+}

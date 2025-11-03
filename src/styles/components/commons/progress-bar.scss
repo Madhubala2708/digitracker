@@ -1,0 +1,164 @@
+.ProgressBar {
+  display: inline-block;
+  width: 100%;
+  padding: 36px 15px 8px 8px;
+  .progress__bar {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    column-gap: 20px;
+    .statusbar-value {
+      margin: 0;
+      font-size: 13px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: normal;
+    }
+    &-barContnent {
+      background-color: $color-light-light-gray;
+      width: 100%;
+      height: 6px;
+      border-radius: 10px;
+      position: relative;
+      &--statusbar {
+        margin: 0;
+        padding: 0;
+        height: 6px;
+        background-color: #27ae60;
+        border-color: inherit;
+        position: relative;
+        border-radius: 10px 0px 0px 10px;
+        .statusIndicator-rounded {
+          display: block;
+          position: absolute;
+          display: block;
+          width: 24px;
+          height: 24px;
+          background-color: inherit;
+          border-radius: 50px;
+          filter: brightness(235%);
+          top: -10px;
+          right: -4px;
+          box-shadow: 1px 3px 11px 2px rgb(51 60 54 / 31%);
+          &::before {
+            content: " ";
+            position: absolute;
+            right: 4.85px;
+            top: 4.75px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50px;
+            border-color: transparent;
+            background: inherit;
+            filter: brightness(45%);
+          }
+        }
+      }
+      & .values__format {
+        color: $color-gray;
+        text-align: right;
+        font-size: 13px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        position: absolute;
+        right: -75px;
+        width: 70px;
+        top: -8px;
+        text-align: left;
+        background-color: $color-white;
+      }
+    }
+    &-statusremarks,
+    &-statuslabel {
+      margin: 0;
+      padding: 0;
+      position: relative;
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+      p {
+        position: absolute;
+        width: 139px;
+        height: max-content;
+        margin: 0;
+        padding: 0;
+        color: $color-gray;
+        text-align: center;
+        font-size: 15px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+      }
+    }
+    &-statuslabel p {
+      bottom: 4px;
+    }
+    &-statusremarks p {
+      top: 4px;
+    }
+    &.overdue-inprogress {
+      .progress__bar-barContnent {
+        // background-color: #eb5757;
+        background: url("../../../assets/images/overdue_progress.png") top right;
+        .overdue-hours {
+          background-color: #eb5757;
+          font-weight: 600;
+          color: #ffffff;
+          padding: 2px 4px 1px;
+          border-radius: 12px;
+        }
+      }
+    }
+    &.overdue-completed {
+      .progress__bar-barContnent {
+        background-color: #eb5757;
+        .overdue-hours {
+          background-color: #eb5757;
+          font-weight: 600;
+          color: #ffffff;
+          padding: 2px 4px 1px;
+          border-radius: 12px;
+        }
+      }
+    }
+    &.ontime-completed {
+      .bg-hours {
+        font-weight: 600;
+        padding: 2px 4px 1px;
+        color: #ffffff;
+        border-radius: 12px;
+        background-color: #27ae60;
+      }
+    }
+    &.overdue-inprogress,
+    &.overdue-completed,
+    &.ontime-completed {
+      & .progress__bar-barContnent {
+        &--statusbar {
+          .statusIndicator-rounded {
+            display: block;
+            position: absolute;
+            border: 2px dashed #828282;
+            right: -3px;
+            top: -14px;
+            width: 2px;
+            height: 33px;
+            background-color: transparent;
+            border-radius: 0px;
+            filter: brightness(1);
+          }
+        }
+      }
+    }
+  }
+  .time-remaining {
+    margin: 0px;
+    float: right;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+  }
+}

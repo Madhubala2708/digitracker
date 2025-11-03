@@ -1,0 +1,27 @@
+.Logout{
+    width: 180px;
+    height: 48px;
+    border-radius: 4px;
+    padding: 10px;
+    gap: 10px;
+    background-color: #FF0000;
+    color: #FFFFFF;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.img-box{
+    padding-right: 16px;
+    padding-left: 16px;
+    gap: 23px;
+}
+
+.datas{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.profile-det{
+    padding-bottom: 20px;
+}

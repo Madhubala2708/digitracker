@@ -1,0 +1,41 @@
+.breadcrumb {
+  margin: 0;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 400;
+  &-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    text-transform: capitalize;
+    max-width: 290px;
+    a {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 250px;
+      color: $color-darkLiver;
+      text-decoration: none;
+      display: inline-block;
+    }
+    &::before {
+      content: none !important;
+    }
+    &-divider {
+      display: inline-flex;
+      padding-left: 14px;
+      .icon-chevron-thin-right {
+        font-size: 12px;
+        font-weight: 700;
+        color: $color-darkLiver;
+      }
+    }
+  }
+  .active {
+    a {
+      color: $color-gray;
+      font-weight: 700;
+      padding-left: 14px;
+    }
+  }
+}

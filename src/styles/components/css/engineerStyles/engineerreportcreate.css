@@ -1,0 +1,362 @@
+
+
+/* .report-header h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+} */
+
+.report-details label {
+  font-weight: bold;
+}
+.attached-files ul li {
+    margin-right: 10px;
+}
+.attached-files ul {
+  display: flex;
+}
+.daily-progress-summary,
+.material-usage-report,
+.safety-compliance-report,
+.issue-risk-report,
+.attached-file {
+  margin-top: 20px;
+}
+
+.daily-progress-summary h3,
+.material-usage-report h3,
+.safety-compliance-report h3,
+.issue-risk-report h3,
+.attached-file h3 {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.table {
+  margin-bottom: 20px;
+}
+
+.table-bordered {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.table-bordered th,
+.table-bordered td {
+  padding: 12px;
+  text-align: left;
+  border: 1px solid #C3C3C3;
+  
+}
+
+.table-bordered th {
+  background-color: #DEDEDE !important;
+  color: #333333 !important;
+}
+
+.table-bordered tr:hover {
+  background-color: #f1f1f1;
+}
+
+.btn {
+  margin-right: 10px;
+}
+
+/* Add Column Button Styling */
+.btn-add-column {
+  background-color: transparent;
+  border: none;
+  color: #FF6F00 !important;
+  font-weight: bold !important;
+  padding: 0;
+}
+
+.btn-add-column:hover {
+  text-decoration: underline;
+}
+
+/* Cancel and Submit Buttons */
+.report-container .form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+.report-container select.form-control.detail-value {
+  border: 1px solid !important;
+  text-align: left;
+}
+.report-container .upload-file{
+  text-decoration: underline;
+}
+
+
+
+.report-container .btn-cancel {
+  background-color: white !important;
+  color: black;
+}
+
+.report-container .btn-submit {
+  background-color:#FF6F00 !important;
+  color: white !important;
+}
+
+
+.report-container .report-header {
+  margin-bottom: 20px;
+}
+
+.report-container .report-header h2 {
+  color: #333;
+  font-size: 24px;
+  margin: 0;
+}
+
+.report-container .report-details-section {
+  margin-bottom: 30px;
+}
+.report-container table th, .report-container table td {
+  height: 48px;
+  padding: 0px 0px !important;
+}
+.report-container .detail-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 15px;
+}
+
+.report-container .detail-item {
+  flex: 1;
+  min-width: 200px;
+}
+
+.report-container .detail-item label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #555;
+}
+
+.report-container .detail-value {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.report-container .react-datepicker-wrapper {
+  width: 100%;
+}
+
+.report-container .report-section {
+  margin-bottom: 30px;
+}
+
+
+.report-container .btn-add {
+  background: none;
+  border: none;
+  color: #FF6F00;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 15px;
+  float: right;
+}
+
+.report-container .btn-add:hover {
+  text-decoration: underline;
+}
+.report-container .form-control, .report-container .form-control:focus {
+border: 0px !important; 
+text-align: center;
+margin-bottom: 0px;
+padding: 0px;
+height: 48px;
+}
+
+
+.upload-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.upload-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  text-decoration: none;
+  border: none;
+  background: none;
+}
+
+.upload-btn span {
+  color: #0456D0;
+  text-decoration: underline;
+}
+
+.attached-file-section {
+  margin-bottom: 16px;
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.upload-icons {
+  color: #0456D0 !important;
+  font-size: 20px;
+}
+
+.upload-btn-2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 20px;
+  text-decoration: none;
+  border: none;
+  background: none;
+}
+
+.upload-btn-2 span {
+  color: #0456D0;
+}
+
+.file-name {
+  margin-left: 10px;
+  font-size: 14px;
+  color: #666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+}
+
+.attached-file-section {
+  margin-bottom: 30px;
+}
+
+
+.file-upload-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.btn-cancel {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  width: 120px;
+  height: 40px;
+  margin-right: 1px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-submit {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-cancel {
+  background-color: #f0f0f0;
+  color: #333;
+  border: 1px solid #ddd;
+}
+.btn-cancel:hover{
+  border: 1px solid #ddd;
+}
+.btn-submit {
+  background-color: #FF6F00;
+  color: #fff;
+}
+.text-danger {
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+/* Custom select styles */
+.custom-select {
+  position: relative;
+  width: 100%;
+}
+
+.custom-select select, .custom-select select:focus {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 100%;
+  padding: 0px 10px !important;
+  border: 1px solid #C1C1C1 !important;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+  text-align: left;
+}
+.custom-select select option {
+padding:  5px 10px !important;
+}
+.custom-select::after {
+  content: "▼";
+  font-size: 12px;
+  color: #555;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+/* For Material Usage and Issue Risk tables */
+.report-table .custom-select {
+  width: auto;
+}
+
+.report-table .custom-select select {
+  width: 100%;
+  min-width: 120px;
+  padding: 0px;
+}
+.btn-send-report:disabled {
+    background-color: #bbb !important;
+    color: #8e8e8e !important ;
+    cursor: not-allowed !important;
+}
+.btn-send-report.selected-row {
+    background-color: #FF6F00 !important;
+    color: #ffffff !important ;
+    cursor: pointer !important;
+}
+.send-report-checkbox {
+  position: absolute;
+  z-index: 0 !important;
+}
+.send-report-emp-conatiner {
+  z-index: 1;
+  padding-left: 40px;
+}

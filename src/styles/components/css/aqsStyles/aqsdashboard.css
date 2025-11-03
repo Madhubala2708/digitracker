@@ -1,0 +1,32 @@
+.card-boq .dot {
+    height: 4px;
+    width: 4px;
+    background-color: var(--dark-gray-color);
+    margin: 0px 10px;
+    border-radius: 50%;
+}
+.card-boq {
+    border-bottom: 1px solid var(--gray-color);
+    margin-bottom: 16px;
+    display: block;
+    padding-bottom: 16px;
+}
+.poq-max-height {
+    height: 700px;
+    max-height: 700px;
+    overflow-y: scroll;
+}
+.poq-max-small {
+    height: 400px;
+    max-height: 400px;
+    overflow-y: scroll;
+}
+.tbl-material-prize td {
+    border: 0px;
+    border-bottom: 1px solid var(--gray-color);
+}
+@media (max-width: 1440px) {
+    .page-aqs-dashboard .card-conatiner {
+        max-width: unset;
+    }
+}

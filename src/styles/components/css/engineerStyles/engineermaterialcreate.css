@@ -1,0 +1,132 @@
+.boq-form {
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.breadcrumb {
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 10px;
+}
+
+.text-orange {
+  color: #ff6600 !important;
+}
+.bg-orange .text-center{
+  background-color: #FF6F00 !important;
+  color:#fff !important;
+}
+
+.form-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  width: 1180px;
+  height: 36px;
+}
+
+.boq-table th {
+  background: #ff6600 !important ;
+  color: white;
+  text-align: center;
+  font-weight: 500;
+}
+
+.boq-table td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.add-column-btn {
+  font-weight: bold;
+}
+
+.submit-btn {
+  background-color: #ff6600;
+  color: white !important;
+  font-size: 16px;
+  padding: 10px 20px;
+  border-radius: 5px;
+}
+
+.submit-btn:hover {
+  background-color: #e65c00;
+}
+.icon{
+  color:white !important;
+}
+
+.boq-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.boq-table th {
+  padding: 10px;
+  background-color: #ff8c00 !important; /* orange color */
+}
+
+.boq-table td {
+  padding: 5px;
+  vertical-align: middle;
+}
+
+/* Remove any borders from cells */
+.cell-no-border {
+  border: none !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Style inputs to remove borders and backgrounds */
+.input-no-border {
+  width: 100%;
+  border: none !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  padding: 5px;
+}
+
+.input-no-border:focus {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+
+.boq-table, .boq-table th, .boq-table td {
+  border: 1px solid #dee2e6; /* light gray border */
+}
+
+.boq-table.no-borders, 
+.boq-table.no-borders th, 
+.boq-table.no-borders td {
+  border: none !important;
+}
+
+@media (max-width: 768px) {
+  .boq-form {
+    padding: 10px;
+  }
+
+  .form-title {
+    font-size: 18px;
+  }
+
+  .boq-table th, .boq-table td {
+    font-size: 12px;
+  }
+
+  .submit-btn {
+    width: 100%;
+  }
+}
+
+
+.boq-form-css{
+ justify-content: left ;
+gap: 22px !important;
+}

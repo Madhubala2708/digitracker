@@ -1,0 +1,68 @@
+.page-boq-create.boq-form {
+  padding: 20px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+.page-boq-create .breadcrumb {
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 10px;
+}
+
+.page-boq-create .text-orange {
+  color: #ff6600;
+}
+
+.page-boq-create .form-title {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.page-boq-create .boq-table th {
+  background: #ff6600;
+  color: white;
+  text-align: center;
+}
+
+.page-boq-create .boq-table td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.page-boq-create .add-column-btn {
+  font-weight: bold;
+}
+
+.page-boq-create .submit-btn {
+  background-color: #ff6600;
+  color: white;
+  font-size: 16px;
+  padding: 10px 20px;
+  border-radius: 5px;
+}
+
+.page-boq-create .submit-btn:hover {
+  background-color: #e65c00;
+}
+
+@media (max-width: 768px) {
+  .page-boq-create.boq-form {
+    padding: 10px;
+  }
+
+  .page-boq-create .form-title {
+    font-size: 18px;
+  }
+
+  .page-boq-create .boq-table th, .boq-table td {
+    font-size: 12px;
+  }
+
+  .page-boq-create .submit-btn {
+    width: 100%;
+  }
+}

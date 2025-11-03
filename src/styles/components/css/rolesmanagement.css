@@ -1,0 +1,191 @@
+.react-dropdown-select-dropdown.react-dropdown-select-dropdown-position-bottom {
+    width: 100% !important;
+    padding: 10px 20px;
+    top: 48px;
+}
+
+.manage__roles__details__top {
+    display: flex;
+    justify-content: space-between;
+    margin: 28px 0px 48px;
+    align-items: center;
+}
+
+.manage__roles__details__top__title {
+    width: 40%;
+}
+
+.manage__roles__details__top__dropdown {
+    width: 60%;
+    display: flex;
+    justify-content: end;
+}
+
+.manage__roles__details__top__dropdown-role {
+    width: 200px;
+    margin: 0px 10px;
+}
+
+.manage__roles__details__top__dropdown-department {
+    width: 260px;
+    margin: 0px 10px;
+}
+
+.manage__roles__details__top__title h4 {
+    font-size: 24px;
+    font-weight: 700;
+    text-transform: capitalize;
+}
+
+.react-dropdown-select {
+    background-color: #EBEBEB !important;
+    border-color: #EBEBEB !important;
+    padding: 0px 10px !important;
+    height: 42px;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.manage__roles__details__top__dropdown label {
+    font-size: 14px;
+    color: #606060;
+    font-weight: 400;
+    margin-bottom: 10px;
+}
+
+.react-dropdown-select-content span {
+    color: #606060;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.react-dropdown-select-dropdown-handle svg path {
+    fill: #606060;
+}
+
+.react-dropdown-select:focus, .react-dropdown-select:focus-within, .react-dropdown-select:hover {
+    outline: 0 !important;
+    box-shadow: unset !important;
+    border-color: #EBEBEB !important;
+}
+
+.react-dropdown-select-dropdown.react-dropdown-select-dropdown-position-bottom p.dropdwonLists-label {
+    display: flex;
+    align-items: center;
+}
+
+.react-dropdown-select-dropdown.react-dropdown-select-dropdown-position-bottom p.dropdwonLists-label label {
+    margin: 0px 0px 0px 5px;
+    text-transform: capitalize;
+}
+
+.manage__roles__details__container {
+    display: flex;
+}
+
+.manage__roles__details__container-sidemenu ul {
+    padding: 0px;
+}
+
+.manage__roles__details__container-sidemenu {
+    width: 20%;
+}
+
+.manage__roles__details__container-sidemenu li {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    color: #333333;
+    font-size: 22px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.manage__roles__details__container-sidemenu li.active {
+    color: #FF6F00 !important;
+}
+.page-rolesmanagement table th, .page-rolesmanagement table td {
+    border: 1px solid #C4C4C4;
+    text-align: center;
+}
+
+.page-rolesmanagement table th {
+    background: #DDDDDD;
+    height: 48px;
+    color: #333333;
+    font-size: 22px;
+    font-weight: 700;
+}
+.page-rolesmanagement table tr {
+    width: 100%;
+}
+.page-rolesmanagement table tr th:first-child, .page-rolesmanagement table tr td:first-child {
+    width: 70%;
+}
+.page-rolesmanagement table tr th:last-child, .page-rolesmanagement table tr td:last-child {
+    width: 30%;
+}
+.page-rolesmanagement table td {
+    color: #606060 !important;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 10px;
+}
+.page-rolesmanagement .manage__roles__details__container-form {
+    padding: 0px 80px 0px 50px;
+    width: 80%;
+}
+
+.page-rolesmanagement button.submit {
+    background-color:#FF6F00 !important;
+    border: #FF6F00 !important;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+    width: 180px;
+    height: 42px;
+}
+.page-rolesmanagement button.cancel, .button.submit {
+    width: 180px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.page-rolesmanagement .manage__roles__details-footer {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    padding-right: 80px;
+    margin-top: 32px;
+    padding-bottom: 40px;
+}
+
+.page-rolesmanagement button.cancel {
+    border: 1px solid #EBEBEB;
+    background-color: #EBEBEB;
+    margin-right: 10px;
+}
+.page-rolesmanagement .toggle-switch-label .switch::before {
+    left: 2px;
+}
+.page-rolesmanagement .toggle-switch-label input[type=checkbox]:checked + .switch::before {
+    right: 2px;
+}
+.page-rolesmanagement .toggle-switch-label .switch::before, .page-rolesmanagement .toggle-switch-label input[type=checkbox]:checked + .switch::before {
+    background: linear-gradient(180deg, #FFFFFF 0%, #E8EAEA 100%);
+    height: 14px;
+    width: 14px;
+    top: 2px;
+}
+.toggle-switch-label .switch {
+    background-color: rgba(213, 213, 213, 1) !important;
+    box-shadow: 0px 1.87px 2.5px 0.94px rgba(0, 0, 0, 0.1) inset;
+    height: 18px;
+    width: 40px;
+}
+.toggle-switch-label input[type=checkbox]:checked + .switch {
+    background-color: #498f1a !important;
+}

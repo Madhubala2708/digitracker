@@ -1,0 +1,39 @@
+.toast-container{
+    top: 70px !important;
+    right: 20px !important;
+    position: fixed;
+    z-index: 9999;
+    .bg-success{
+      background-color: #27AE60 !important;
+      color: $color-white;
+    }
+    .toast-body{
+      padding: 10px;
+      &-container{
+        display: flex;
+        align-items: center;
+        &-content{       
+          p{
+            font-size: 17px;
+            font-style: normal;
+            font-weight: 600;
+            margin: 0;
+          }
+          span{
+            font-size: 13px;
+            font-style: normal;
+            font-weight: 400;
+          }
+          .hint{
+            display: block;
+            font-size: 12px;
+            color: #FFCA28;
+            label{
+              color: #4F4F4F;
+              font-weight: bold;
+            }
+          }
+        }
+      }
+    }
+  }

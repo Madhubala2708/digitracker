@@ -1,0 +1,54 @@
+@import './components/css/main.css';
+@import './components//css/kanban.css';
+@import './components/css/chatapp.css';
+@import './components/css/Permissions.css';
+@import './components/css/Logout.css';
+@import './components/css/notification.css';
+@import './components/css/projects.css';
+@import './components/css/projectemployeeslist.css';
+@import './components/css/home.css';
+@import './components/css/settings.css';
+@import './components/css/rolesmanagement.css';
+
+/* // Engineer Flow Styles */
+
+
+@import './components/css/engineerStyles/engineerdashboard.css';
+@import './components/css/engineerStyles/engineermaterial.css';
+@import './components/css/engineerStyles/engineermaterialcreate.css';
+@import './components/css/engineerStyles/engineermaterialview.css';
+@import './components/css/engineerStyles/engineertask.css';
+@import './components/css/engineerStyles/engineerreport.css';
+@import './components/css/engineerStyles/engineerreportcreate.css';
+@import './components/css/engineerStyles/engineerreportview.css';
+
+
+/* AQS FLOW STYLES */
+@import './components/css/aqsStyles/aqsdashboard.css';
+@import './components/css/aqsStyles/aqsinventory.css'; 
+@import './components/css/aqsStyles/aqsboqcreate.css';
+@import './components/css/aqsStyles/aqsboqopen.css';
+@import './components/css/aqsStyles/aqsboqmain.css';
+@import './components/css/aqsStyles/aqsvendordetails.css';
+@import './components/css/aqsStyles/aqsvendorpricedetails.css';
+@import './components/css/aqsStyles/aqsmaterial.css'; 
+@import './components/css/aqsStyles/aqsvendor.css';
+@import './components/css/aqsStyles/aqsvendordetails.css';
+@import './components/css/aqsStyles/aqscostestimation.css';
+
+
+/*CEO FLOW STYLES */
+@import './components/css/ceoStyles/ceodashboard.css';
+@import './components/css/ceoStyles/ceocreateproject.css';
+@import './components/css/ceoStyles/civilworkers.css';
+@import './components/css/ceoStyles/reports.css';
+@import './components/css/ceoStyles/resources.css';
+@import './components/css/ceoStyles/ceofinance.css';
+@import './components/css/ceoStyles/ceodepartments.css';
+
+/*PM FLOW STYLES */
+@import './components/css/pmStyles/dashboard.css';
+
+
+/*HR FLOW STYLES */
+@import './components/css/hr/hrms.css';

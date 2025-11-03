@@ -1,0 +1,66 @@
+/* .page-add-task .table-responsive {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.page-add-task .table-header {
+  background-color: #f8f9fa; 
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.page-add-task .table thead th {
+  background-color:#DEDEDE; 
+  color: #333333;
+  padding: 12px;
+  font-size: 14px;
+}
+
+
+.page-add-task tr.fw-bold  td {
+  background-color: #c65600 !important;
+  font-size: 16px;
+  color: #FFFFFF;
+}
+
+
+
+.page-add-task .table tbody tr {
+  transition: all 0.3s ease-in-out;
+}
+
+.page-add-task .table tbody tr:hover {
+  background-color: #ffe5d5;
+}
+
+.page-add-task .bg-light {
+  background-color: #f8f9fa !important;
+}
+
+.page-add-task td, .page-add-task th {
+  vertical-align: middle !important;
+  text-align: center;
+}
+
+.page-add-task form select {
+  border-radius: 5px;
+  padding: 4px;
+  cursor: pointer;
+} */
+.page-add-task.full-width .left-container {
+  padding: 0px;
+  width: 99%;
+}
+
+.page-add-task .left-container>.row {
+  padding: 20px;
+}
+
+
+
+@media (max-width: 1440px) {
+  main.page-add-task .left-container {
+    width: 100%;
+    max-width: 100%;
+  }
+}

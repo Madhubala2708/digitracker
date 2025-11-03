@@ -1,0 +1,26 @@
+.table-heading {
+    background-color: #DDDDDD !important; 
+    color: #333333 !important; 
+    height: 48px;
+    
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 100%;
+}
+
+td{
+    
+    max-height: 48px;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 100%;
+    color: #606060 !important;
+}
+
+.ActionTable{
+    width: 700px;
+}
+
+.Permission{
+    width: 300px;
+}

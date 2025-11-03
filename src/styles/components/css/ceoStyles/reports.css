@@ -1,0 +1,154 @@
+.ceo-report  .report-container {
+    display: flex;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+  }
+  
+  .ceo-report  .sidebar {
+    width: 20%;
+    background-color: #ffffff;
+    border-right: 1px solid var(--primary-color);
+    padding: 20px;
+    padding-left: 12px;
+  }
+  .ceo-report  .sidebar h4 {
+    border-bottom: 1px solid #E4E4E4;
+    height: 46px;
+    margin-bottom: 24px;
+  }
+  .ceo-report .tbl th {
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--dark-color);
+    text-align: center !important;
+  }
+  .ceo-report .tbl td {
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--dark-gray-color);
+    text-align: center !important;
+  }
+  .ceo-report  .ceo-report-container {
+    width: 80%;
+    padding: 20px;
+    padding-right: 0px;
+  }
+  .ceo-report .left-container {
+    padding-top: 0px !important;
+    padding-left: 0px !important;
+    padding-right: 10px !important;
+}
+main.ceo-report.report-container.d-flex {
+  padding: 0px 20px 20px 20px;
+  box-shadow: unset !important;
+  border: 0px;
+  border-radius: 0px;
+}
+  .ceo-report  .filter-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .ceo-report  .filter-item {
+    color: #555;
+    cursor: pointer;
+    padding: 0px 10px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    margin-bottom: 10px;
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--dark-gray-color);
+    border-radius: 4px;
+  }
+  
+  .ceo-report  .filter-item.active {
+    color: var(--primary-color);
+    font-weight: 500;
+    background-color: #FF9F5533;
+    font-size: 16;
+  }
+  
+  .ceo-report  .main-content {
+    flex: 1;
+    padding: 20px;
+    background-color: #fff;
+  }
+  
+  .ceo-report  .report-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .ceo-report  .report-table th,
+  .ceo-report  .report-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .ceo-report  .report-table th {
+    background-color: #f2f2f2;
+  }
+  
+  .ceo-report  .report-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .ceo-report  .action {
+    color: #1e90ff;
+    cursor: pointer;
+  }
+  
+  .ceo-report  .no-data {
+    text-align: center;
+    padding: 20px;
+    color: #999;
+  }
+  
+  .ceo-report .min-height-100vh {
+    min-height: 100vh;
+  } 
+
+  /* Finance Report */
+  .page-finance-report .btn-create-report {
+    width: 140px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    background-color: var(--primary-color);
+    margin: 0px 0px 0px auto;
+    border-radius: 2px;
+    border: 0px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .page-finance-report form label {
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--dark-color);
+  }
+  .page-finance-report form select.form-select,   .page-finance-report form input.form-control {
+    border: 1px solid #C1C1C1;
+    background: #ffffff !important;
+    height: 48px;
+    color: var(--dark-color);
+    font-size: 16px;
+    font-weight: 500;
+}
+.page-finance-report form select.form-select::placeholder, .page-finance-report form input.form-control::placeholder {
+  color: #BBBBBB !important;
+}
+.page-finance-report .report-btn {
+  width: 180px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 600;
+}

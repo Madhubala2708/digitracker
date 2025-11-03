@@ -1,0 +1,144 @@
+.page-aqs-vendors  .card {
+  border-radius: 10px;
+  transition: all 0.3s ease-in-out;
+  border: 1px;
+  width: auto;
+  height: auto;
+
+}
+
+.bright-image {
+  width: 16px;
+  height: 16px;
+  filter: brightness(1.5);
+}
+
+.blur-text {
+  opacity: 0.8; 
+}
+
+
+.page-aqs-vendors  .card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.badge-custom {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #fff;
+}
+
+.bg-ss {
+  background-color: #0011ff; 
+}
+
+.bg-rk {
+  background-color: #ff00bf; 
+}
+.bg-rv{
+  background-color: #FFB700; 
+}
+
+.bg-rV-alt{
+  background-color: #7E6119; 
+}
+.bg-ss-alt {
+  background-color: #acaa17; 
+}
+
+.bg-rk-alt {
+  background-color: #18848e; 
+}
+
+.bg-sv{
+  background-color: #c93e84; /* Custom Brown */
+}
+.bg-sv-alt{
+  background-color: #58af07; /* Custom Brown */ 
+}
+
+.badge-warning-custom {
+  box-shadow: inset 0 0 0 2px #F1C300;
+  background-color: transparent;
+  color:#F1C300;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
+
+.btn-custom-dark {
+  background-color: #4b4b4b;
+  color: white;
+  border-radius: 5px;
+  padding: 5px 10px;
+  border: none;
+}
+
+.btn-custom-dark:hover {
+  background-color: #656565;
+}
+
+/* venderscreen.css */
+
+/* Dropdown button style */
+.dropdown-toggle-custom {
+width: 180px;
+text-align: left;
+background-color: #e0e0e0 !important;
+border: none;
+font-weight: bold;
+padding: 10px 15px;
+border-radius: 5px;
+}
+
+/* Dropdown menu style */
+.dropdown-menu {
+width: 180px;
+}
+
+/* Sort button style */
+.btn-sort {
+background-color: #e0e0e0 !important;
+border: none;
+padding: 10px 15px;
+border-radius: 5px;
+display: flex;
+align-items: center;
+}
+
+/* Sort button icon */
+.btn-sort i {
+margin-right: 5px;
+}
+/* Dropdown select styling */
+.select-custom {
+  width: 400px !important;
+  height: 52px;
+  border-radius: 4px;
+  padding: 10px 20px;
+  border: 1px solid #ccc;
+  background-color: #f8f9fa;
+  font-weight: bold;
+}
+
+/* Vendor details container styling */
+.Vendor-details {
+  width: 540px;
+  height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  top: 20px;
+  left: 20px;
+}
+
+.btn-prize-update {
+  background-color: #656565;
+  color: #fff;
+}

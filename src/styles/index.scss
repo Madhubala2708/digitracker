@@ -1,0 +1,24 @@
+
+@import "./variables.scss";
+@import "./fonts/inter.scss";
+@import "~bootstrap/scss/bootstrap.scss";
+@import "./icons/style.scss";
+@import "./components";
+
+
+body {
+  margin: 0;
+  font-family: $baseFont;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  
+}
+
+.input-error {
+  border: 1px solid red !important;
+}
+
+.mandatory {
+  margin-left: 3px;
+  color: $color-light-red;
+}

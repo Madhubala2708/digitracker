@@ -1,0 +1,62 @@
+.showPopupTip {
+    &.popup-content {
+      overflow: visible;
+      position: absolute;
+      right: 20px;
+      top: 25px;
+      width: fit-content;
+      min-width: 150px;
+      max-width: 300px;
+      min-height: 25px;
+      border-radius: 6px;
+      background: $color-white;
+      box-shadow: -1px 3px 10px 6px rgba(27, 31, 53, 0.12);;
+      z-index: 1100;
+      .showPopup {
+        z-index: 1500;
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+        padding: 8px;
+        .tip-entry-main {
+          margin: 0;
+          padding: 2px 2px 0;
+          list-style-type: none;
+          width: 100%;
+          border-radius: 12px;
+          text-align: left;
+          .tip-entry {
+            padding: 8px 12px;
+            border-bottom: 1px solid $color-light-light-gray;
+            color: $color-oldSilver;
+            &.active,
+            &:hover {
+              background: $color-light-ghost-white;
+            }
+            &:first-child {
+              border-radius: 12px 12px 0 0;
+            }
+            &:last-child {
+              border: none;
+              border-radius: 0 0 12px 12px;
+            }
+          }
+        }
+        .tip-entry {
+          padding: 8px 12px;
+          font-size: 15px;
+          font-style: normal;
+          font-weight: 500;
+          line-height: normal;
+          margin: 0;
+          padding: 0;
+          width: 100%;
+          list-style-type: none;
+          cursor: pointer;
+          text-align: left;
+          color: $color-oldSilver;
+        }
+      }
+    }
+  }
+  

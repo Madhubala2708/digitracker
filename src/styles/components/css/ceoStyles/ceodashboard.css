@@ -1,0 +1,16 @@
+.page-ceodashboard .height-540px {
+    height: 540px;
+}
+.page-ceodashboard .tbl-pending-alert-conatiner {
+    height: 540px;
+    overflow: hidden;
+    overflow-y: scroll;
+}
+.page-ceodashboard .tbl-pending-alert-conatiner .tbl thead th {
+    position: sticky;             /* Make thead sticky */
+    top: 0;                       /* Stick to the top */
+    background: #fff;             /* Background color to prevent overlap */
+    z-index: 1;                   /* Ensure it stays above tbody content */
+    border-bottom: 2px solid #ccc;
+    padding: 12px;
+  }

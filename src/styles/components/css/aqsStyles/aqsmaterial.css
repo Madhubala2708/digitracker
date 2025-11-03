@@ -1,0 +1,30 @@
+.site-selector {
+  width: 250px;
+  margin-bottom: 10px;
+}
+
+.table-container {
+  max-height: auto;
+  overflow-y: auto;
+  padding: 15px;
+}
+
+/* Increase table width */
+.table {
+  width: 100%;
+  border: none;
+}
+
+
+.required-quantity {
+  color: red;
+  font-weight: bold;
+}
+
+
+
+/* Style for 0 Meter */
+.zero-required {
+  color: gray;
+  font-weight: bold;
+}

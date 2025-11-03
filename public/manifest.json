@@ -1,0 +1,20 @@
+{
+  "short_name": "BUILDFLOW",
+  "name": "BUILDFLOW",
+  "icons": [
+    {
+      "src": "",
+      "type": "image/png",
+      "sizes": "180x180"
+    },
+    {
+      "src": "",
+      "type": "image/png",
+      "sizes": "180x180"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}

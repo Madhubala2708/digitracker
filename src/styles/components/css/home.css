@@ -1,0 +1,169 @@
+.pending-approvel-conatiner {
+    border: 1px solid var(--gray-color);
+    border-radius: 10px;
+    padding: 12px;
+}
+.pending-approvel-conatiner .card-pending-approvel:last-child {
+    border: 0;
+}
+span.pending-approvel-count {
+    background-color: #C65600;
+    color: #fff;
+    font-size: 12px;
+    width: 32px;
+    height: 20px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 5px;
+}
+.badge-prioritize.text-high{
+    background: #FF404033 !important;
+    color: #FF0000;
+}
+.badge-prioritize.text-medium{
+    background: #FFEC4033 !important;
+    color: #FF9500;
+}
+.card-pending-approvel-content {
+    border-bottom: 1px solid var(--gray-color);
+    margin-bottom: 20px;
+}
+.badge-fileattachment.badge {
+    background: #CCCCCC99 !important;
+    color: #333333;
+    font-size: 10px;
+    font-weight: 500;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+.badge-prioritize {
+    height: 25px;
+    font-size: 10px;
+    display: flex;
+    padding-right: 10px;
+    padding-left: 10px;
+    border-radius: 4px !important;
+    font-weight: 400 !important;
+}
+.card-pending-approvel-content p, .card-pending-approvel-project-user h6 {
+    font-size: 12px;
+}
+.right-container .card-pending-approvel {
+    padding: 12px;
+}
+.card-pending-approvel-project-user img {
+    height: 16px;
+}
+/* Department-specific colors */
+.project-dept {
+    background-color: #FF5151 !important; /* Default color */
+    padding: 5px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    height: 24px;
+    border-radius: 4px !important;
+    color: #fff;  
+    width: fit-content; 
+  }
+  
+  /* Finance department */
+  .dept-finance {
+    background-color: #FF4040 !important; /* Red */
+  }
+  
+  /* Purchase Team department */
+  .dept-purchaseteam {
+    background-color: #4086FF !important; /* Blue */
+  }
+  
+  /* HR department */
+  .dept-hr {
+    background-color: #00C853 !important; /* Green */
+  }
+  
+  /* IT department */
+  .dept-it {
+    background-color: #6200EA !important; /* Purple */
+  }
+  
+  /* Marketing department */
+  .dept-marketing {
+    background-color: #FF9100 !important; /* Orange */
+  }
+  
+  /* Operations department */
+  .dept-operations {
+    background-color: #00B8D4 !important; /* Teal */
+  }
+/* Add to your CSS file */
+/* .dept-finance {
+    background-color: #FF4040; 
+  }
+  
+  .dept-purchase {
+    background-color:  #4086FF; 
+  } */
+.card-pending-approvel-project-user p {
+    font-size: 12px;
+    text-align: end;
+    margin-bottom: 8px;
+}
+.card-row-1 {
+    padding: 0px 10px;
+}
+.card-conatiner {
+    border: 1px solid var(--gray-color);
+    border-radius: 10px;
+    height: 124px;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    padding: 24px;
+}
+.card-chart-conatiner {
+    border: 1px solid var(--gray-color);
+    border-radius: 10px;
+    align-items: center;
+    justify-content: left;
+    padding: 24px;
+}
+.card-chart-conatiner .card-body {
+    padding: 0px;
+}
+.card-chart-conatiner .card-body canvas {
+    height: 280px !important;
+    width: 100%;
+}
+.card-chart-conatiner .card {
+    border: 0px solid;
+}
+.card-conatiner h2 {
+    font-size: 28px;
+    font-weight: 700;
+    font-family: "DM Sans", sans-serif;
+}
+.card-conatiner h2 span {
+    display: block;
+    font-size: 14px;
+    font-weight: 400;
+    margin-bottom: 10px;
+    color: #606060;
+}
+.pending-approvel-conatiner .card-pending-approvel:last-child .card-pending-approvel-content,
+.pending-approvel-conatiner .card-pending-approvel:last-child .work-delays-body,
+.pending-approvel-conatiner .card-pending-approvel:last-child {
+    border-bottom: 0px;
+    margin-bottom: 0px !important;
+}
+@media (max-width: 1280px) {
+    .card-conatiner {
+        max-width: unset; 
+    }
+}

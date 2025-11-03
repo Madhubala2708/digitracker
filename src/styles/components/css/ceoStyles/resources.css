@@ -1,0 +1,63 @@
+.page-resource .nav-tabs-container {
+  display: flex;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 32px;
+}
+main.page-resource.bg-light.show-civil-workers .nav-tabs-container {
+  margin-bottom: 0px;
+}
+.page-resource ul.nav-tabs-container {
+  list-style: none;
+}
+
+.page-resource .nav-link {
+  padding: 10px 20px;
+  background: #f4f4f4;
+  border: 1px solid #ddd;
+  border-radius: 5px 5px 0 0;
+  cursor: pointer;
+  color: var(--dark-gray-color);
+}
+
+.page-resource .nav-link.active {
+  background: #ff6f00;
+  color: #ffffff;
+  border-bottom: 2px solid #ffffff;
+  border-radius: 2px !important;
+}
+
+
+.page-resource .status-indicator {
+  color: white;
+  border-radius: 50%;
+  height: 16px;
+  width: 16px;
+}
+
+.page-resource .status-shortage {
+  background-color: #dc3545;
+}
+
+.page-resource .status-ok {
+  background-color: #28a745;
+}
+
+.show-civil-workers ul li:first-child button {
+  background-color: var(--primary-color) !important;
+  color: #ffffff;
+  border-radius: 2px;
+}
+.save-button {
+  width: 180px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0px 20px auto;
+  background-color: var(--primary-color);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  border: 0px;
+  border-radius: 2px;
+}

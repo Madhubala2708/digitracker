@@ -9,7 +9,7 @@ const AqsCostEstimationCreate = () => {
     { id: 1, category: "", budgeted: "", spent: "", variance: "", overrun: "", status: "", actions: "" },
     { id: 2, category: "", budgeted: "", spent: "", variance: "", overrun: "", status: "", actions: "" },
     { id: 3, category: "", budgeted: "", spent: "", variance: "", overrun: "", status: "", actions: "" },
-    
+    { id: 4, category: "", budgeted: "", spent: "", variance: "", overrun: "", status: "", actions: "" },
   ]);
 
   const [formData, setFormData] = useState({

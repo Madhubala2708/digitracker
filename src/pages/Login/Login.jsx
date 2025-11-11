@@ -16,7 +16,7 @@ import { PRODUCT_LOGO } from "../../assets/images";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { IoPerson } from "react-icons/io5";
 import { PiBuildingOffice } from "react-icons/pi";
-import '../../styles/components/css/login.css';
+import "../../styles/components/css/login.css";
 import { setJustLoggedIn } from "../../services/api";
 
 export default function Login({ onLoginSuccess }) {
@@ -24,10 +24,10 @@ export default function Login({ onLoginSuccess }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  
+
   // Login mode state (employee or vendor)
   const [loginMode, setLoginMode] = useState("employee");
-  
+
   // Form state
   const [activeForm, setActiveForm] = useState("login");
   const [inProgress, setInProgress] = useState(false);
@@ -42,114 +42,120 @@ export default function Login({ onLoginSuccess }) {
     type: "", // Will be set to "vendor" for vendor login
   });
   const [errorMsg, setErrorMsg] = useState({});
-  
+
   const inputRef = useRef(null);
 
   // Toggle between employee and vendor login
   const toggleLoginMode = () => {
     const newMode = loginMode === "employee" ? "vendor" : "employee";
     setLoginMode(newMode);
-    
+
     // Reset form data when switching modes
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       username: "",
       password: "",
       type: newMode === "vendor" ? "vendor" : "", // Set type for vendor login
     }));
-    
+
     // Clear any error messages
     setErrorMsg({});
   };
 
   const handleLogin = async (e) => {
-   e.preventDefault();
-  
-  if (!formData.username || !formData.password) {
-    setErrorMsg((prev) => ({
-      ...prev,
-      username: !formData.username,
-      password: !formData.password,
-    }));
-    return;
-  }
-  
-  setInProgress(true);
-  try {
-    const payload = {
-      username: formData.username,
-      password: formData.password,
-      Email: formData.username,
-    };
-    
-    if (loginMode === "vendor") {
-      payload.type = "vendor";
+    e.preventDefault();
+
+    if (!formData.username || !formData.password) {
+      setErrorMsg((prev) => ({
+        ...prev,
+        username: !formData.username,
+        password: !formData.password,
+      }));
+      return;
     }
-    
-    // Set flag before making login request
-    setJustLoggedIn(true);
-    
-    const response = await getAuth(payload);
-    
-    if (response?.payload?.token) {
+
+    setInProgress(true);
+    try {
+      const payload = {
+        username: formData.username,
+        password: formData.password,
+        Email: formData.username,
+      };
+
+      if (loginMode === "vendor") {
+        payload.type = "vendor";
+      }
+
+      // Set flag before making login request
+      setJustLoggedIn(true);
+
+      const response = await getAuth(payload);
+
+      if (response?.payload?.token) {
         // Store authentication token
         setAuthToken(response.payload.token);
         localStorage.setItem("accessToken", response.payload.token);
         localStorage.setItem("refreshToken", response.payload.refreshToken);
-        
+
         // Store token expiration time if available
         if (response.payload.expiresIn || response.payload.expires_in) {
-          const expiresIn = response.payload.expiresIn || response.payload.expires_in;
-          const expirationTime = Date.now() + (expiresIn * 1000);
+          const expiresIn =
+            response.payload.expiresIn || response.payload.expires_in;
+          const expirationTime = Date.now() + expiresIn * 1000;
           localStorage.setItem("tokenExpiration", expirationTime.toString());
-          
+
           // If we have setExpiresOn function, use it too
           if (setExpiresOn) {
             setExpiresOn(expirationTime.toString());
           }
         }
-        
+
         setAuth(response.payload.token);
-  
+
         // Fetch user details
         const userInfoResponse = await getUserInfo();
-        
+
         console.log("User info response:", userInfoResponse); // Debug log
-        
+
         // Check if user details exist in the response
         if (userInfoResponse?.payload?.details) {
           const userDetails = userInfoResponse.payload.details;
-          
+
           // For debugging, let's log what we received
           console.log("User details:", userDetails);
-          
+
           // Set default role if not present
           // Assuming role hierarchy: SuperAdmin > Admin > User
           const userData = {
             ...userDetails,
-            roleName: userDetails.roleName || (loginMode === "vendor" ? "Vendor" : "ManagingDirector"),
-            roleId: userDetails.roleId || (loginMode === "vendor" ? "Vendor" : "1"),
-            roleCode: userDetails.roleCode || (loginMode === "vendor" ? "VENDOR" : "MD"),
+            roleName:
+              userDetails.roleName ||
+              (loginMode === "vendor" ? "Vendor" : "ManagingDirector"),
+            roleId:
+              userDetails.roleId || (loginMode === "vendor" ? "Vendor" : "1"),
+            roleCode:
+              userDetails.roleCode ||
+              (loginMode === "vendor" ? "VENDOR" : "MD"),
             token: response.payload.token,
             isVendor: loginMode === "vendor", // Flag to identify vendor users
           };
           localStorage.setItem("userData", JSON.stringify(userData));
-          
+
           console.log("Processed user data:", userData); // Debug log
-  
+
           // Store user data and role information
           localStorage.setItem("userData", JSON.stringify(userData));
           localStorage.setItem("userRole", userData.roleName);
           localStorage.setItem("userRoleId", userData.roleId);
           localStorage.setItem("userRoleCode", userData.roleCode);
-          
+
           // For vendor users, set a special identifier
           if (loginMode === "vendor") {
             localStorage.setItem("userType", "vendor");
           } else {
             localStorage.removeItem("userType"); // Remove if exists from previous login
           }
-  
+
           // Call onLoginSuccess callback
           if (onLoginSuccess) {
             onLoginSuccess(userData);
@@ -158,27 +164,33 @@ export default function Login({ onLoginSuccess }) {
           // If details are not in the expected structure, try to use the payload directly
           const userData = {
             ...userInfoResponse.payload,
-            roleName: userInfoResponse.payload.roleName || userInfoResponse.payload.role_name || 
-                     (loginMode === "vendor" ? "Vendor" : "ManagingDirector"),
-            roleId: userInfoResponse.payload.roleId || userInfoResponse.payload.role_id || 
-                  (loginMode === "vendor" ? "Vendor" : "1"),
-            roleCode: userInfoResponse.payload.roleCode || (loginMode === "vendor" ? "VENDOR" : "MD"),
+            roleName:
+              userInfoResponse.payload.roleName ||
+              userInfoResponse.payload.role_name ||
+              (loginMode === "vendor" ? "Vendor" : "ManagingDirector"),
+            roleId:
+              userInfoResponse.payload.roleId ||
+              userInfoResponse.payload.role_id ||
+              (loginMode === "vendor" ? "Vendor" : "1"),
+            roleCode:
+              userInfoResponse.payload.roleCode ||
+              (loginMode === "vendor" ? "VENDOR" : "MD"),
             isVendor: loginMode === "vendor",
           };
-          
+
           console.log("Using payload as user data:", userData); // Debug log
-          
+
           localStorage.setItem("userData", JSON.stringify(userData));
           localStorage.setItem("userRole", userData.roleName);
           localStorage.setItem("userRoleId", userData.roleId);
-           localStorage.setItem("userRoleCode", userData.roleCode);
-          
+          localStorage.setItem("userRoleCode", userData.roleCode);
+
           if (loginMode === "vendor") {
             localStorage.setItem("userType", "vendor");
           } else {
             localStorage.removeItem("userType");
           }
-          
+
           if (onLoginSuccess) {
             onLoginSuccess(userData);
           }
@@ -186,7 +198,7 @@ export default function Login({ onLoginSuccess }) {
           // If we have a token but no user details, create a default user
           // This is a fallback to prevent login failures
           console.log("No user details found, using default values"); // Debug log
-          
+
           const defaultUserData = {
             username: formData.username,
             email: formData.username, // Store email too
@@ -195,39 +207,42 @@ export default function Login({ onLoginSuccess }) {
             roleCode: loginMode === "vendor" ? "VENDOR" : "MD",
             isVendor: loginMode === "vendor",
           };
-          
+
           localStorage.setItem("userData", JSON.stringify(defaultUserData));
           localStorage.setItem("userRole", defaultUserData.roleName);
           localStorage.setItem("userRoleId", defaultUserData.roleId);
-           localStorage.setItem("userRoleCode", defaultUserData.roleCode);
-          
+          localStorage.setItem("userRoleCode", defaultUserData.roleCode);
+
           if (loginMode === "vendor") {
             localStorage.setItem("userType", "vendor");
           } else {
             localStorage.removeItem("userType");
           }
-          
+
           if (onLoginSuccess) {
             onLoginSuccess(defaultUserData);
           }
-          
+
           // Show a warning that we're using default values
-          dispatch(showToast({ 
-            message: "Logged in with default permissions. Some features may be limited.", 
-            variant: "warning" 
-          }));
+          dispatch(
+            showToast({
+              message:
+                "Logged in with default permissions. Some features may be limited.",
+              variant: "warning",
+            })
+          );
         }
       } else {
         throw new Error(response?.message || t("login.error.invalid"));
       }
-   } catch (error) {
-    console.error("Login Error:", error);
-    dispatch(showToast({ message: error.message, variant: "danger" }));
-  } finally {
-    setInProgress(false);
-  }
+    } catch (error) {
+      console.error("Login Error:", error);
+      dispatch(showToast({ message: error.message, variant: "danger" }));
+    } finally {
+      setInProgress(false);
+    }
   };
-  
+
   // Check if already authenticated on component mount
   useEffect(() => {
     // We're intentionally not doing anything here now
@@ -264,8 +279,7 @@ export default function Login({ onLoginSuccess }) {
                     src={PRODUCT_LOGO}
                     alt="Agent Board Icon"
                   />
-                  
-                  
+
                   <div className="user-row">
                     <label>{t("Email Id")} </label>
                     <input
@@ -279,7 +293,10 @@ export default function Login({ onLoginSuccess }) {
                       <p className="errorMsg">{t("login.error.email")}</p>
                     )}
                   </div>
-                  <div className="user-row mb-0" style={{ position: "relative" }}>
+                  <div
+                    className="user-row mb-0"
+                    style={{ position: "relative" }}
+                  >
                     <label>{t("login.label.password")}</label>
                     <input
                       type={showPassword ? "text" : "password"}
@@ -291,7 +308,7 @@ export default function Login({ onLoginSuccess }) {
                         }))
                       }
                       onKeyDown={handleKeyDown}
-                      style={{ paddingRight: "40px" , marginBottom :'10px'}}
+                      style={{ paddingRight: "40px", marginBottom: "10px" }}
                       placeholder="Enter your password"
                     />
                     <span
@@ -329,20 +346,14 @@ export default function Login({ onLoginSuccess }) {
                   ) : (
                     <span className="d-flex text-white fs-14-600 align-items-center justify-content-center">
                       {loginMode === "employee" ? (
-                        <>
-                         
-                          {t("login.with_eurolandID")}
-                        </>
+                        <>{t("login.with_eurolandID")}</>
                       ) : (
-                        <>
-                          
-                          Login
-                        </>
+                        <>Login</>
                       )}
                     </span>
                   )}
                 </button>
-                
+
                 {/* Toggle button to switch between employee and vendor login with icons */}
                 <button
                   className="h48px login-form-container-button-common  btn-switch-role btn-toggle-login my-2"
@@ -351,8 +362,6 @@ export default function Login({ onLoginSuccess }) {
                 >
                   {loginMode === "employee" ? (
                     <span className="d-flex align-items-center justify-content-center">
-                      
-
                       Switch to Vendor Login
                     </span>
                   ) : (

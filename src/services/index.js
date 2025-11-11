@@ -4,6 +4,8 @@ import customerAPI from "./customerAPI";
 import updatesAPI from "./updatesAPI";
 import { API } from "../constant/service";
 import { objectToQueryString } from "../utils/common";
+import materialAPI from "./materialsAPI";
+
 
 /**
  *
@@ -559,3 +561,6 @@ export const getAgencyIssueType = (params) =>
   api.GET(API.GET_AGENCY_ISSUETYPE, params);
 export const submitContactUsForm = (params) =>
   api.POST(API.SUBMIT_CONTACT_US_FORM, params);
+
+export * from "./inventoryAPI";
+export { default as materialAPI } from "./materialsAPI";

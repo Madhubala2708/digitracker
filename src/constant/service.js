@@ -261,10 +261,10 @@ GET_BOQCODE : '/api/Project/getBoqDetailsBy-BOQCode',
   
   /** AGENCY - CONTACT US */
   GET_AGENCY_ISSUETYPE: 'api/Agency/getagencyissuetype',
-  SUBMIT_CONTACT_US_FORM: 'api/AgencyBoard/add-agencycontactusdetails'
+  SUBMIT_CONTACT_US_FORM: 'api/AgencyBoard/add-agencycontactusdetails',
 
+  /**INVENTORY & MATERIALS - SITES */
+  GET_APPROVED_PROJECTS_BY_EMPLOYEE: "/api/Project/get-approved-projects-by-employee",
 
-  
- 
 };
 

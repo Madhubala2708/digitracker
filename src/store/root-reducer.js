@@ -16,6 +16,9 @@ import purchaseOrderReducer from "./slice/vendorflow/po-vendorslice";
 import reportReducer from './slice/report/reportslice';
 import vendorReducer from  "./slice/Vendor/getvendorslice";
 import ceoReportReducer from './slice/report/ceoreportslice';
+import inventoryReducer from "./slice/inventorySlice";
+import materialsReducer from "./slice/Aqs/materialsSlice";
+
 export const rootReducer = combineReducers({
   auth: authSlice.reducer,
   toast: toastSlice.reducer,
@@ -35,4 +38,8 @@ export const rootReducer = combineReducers({
   purchaseOrder: purchaseOrderReducer,
   report: reportReducer,
   ceoReport: ceoReportReducer,
+
+  inventory: inventoryReducer,
+  materials: materialsReducer,
+
 });

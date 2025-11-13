@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
-import StockPopup from "./StockPopup";import { useDispatch, useSelector } from "react-redux";
+import StockPopup from "./StockPopup";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchProjectsByEmployee } from "../../../store/slice/inventorySlice";
 
 const AqsInventory = () => {
@@ -93,7 +94,9 @@ const AqsInventory = () => {
         >
           + Add Stock
         </button>
-      </div>      <table className="tbl table table-bordered">
+      </div>
+
+      <table className="tbl table table-bordered">
         <thead>
           <tr>
             <th>GRN</th>
@@ -180,49 +183,11 @@ const AqsInventory = () => {
         </tbody>
       </table>
 
-      <table className="tbl table table-bordered">
-        <thead>
-          <tr>
-            <th>Issue No.</th>
-            <th>Item Name</th>
-            <th>Requested By</th>
-            <th>Quantity</th>
-            <th>Issued To</th>
-            <th>Date Issued</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {stockOutward.map((stock, index) => (
-            <tr key={index}>
-              <td>{stock.issueNo}</td>
-              <td>{stock.item}</td>
-              <td>{stock.requestedBy}</td>
-              <td>{stock.quantity}</td>
-              <td>{stock.issuedTo}</td>
-              <td>{stock.date}</td>
-              <td className={`status ${stock.status.toLowerCase()}`}>
-                {stock.status}
-              </td>
-              <td>
-                <button
-                  className="btn btn-link p-0 text-primary"
-                  onClick={() => openPopup("View Stock Outward", stock)}
-                >
-                  View
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
       {/* Popup */}
       {showPopup && (
         <StockPopup
           title={popupTitle}
-          data={selectedStock} // 👈 Pass record data here
+          data={selectedStock}
           onClose={closePopup}
           onSubmit={handleAddStock}
         />

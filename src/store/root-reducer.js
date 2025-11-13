@@ -18,6 +18,8 @@ import vendorReducer from  "./slice/Vendor/getvendorslice";
 import ceoReportReducer from './slice/report/ceoreportslice';
 import inventoryReducer from "./slice/inventorySlice";
 import materialsReducer from "./slice/Aqs/materialsSlice";
+import engineerMaterialsReducer from "./slice/Engineer/engineerMaterialsSlice";
+import aqsBoqReducer from "./slice/Aqs/aqsBoqSlice";
 
 export const rootReducer = combineReducers({
   auth: authSlice.reducer,
@@ -41,5 +43,6 @@ export const rootReducer = combineReducers({
 
   inventory: inventoryReducer,
   materials: materialsReducer,
-
+ engineerMaterials: engineerMaterialsReducer, 
+ aqsBoq: aqsBoqReducer,
 });

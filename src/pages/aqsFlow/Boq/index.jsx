@@ -1,24 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchBoqProjects } from "../../../store/slice/Aqs/aqsBoqSlice";
 
 const boqData = [
-  { id: "BOQ00024", title: "BOQ’s for resource", approvedBy: "HR", roleClass: "badge-red", content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. " },
-  { id: "BOQ00025", title: "BOQ’s for materials", approvedBy: "Quantity Surveyor", roleClass: "badge-blue", content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. ." },
-  { id: "BOQ00026", title: "BOQ’s for resource", approvedBy: "HR", roleClass: "badge-red", content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. ." },
-  { id: "BOQ00027", title: "BOQ’s for materials", approvedBy: "Quantity Surveyor", roleClass: "badge-blue", content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. " },
-  { id: "BOQ00028", title: "BOQ’s for resource", approvedBy: "HR", roleClass: "badge-red", content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. " },
-  { id: "BOQ00029", title: "BOQ’s for materials", approvedBy: "Quantity Surveyor", roleClass: "badge-blue", content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. " },
+  { id: "BOQ00024", title: "BOQ’s for resource", approvedBy: "HR", roleClass: "badge-red", content: "Lorem ipsum dolor sit amet..." },
+  { id: "BOQ00025", title: "BOQ’s for materials", approvedBy: "Quantity Surveyor", roleClass: "badge-blue", content: "Lorem ipsum dolor sit amet..." },
+  // ... (keep your full static data)
 ];
 
 const BOQCard = ({ boq, onCardClick }) => (
-  <div
-    className="boq-card"
-    onClick={onCardClick}
-    style={{ cursor: 'pointer' }}
-  >
+  <div className="boq-card" onClick={onCardClick} style={{ cursor: "pointer" }}>
     <div className="boq-meta">
       <p>ID - {boq.id}</p>
       <p className="date">02:54 pm • 14/05/2024</p>
@@ -34,25 +29,40 @@ const BOQCard = ({ boq, onCardClick }) => (
 );
 
 const BOQDashboard = () => {
-  const [selectedSite, setSelectedSite] = useState("MRM Site");
+  const [selectedSite, setSelectedSite] = useState("");
   const [selectedDate, setSelectedDate] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const sites = ["MRM Site", "ABC Site", "XYZ Site"];
+  const { projects, loading, error } = useSelector((state) => state.aqsBoq);
+
+  // ✅ Fetch API data on mount
+  useEffect(() => {
+    dispatch(fetchBoqProjects());
+  }, [dispatch]);
 
   return (
     <div className="page-boq container">
       {/* Navbar */}
       <div className="navbar">
-        <select value={selectedSite} onChange={(e) => setSelectedSite(e.target.value)}>
-          {sites.map((site, index) => (
-            <option key={index} value={site}>
-              {site}
-            </option>
-          ))}
+        <select
+          value={selectedSite}
+          onChange={(e) => setSelectedSite(e.target.value)}
+        >
+          <option value="">Select Project</option>
+          {loading && <option>Loading...</option>}
+          {!loading && projects?.length > 0 ? (
+            projects.map((p) => (
+              <option key={p.projectId} value={p.projectId}>
+                {p.projectName}
+              </option>
+            ))
+          ) : (
+            !loading && <option disabled>No Projects Available</option>
+          )}
         </select>
+
         <div className="actions">
           <button className="sort-button me-2">
             <svg
@@ -68,10 +78,9 @@ const BOQDashboard = () => {
             <span className="ms-1">Sort By</span>
           </button>
 
-
           <button
             className="create-boq-btn"
-            onClick={() => navigate('/aqs/aqsboqcreate')}
+            onClick={() => navigate("/aqs/aqsboqcreate")}
           >
             + Create BOQ
           </button>
@@ -86,7 +95,6 @@ const BOQDashboard = () => {
           <FaRegCalendarAlt className="calendar-icon" />
         </span>
 
-        {/* DatePicker inside BOQ Card */}
         {isOpen && (
           <DatePicker
             selected={selectedDate}
@@ -106,7 +114,7 @@ const BOQDashboard = () => {
           <BOQCard
             key={index}
             boq={boq}
-            onCardClick={() => navigate('/aqs/aqsboqopen')}
+            onCardClick={() => navigate("/aqs/aqsboqopen")}
           />
         ))}
       </div>

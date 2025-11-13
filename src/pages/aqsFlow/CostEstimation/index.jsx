@@ -1,13 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCostEstimationProjects } from "../../../store/slice/Aqs/costEstimationSlice";
 
 const AqsCostEstimation = () => {
-  const [selectedSite, setSelectedSite] = useState("MRM Site");
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [selectedSite, setSelectedSite] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
 
-  const sites = ["MRM Site", "Second Site", "Third Site"];
+  // Redux data
+  const { projects, loading } = useSelector((state) => state.costEstimation);
+
+  // Fetch sites (projects) on load
+  useEffect(() => {
+    dispatch(fetchCostEstimationProjects());
+  }, []);
 
   const [blocks, setBlocks] = useState([
     {
@@ -17,28 +25,7 @@ const AqsCostEstimation = () => {
       date: "14/05/2024",
       status: "Inactive",
       approvedBy: "Quality Surveyor",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
-    },
-     {
-      id: "CL00024",
-      name: "A Block (CE)",
-      time: "02:54 pm",
-      date: "14/05/2024",
-      status: "Inactive",
-      approvedBy: "Quality Surveyor",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
-    },
-     {
-      id: "CL00024",
-      name: "A Block (CE)",
-      time: "02:54 pm",
-      date: "14/05/2024",
-      status: "Inactive",
-      approvedBy: "Quality Surveyor",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
+      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
     },
     {
       id: "CL00024",
@@ -47,22 +34,19 @@ const AqsCostEstimation = () => {
       date: "14/05/2024",
       status: "Inactive",
       approvedBy: "Quality Surveyor",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
+      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
     },
   ]);
 
-  // ✅ Fixed useEffect: prevent duplicates when React StrictMode triggers double render
   useEffect(() => {
     if (location.state?.newData) {
       const newData = location.state.newData;
 
       setBlocks((prev) => {
-        // prevent adding duplicate
-        const alreadyExists = prev.some(
+        const exists = prev.some(
           (b) => b.name === `${newData.projectName} (${newData.title})`
         );
-        if (alreadyExists) return prev;
+        if (exists) return prev;
 
         const newBlock = {
           id: "CL00025",
@@ -92,11 +76,16 @@ const AqsCostEstimation = () => {
               value={selectedSite}
               onChange={(e) => setSelectedSite(e.target.value)}
             >
-              {sites.map((site, index) => (
-                <option key={index} value={site}>
-                  {site}
-                </option>
-              ))}
+              <option value="">Select Site</option>
+
+              {loading && <option>Loading...</option>}
+
+              {!loading &&
+                projects?.map((site) => (
+                  <option key={site.projectId} value={site.projectId}>
+                    {site.projectName}
+                  </option>
+                ))}
             </select>
           </div>
         </div>
@@ -125,7 +114,7 @@ const AqsCostEstimation = () => {
         </div>
       </div>
 
-      <div className="row g-3 ">
+      <div className="row g-3">
         {blocks.map((block, index) => (
           <div
             className="col-md-6"
@@ -143,20 +132,18 @@ const AqsCostEstimation = () => {
 
               <div className="card-title-row justify-content-start mt-2">
                 <h5 className="block-name">{block.name}</h5>
-                {block.status && (
-                  <span
-                    className="inactive-badge"
-                    style={{
-                      backgroundColor: "#ccc",
-                      padding: "2px 6px",
-                      borderRadius: "4px",
-                      fontSize: "12px",
-                      marginLeft: "8px",
-                    }}
-                  >
-                    {block.status}
-                  </span>
-                )}
+                <span
+                  className="inactive-badge"
+                  style={{
+                    backgroundColor: "#ccc",
+                    padding: "2px 6px",
+                    borderRadius: "4px",
+                    fontSize: "12px",
+                    marginLeft: "8px",
+                  }}
+                >
+                  {block.status}
+                </span>
               </div>
 
               <div className="approval-row mt-2">

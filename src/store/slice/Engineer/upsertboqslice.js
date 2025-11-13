@@ -18,7 +18,7 @@ const boqSlice = createSlice({
       state.error = null;
       state.boqId = null;
       state.boqData = null;
-      state.employeeRoles = null; // ✅ Reset role data
+      state.employeeRoles = null; 
     },
   },
   extraReducers: (builder) => {
@@ -51,7 +51,7 @@ const boqSlice = createSlice({
         state.error = action.payload;
       })
 
-      // ✅ getEmployeeRoles handlers
+      // getEmployeeRoles handlers
       .addCase(getEmployeeRoles.pending, (state) => {
         state.loading = true;
         state.error = null;

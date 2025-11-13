@@ -2,36 +2,62 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
+
+// Existing reports API
 import { getReports } from "../../../store/actions/report/reportcreateaction";
+
+// NEW — API sites slice
+import { fetchReportSites } from "../../../store/slice/Engineer/reportSlice";
 
 function Report() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  // ⬇ existing report data
   const {
     data: reportDataRaw = [],
     loading,
     error,
   } = useSelector((state) => state.report);
 
-  // Defensive: always use array
-  const reportData = Array.isArray(reportDataRaw) ? reportDataRaw : [];
+  // ⬇ NEW — sites state
+  const {
+    sites = [],
+    loading: siteLoading,
+    error: siteError,
+  } = useSelector((state) => state.reportSites);
 
-  // Sort reports by reportCode number (e.g., RP#01 -> 1)
-const sortedReports = [...reportData].sort((a, b) => {
-  const numA = parseInt(a.reportCode?.replace(/\D/g, "")) || 0;
-  const numB = parseInt(b.reportCode?.replace(/\D/g, "")) || 0;
-  return numB - numA; // Latest (higher number) first
-});
-
-
-  const [selectedSite, setSelectedSite] = useState("MRM Site");
-  const sites = ["MRM Site", "ABC Site", "XYZ Site"];
-
+  // Fetch sites + reports on load
   useEffect(() => {
+    dispatch(fetchReportSites());
     dispatch(getReports());
   }, [dispatch]);
 
+  // Selected Site
+  const [selectedSite, setSelectedSite] = useState("");
+
+  const reportData = Array.isArray(reportDataRaw) ? reportDataRaw : [];
+
+  // Sorting Reports
+  const sortedReports = [...reportData].sort((a, b) => {
+    const numA = parseInt(a.reportCode?.replace(/\D/g, "")) || 0;
+    const numB = parseInt(b.reportCode?.replace(/\D/g, "")) || 0;
+    return numB - numA;
+  });
+
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+  const totalPages = Math.ceil(sortedReports.length / itemsPerPage);
+  const indexOfLast = currentPage * itemsPerPage;
+  const indexOfFirst = indexOfLast - itemsPerPage;
+  const currentReports = sortedReports.slice(indexOfFirst, indexOfLast);
+
+  const handlePageChange = (pageNum) => {
+    setCurrentPage(pageNum);
+  };
+
+  // Helper — initials for reporter
   const getInitials = (name) => {
     if (!name) return "";
     const parts = name.trim().split(" ");
@@ -40,6 +66,7 @@ const sortedReports = [...reportData].sort((a, b) => {
     return first + second;
   };
 
+  // Random color
   const getRandomColor = () => {
     const colors = [
       "#FF5733", "#33B5E5", "#8E44AD", "#16A085",
@@ -49,36 +76,29 @@ const sortedReports = [...reportData].sort((a, b) => {
     return colors[Math.floor(Math.random() * colors.length)];
   };
 
-  // Pagination logic
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
-
-const totalPages = Math.ceil(sortedReports.length / itemsPerPage);
-const indexOfLast = currentPage * itemsPerPage;
-const indexOfFirst = indexOfLast - itemsPerPage;
-const currentReports = sortedReports.slice(indexOfFirst, indexOfLast);
-
-
-  const handlePageChange = (pageNum) => {
-    setCurrentPage(pageNum);
-  };
-
   return (
     <div className="reports-container">
       {/* Header */}
       <div className="reports-header">
+        {/* ▼ NEW — Sites Dropdown from API */}
         <select
           className="form-select select-custom"
           style={{ backgroundColor: "#E8E8E8" }}
           value={selectedSite}
           onChange={(e) => setSelectedSite(e.target.value)}
         >
-          {sites.map((site, index) => (
-            <option key={index} value={site}>
-              {site}
+          <option value="">Select Site</option>
+
+          {siteLoading && <option>Loading...</option>}
+          {siteError && <option>Error loading sites</option>}
+
+          {sites?.map((site) => (
+            <option key={site.projectId} value={site.projectId}>
+              {site.projectName}
             </option>
           ))}
         </select>
+
         <button
           className="create-btn"
           onClick={() => navigate("/admin/engineerreportcreate")}
@@ -136,7 +156,8 @@ const currentReports = sortedReports.slice(indexOfFirst, indexOfLast);
                         <span>{report.reportedBy}</span>
                       </div>
                     </td>
-                    <td className="text-center"
+                    <td
+                      className="text-center"
                       onClick={() =>
                         navigate(`/admin/engineerreportview/${report.reportId}`)
                       }
@@ -151,7 +172,10 @@ const currentReports = sortedReports.slice(indexOfFirst, indexOfLast);
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="pagination-controls" style={{ marginTop: "1rem", textAlign: "center" }}>
+            <div
+              className="pagination-controls"
+              style={{ marginTop: "1rem", textAlign: "center" }}
+            >
               <button
                 onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
                 disabled={currentPage === 1}
@@ -161,12 +185,12 @@ const currentReports = sortedReports.slice(indexOfFirst, indexOfLast);
                   backgroundColor: "#eee",
                   border: "none",
                   borderRadius: "4px",
-                  cursor: currentPage === 1 ? "not-allowed" : "pointer",
                 }}
               >
                 Previous
               </button>
 
+              {/* Page 1 */}
               <button
                 onClick={() => handlePageChange(1)}
                 style={{
@@ -176,7 +200,6 @@ const currentReports = sortedReports.slice(indexOfFirst, indexOfLast);
                   color: currentPage === 1 ? "#fff" : "#000",
                   border: "none",
                   borderRadius: "4px",
-                  cursor: "pointer",
                 }}
               >
                 1
@@ -184,6 +207,7 @@ const currentReports = sortedReports.slice(indexOfFirst, indexOfLast);
 
               {currentPage > 4 && <span style={{ margin: "0 5px" }}>...</span>}
 
+              {/* Middle pages */}
               {Array.from({ length: totalPages }, (_, i) => i + 1)
                 .filter(
                   (page) =>
@@ -209,19 +233,22 @@ const currentReports = sortedReports.slice(indexOfFirst, indexOfLast);
                   </button>
                 ))}
 
-              {currentPage < totalPages - 3 && <span style={{ margin: "0 5px" }}>...</span>}
+              {currentPage < totalPages - 3 && (
+                <span style={{ margin: "0 5px" }}>...</span>
+              )}
 
+              {/* Last page */}
               {totalPages > 1 && (
                 <button
                   onClick={() => handlePageChange(totalPages)}
                   style={{
                     margin: "0 5px",
                     padding: "6px 12px",
-                    backgroundColor: currentPage === totalPages ? "#0456D0" : "#eee",
+                    backgroundColor:
+                      currentPage === totalPages ? "#0456D0" : "#eee",
                     color: currentPage === totalPages ? "#fff" : "#000",
                     border: "none",
                     borderRadius: "4px",
-                    cursor: "pointer",
                   }}
                 >
                   {totalPages}
@@ -229,7 +256,9 @@ const currentReports = sortedReports.slice(indexOfFirst, indexOfLast);
               )}
 
               <button
-                onClick={() => currentPage < totalPages && setCurrentPage(currentPage + 1)}
+                onClick={() =>
+                  currentPage < totalPages && setCurrentPage(currentPage + 1)
+                }
                 disabled={currentPage === totalPages}
                 style={{
                   margin: "0 5px",
@@ -237,7 +266,6 @@ const currentReports = sortedReports.slice(indexOfFirst, indexOfLast);
                   backgroundColor: "#eee",
                   border: "none",
                   borderRadius: "4px",
-                  cursor: currentPage === totalPages ? "not-allowed" : "pointer",
                 }}
               >
                 Next
@@ -247,9 +275,7 @@ const currentReports = sortedReports.slice(indexOfFirst, indexOfLast);
         </>
       )}
 
-      {!loading && reportData.length === 0 && (
-        <p>No reports found.</p>
-      )}
+      {!loading && reportData.length === 0 && <p>No reports found.</p>}
     </div>
   );
 }

@@ -7,9 +7,9 @@ export const fetchProjectsByEmployee = createAsyncThunk(
     try {
       const response = await getApprovedProjectsByEmployee();
 
-      console.log("API Response:", response.data); // should show the array
+      console.log("API Response:", response.data); 
 
-      // ✅ return array directly
+      //return array directly
       return response.data || [];
     } catch (error) {
       console.error("API ERROR:", error);
@@ -32,7 +32,7 @@ const inventorySlice = createSlice({
       })
       .addCase(fetchProjectsByEmployee.fulfilled, (state, action) => {
         state.loading = false;
-        state.projects = action.payload; // ✅ store array directly
+        state.projects = action.payload; //store array directly
       })
       .addCase(fetchProjectsByEmployee.rejected, (state) => {
         state.loading = false;

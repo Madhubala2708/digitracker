@@ -4,7 +4,7 @@ import customerAPI from "./customerAPI";
 import updatesAPI from "./updatesAPI";
 import { API } from "../constant/service";
 import { objectToQueryString } from "../utils/common";
-import materialAPI from "./materialsAPI";
+import { engineerMaterialsAPI } from "./engineerMaterialsAPI";
 
 
 /**
@@ -564,3 +564,5 @@ export const submitContactUsForm = (params) =>
 
 export * from "./inventoryAPI";
 export { default as materialAPI } from "./materialsAPI";
+export * as engineerMaterialsAPI from "./engineerMaterialsAPI";
+export * from "./aqsBoqAPI";

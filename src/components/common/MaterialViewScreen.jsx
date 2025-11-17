@@ -10,12 +10,27 @@ import { getBoqDetails } from "../../services";
 import { toast } from "react-toastify";
 import * as XLSX from "xlsx"; // Import the xlsx library
 import MultipleSelect from "../DropDown/MultipleSelect";
+import { useDispatch } from "react-redux";
 
 const MaterialViewScreen = () => {
-  const navigate = useNavigate();
-  const route = useParams();
+  const { id: paramId } = useParams(); // route param (if route uses :id)
   const location = useLocation();
-  const [boqDetails, setboqDetails] = useState("");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  // try multiple sources for boqId
+  const search = new URLSearchParams(location.search);
+  const queryBoqId = search.get("boqId");
+  const stateBoqId =
+    location.state?.boqId ??
+    location.state?.material?.parent?.boqId ??
+    location.state?.material?.boqId;
+
+  const boqId = paramId || queryBoqId || stateBoqId;
+
+  const [boqDetails, setboqDetails] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [fetchError, setFetchError] = useState(null);
   const { ticket } = location.state || {};
   const [boqApprovers, setBoqApprovers] = useState([]);
 
@@ -138,13 +153,6 @@ const MaterialViewScreen = () => {
     return first + second;
   };
 
-  useEffect(() => {
-    if (route?.boqId) {
-      getBOQDetails(route.boqId);
-    }
-    console.log("route_route", route);
-  }, [route]);
-
   console.log("boqDetails", boqDetails);
   console.log("location", location);
 
@@ -156,21 +164,59 @@ const MaterialViewScreen = () => {
       return;
     }
 
-    if (response?.data) {
-      console.log("response.data", response.data);
-      setboqDetails(response.data);
-
-      // ✅ Extract approvers and map for display
-      const approversMapped = (response.data.approvers || []).map((emp) => ({
-        ...emp,
-        label: emp.roleName,
-        value: emp.roleName,
-      }));
-      setBoqApprovers(approversMapped); // <-- This line adds approver data
+    // normalize backend shapes: response.data.data || response.data
+    const data = response?.data?.data ?? response?.data ?? null;
+    if (!data) {
+      toast.warning("No BOQ data returned from server");
+      return;
     }
+    console.log("response.data (normalized)", data);
+    setboqDetails(data);
 
+    // Extract approvers and map for display
+    const approversMapped = (data.approvers || []).map((emp) => ({
+      ...emp,
+      label: emp.roleName,
+      value: emp.roleName,
+    }));
+    setBoqApprovers(approversMapped);
     console.log("response:", response);
   };
+
+  // NEW: fetch BOQ details when component mounts or boqId changes.
+  // Also hydrate UI quickly from location.state.material if passed.
+  useEffect(() => {
+    // quick hydrate from navigation state to avoid empty screen
+    const navMaterial = location.state?.material;
+    if (navMaterial) {
+      if (navMaterial.parent) setboqDetails(navMaterial.parent);
+      else setboqDetails(navMaterial);
+    }
+
+    if (!boqId) {
+      toast.error("BOQ ID is required to open this view.");
+      setTimeout(() => navigate("/admin/engineermaterial"), 700);
+      return;
+    }
+
+    let mounted = true;
+    (async () => {
+      setFetchError(null);
+      setLoading(true);
+      try {
+        await getBOQDetails(boqId);
+      } catch (err) {
+        console.error("getBOQDetails error:", err);
+        if (mounted) setFetchError(err);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
+
+    return () => {
+      mounted = false;
+    };
+  }, [boqId, location.state, navigate]);
 
   const isValidforApproval = () => {
     const path = location.pathname.split("/").slice(1);
@@ -195,6 +241,14 @@ const MaterialViewScreen = () => {
       toast.warning("No BOQ details available to convert");
     }
   };
+
+  // render guards
+  if (loading) {
+    return <div className="text-center mt-5">Loading BOQ...</div>;
+  }
+  if (!boqDetails && !loading) {
+    return <div className="text-center mt-5">No BOQ data to display.</div>;
+  }
 
   return (
     <main className="page-engineer-dashboard d-flex">
@@ -369,7 +423,7 @@ const MaterialViewScreen = () => {
                     const isRole1 = userRoleId === 17;
 
                     return (
-                      isValidforApproval && (
++                      isValidforApproval() && (
                         <button
                           className={`border-0 bg-primary d-flex fs-16-500 justify-content-center text-white d-flex align-items-center w180 border-radius-4 h48px text-white ${
                             isRole1 ? "d-block" : "d-none"

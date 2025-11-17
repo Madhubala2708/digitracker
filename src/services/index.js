@@ -563,10 +563,11 @@ export const submitContactUsForm = (params) =>
   api.POST(API.SUBMIT_CONTACT_US_FORM, params);
 
 export * from "./inventoryAPI";
-export { default as materialAPI } from "./materialsAPI";
+export { default as materialAPI } from "./aqsmaterialsAPI";
 export * as engineerMaterialsAPI from "./engineerMaterialsAPI";
 export * from "./aqsBoqAPI";
 export { costEstimationAPI } from "./costEstimationAPI";
 export { vendorAPI } from "./vendorAPI";
 export { reportAPI } from "./reportAPI";
+export { default as aqsmaterialsAPI, getMaterialProjects, getMaterialStatusByProject } from "./aqsmaterialsAPI";
 

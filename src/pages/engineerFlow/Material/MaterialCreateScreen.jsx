@@ -180,15 +180,14 @@ const MaterialCreateScreen = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Validate form
+    
     if (!validateForm()) {
-      // If validation fails, show appropriate toast messages
       if (validationErrors.title) toast.warn("Please enter a title.");
       if (validationErrors.vendor) toast.warn("Please select a vendor.");
-      if (validationErrors.approver)
-        toast.warn("Please select at least one approver.");
+      if (validationErrors.approver) toast.warn("Please select at least one approver.");
       return;
     }
+
     let empData = JSON.parse(localStorage.getItem("userData"));
 
     if (!selectedVendorId) {
@@ -214,66 +213,107 @@ const MaterialCreateScreen = () => {
       vendorId: parseInt(selectedVendorId),
     };
 
-    // Step 1: Create BOQ
-    const boqResponse = await dispatch(upsertBoq(boqPayload));
+    try {
+      // Step 1: Create BOQ
+      const boqResponse = await dispatch(upsertBoq(boqPayload));
+      console.log("BOQ Response:", boqResponse);
 
-    if (boqResponse?.payload?.success) {
-      toast.success("BOQ created successfully.");
+      if (boqResponse?.payload?.success) {
+        toast.success("BOQ created successfully.");
+        const boqId = boqResponse?.payload?.data?.boqId;
 
-      // Step 2: Create Ticket
-      const ticketResponse = await createTicket({
-        boqId: boqResponse?.payload?.data?.boqId,
-        ticketType: "BOQ_APPROVAL",
-        assignTo: selectedApprover.map((emp) => emp.empId),
-        createdBy: empData?.empId,
-      });
-
-      if (ticketResponse?.data?.success) {
-        toast.success("Ticket created successfully.");
-
-        const ticketId = ticketResponse?.data?.data?.ticketId;
-        const projectName = ticketResponse?.data?.data?.projectName;
-
-        // Step 3: Send Notification with ticketId
+        // ✅ Step 2: Create Ticket with error handling
         try {
-          await createNotify({
-            empId: selectedApprover.map((emp) => emp.empId),
-            notificationType: "Material Requirement(BOQ)",
-            sourceEntityId: ticketId,
-            message: `We would like to update you that we are currently awaiting BOQ on the material requirement submitted for ${projectName} Project. Kindly review and provide BOQ at the earliest to avoid any delays in the process.`,
+          const ticketResponse = await createTicket({
+            boqId: boqId,
+            ticketType: "BOQ_APPROVAL",
+            assignTo: selectedApprover.map((emp) => emp.empId),
+            createdBy: empData?.empId,
           });
-          toast.success("Notification sent.");
-        } catch (error) {
-          console.warn("Notification failed:", error);
+
+          console.log("Ticket Response:", ticketResponse);
+
+          if (ticketResponse?.data?.success) {
+            toast.success("Ticket created successfully.");
+
+            const ticketId = ticketResponse?.data?.data?.ticketId;
+            const projectName = ticketResponse?.data?.data?.projectName;
+
+            // Step 3: Send Notification
+            try {
+              await createNotify({
+                empId: selectedApprover.map((emp) => emp.empId),
+                notificationType: "Material Requirement(BOQ)",
+                sourceEntityId: ticketId,
+                message: `We would like to update you that we are currently awaiting BOQ on the material requirement submitted for ${projectName} Project. Kindly review and provide BOQ at the earliest to avoid any delays in the process.`,
+              });
+              toast.success("Notification sent.");
+            } catch (notifyError) {
+              console.warn("Notification failed:", notifyError);
+              toast.warn("BOQ and Ticket created but notification failed.");
+            }
+
+            // Step 4: Fetch Ticket Details and Navigate
+            try {
+              const ticketDetails = await dispatch(
+                getticketbyidAction(ticketId)
+              ).unwrap();
+
+              setTimeout(() => {
+                navigate(`../ticket/${ticketId}`, {
+                  state: {
+                    ticket: ticketDetails,
+                    from: "kanban",
+                    boqId: boqId,
+                  },
+                });
+              }, 500);
+            } catch (detailsError) {
+              console.error("Failed to fetch ticket details:", detailsError);
+              // Still navigate even if details fetch fails
+              setTimeout(() => {
+                navigate(`../ticket/${ticketId}`, {
+                  state: {
+                    from: "kanban",
+                    boqId: boqId,
+                  },
+                });
+              }, 500);
+            }
+
+            // Reset form
+            setRows([
+              { itemName: "", unit: "", rate: "", quantity: "", total: "" },
+            ]);
+            setTitle("");
+            setSelectedVendorId("");
+            setSelectedApprover([]);
+          } else {
+            // ✅ If ticket creation fails, still show BOQ success
+            toast.error(ticketResponse?.data?.message || "Ticket creation failed.");
+            console.error("Ticket creation error:", ticketResponse?.data);
+            
+            // Navigate to material page after BOQ creation
+            setTimeout(() => {
+              navigate("/admin/engineermaterial");
+            }, 1500);
+          }
+        } catch (ticketError) {
+          // ✅ Catch ticket creation error
+          console.error("Ticket API Error:", ticketError);
+          toast.error("Ticket creation failed. Please contact support.");
+          
+          // Navigate to material page with BOQ created
+          setTimeout(() => {
+            navigate("/admin/engineermaterial");
+          }, 1500);
         }
-
-        // Step 4: Navigate to Ticket Details
-        const ticketDetails = await dispatch(
-          getticketbyidAction(ticketId)
-        ).unwrap();
-
-        setTimeout(() => {
-          navigate(`../ticket/${ticketId}`, {
-            state: {
-              ticket: ticketDetails,
-              from: "kanban",
-              boqId: boqResponse?.payload?.data?.boqId,
-            },
-          });
-        }, 500);
-
-        // Reset form
-        setRows([
-          { itemName: "", unit: "", rate: "", quantity: "", total: "" },
-        ]);
-        setTitle("");
-        setSelectedVendorId("");
-        setSelectedApprover([]);
       } else {
-        toast.error("Ticket creation failed.");
+        toast.error(boqResponse?.payload?.message || "BOQ creation failed.");
       }
-    } else {
-      toast.error("BOQ creation failed.");
+    } catch (boqError) {
+      console.error("BOQ Creation Error:", boqError);
+      toast.error("BOQ creation failed. Please try again.");
     }
   };
 

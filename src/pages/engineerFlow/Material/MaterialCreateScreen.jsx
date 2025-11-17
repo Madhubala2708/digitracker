@@ -178,9 +178,37 @@ const MaterialCreateScreen = () => {
       setValidationErrors({ ...validationErrors, approver: false });
     }
   };
+
+  const getApproverIds = () => {
+    return selectedApprover
+      .map((approver) => {
+        if (!approver) return null;
+        const rawValue =
+          approver.empId ??
+          approver.value ??
+          approver.id ??
+          (typeof approver === "number" || typeof approver === "string"
+            ? approver
+            : null);
+
+        if (rawValue === null || rawValue === undefined) return null;
+
+        if (typeof rawValue === "string") {
+          return rawValue.trim();
+        }
+
+        return rawValue;
+      })
+      .filter(
+        (id) =>
+          id !== null &&
+          id !== undefined &&
+          !(typeof id === "string" && id.length === 0)
+      );
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       if (validationErrors.title) toast.warn("Please enter a title.");
       if (validationErrors.vendor) toast.warn("Please select a vendor.");
@@ -195,11 +223,37 @@ const MaterialCreateScreen = () => {
       return;
     }
 
+    const normalizedVendorId = Number(selectedVendorId);
+    if (Number.isNaN(normalizedVendorId) || normalizedVendorId <= 0) {
+      toast.error("Invalid vendor selected. Please choose a valid vendor.");
+      return;
+    }
+
+    if (!projectId) {
+      toast.error(
+        "Unable to determine project context. Please reopen the material module."
+      );
+      return;
+    }
+
+    const approverIds = getApproverIds();
+    const numericApproverIds = approverIds
+      .map((id) => {
+        if (typeof id === "number") return id;
+        const parsed = Number(id);
+        return Number.isNaN(parsed) ? null : parsed;
+      })
+      .filter((id) => id !== null);
+
+    if (!numericApproverIds.length) {
+      toast.error("Selected approvers are invalid. Please reselect and try again.");
+      return;
+    }
     const boqPayload = {
-      empId: empData?.empId,
+      empId: Number(empData?.empId),
       boqId: 0,
       boqName: title,
-      boqCode: boqId.toString(),
+      boqCode: boqId?.toString?.() || "",
       boqDescription: "",
       boqItems: rows.map((row) => ({
         boqItemsId: 0,
@@ -208,41 +262,69 @@ const MaterialCreateScreen = () => {
         price: parseFloat(row.rate) || 0,
         quantity: parseFloat(row.quantity) || 0,
       })),
-      assignTo: selectedApprover.map((emp) => emp.empId),
+      assignTo: numericApproverIds,
       ticketType: "BOQ_APPROVAL",
-      vendorId: parseInt(selectedVendorId),
+      vendorId: normalizedVendorId,
+      projectId,
     };
 
     try {
       // Step 1: Create BOQ
-      const boqResponse = await dispatch(upsertBoq(boqPayload));
+      const boqResponse = await dispatch(upsertBoq(boqPayload)).unwrap();
       console.log("BOQ Response:", boqResponse);
 
-      if (boqResponse?.payload?.success) {
+      if (boqResponse?.success) {
         toast.success("BOQ created successfully.");
-        const boqId = boqResponse?.payload?.data?.boqId;
+        const createdBoqId =
+          Number(
+            boqResponse?.data?.boqId ??
+            boqResponse?.data?.boqID ??
+            boqResponse?.boqId ??
+            boqResponse?.boqID
+          ) || null;
+
+        if (!createdBoqId) {
+          toast.error(
+            "BOQ created but no BOQ ID was returned. Please contact support."
+          );
+          return;
+        }
 
         // ✅ Step 2: Create Ticket with error handling
         try {
-          const ticketResponse = await createTicket({
-            boqId: boqId,
+          const ticketPayload = {
+            ticketName: title,          // REQUIRED
+            ticketDescription: `BOQ approval request for ${title}`,
+            projectId,
+            vendorId: normalizedVendorId,
+            boqId: Number(createdBoqId),
             ticketType: "BOQ_APPROVAL",
-            assignTo: selectedApprover.map((emp) => emp.empId),
-            createdBy: empData?.empId,
-          });
+            assignTo: numericApproverIds.map(Number).filter(x => !isNaN(x)),
+            createdBy: Number(empData?.empId),
+          };
 
-          console.log("Ticket Response:", ticketResponse);
 
-          if (ticketResponse?.data?.success) {
+          console.group("BOQ Ticket Creation");
+          console.log("Payload:", ticketPayload);
+          console.log("Project ID sent:", projectId);
+          console.log("Approver IDs:", numericApproverIds);
+
+
+
+          const ticketResponse = await createTicket(ticketPayload);
+          console.log("Response:", ticketResponse);
+
+          const ticketApiResponse = ticketResponse?.data;
+          if (ticketResponse?.success && ticketApiResponse?.success) {
             toast.success("Ticket created successfully.");
 
-            const ticketId = ticketResponse?.data?.data?.ticketId;
-            const projectName = ticketResponse?.data?.data?.projectName;
+            const ticketId = ticketApiResponse?.data?.ticketId;
+            const projectName = ticketApiResponse?.data?.projectName;
 
             // Step 3: Send Notification
             try {
               await createNotify({
-                empId: selectedApprover.map((emp) => emp.empId),
+                empId: numericApproverIds,
                 notificationType: "Material Requirement(BOQ)",
                 sourceEntityId: ticketId,
                 message: `We would like to update you that we are currently awaiting BOQ on the material requirement submitted for ${projectName} Project. Kindly review and provide BOQ at the earliest to avoid any delays in the process.`,
@@ -264,7 +346,7 @@ const MaterialCreateScreen = () => {
                   state: {
                     ticket: ticketDetails,
                     from: "kanban",
-                    boqId: boqId,
+                    boqId: createdBoqId,
                   },
                 });
               }, 500);
@@ -275,7 +357,7 @@ const MaterialCreateScreen = () => {
                 navigate(`../ticket/${ticketId}`, {
                   state: {
                     from: "kanban",
-                    boqId: boqId,
+                    boqId: createdBoqId,
                   },
                 });
               }, 500);
@@ -289,24 +371,28 @@ const MaterialCreateScreen = () => {
             setSelectedVendorId("");
             setSelectedApprover([]);
           } else {
-            // ✅ If ticket creation fails, still show BOQ success
-            toast.error(ticketResponse?.data?.message || "Ticket creation failed.");
-            console.error("Ticket creation error:", ticketResponse?.data);
-            
-            // Navigate to material page after BOQ creation
-            setTimeout(() => {
-              navigate("/admin/engineermaterial");
-            }, 1500);
+            const errorMessage =
+              ticketApiResponse?.message ||
+              ticketApiResponse?.data?.message ||
+              ticketResponse?.error?.response?.data?.message ||
+              ticketResponse?.error?.response?.data?.Message ||
+              ticketResponse?.error?.message ||
+              "Ticket creation failed.";
+
+            console.error("Ticket creation failed:", {
+              payload: ticketPayload,
+              response: ticketResponse,
+              apiResponse: ticketApiResponse,
+            });
+
+            toast.error(errorMessage);
+            setTimeout(() => navigate("/admin/engineermaterial"), 1500);
           }
+          console.groupEnd();
         } catch (ticketError) {
-          // ✅ Catch ticket creation error
           console.error("Ticket API Error:", ticketError);
           toast.error("Ticket creation failed. Please contact support.");
-          
-          // Navigate to material page with BOQ created
-          setTimeout(() => {
-            navigate("/admin/engineermaterial");
-          }, 1500);
+          setTimeout(() => navigate("/admin/engineermaterial"), 1500);
         }
       } else {
         toast.error(boqResponse?.payload?.message || "BOQ creation failed.");
@@ -383,7 +469,7 @@ const MaterialCreateScreen = () => {
                       Title <span className="text-danger">*</span>
                     </Form.Label>
                     <Form.Control
-                    className="minh52px"
+                      className="minh52px"
                       type="text"
                       placeholder="BOQ TITLE"
                       value={title}
@@ -405,7 +491,7 @@ const MaterialCreateScreen = () => {
                       onChange={(e) => setSelectedVendorId(e.target.value)}
                     >
                       {" "}
-                      <option>Select Vendor</option>
+                      <option value="">Select Vendor</option>
                       {vendors.map((vendor) => (
                         <option key={vendor.id} value={vendor.id}>
                           {vendor.vendorName}
@@ -515,9 +601,9 @@ const MaterialCreateScreen = () => {
 
                 <Button
                   type="submit"
-                  className="mt-4 me-0 w180 bg-primary border-0 border-radius-4 fs-16-500 text-white d-flex align-items-center justify-content-center">                    
+                  className="mt-4 me-0 w180 bg-primary border-0 border-radius-4 fs-16-500 text-white d-flex align-items-center justify-content-center">
                   <svg className="me-2" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M20.7885 2.50872C20.6693 2.40981 20.5245 2.34679 20.3709 2.32701C20.2173 2.30723 20.0612 2.33149 19.9209 2.39698L3.08105 10.3013V11.8307L10.1541 14.6599L14.6911 21.6399H16.2208L21.0544 3.34216C21.0936 3.19231 21.0895 3.03441 21.0424 2.88685C20.9953 2.73929 20.9072 2.60815 20.7885 2.50872ZM15.2763 20.1811L11.3766 14.1814L17.3776 7.60875L16.4281 6.74183L10.3802 13.3657L4.54841 11.033L19.5532 3.98986L15.2763 20.1811Z" fill="white"/>
+                    <path d="M20.7885 2.50872C20.6693 2.40981 20.5245 2.34679 20.3709 2.32701C20.2173 2.30723 20.0612 2.33149 19.9209 2.39698L3.08105 10.3013V11.8307L10.1541 14.6599L14.6911 21.6399H16.2208L21.0544 3.34216C21.0936 3.19231 21.0895 3.03441 21.0424 2.88685C20.9953 2.73929 20.9072 2.60815 20.7885 2.50872ZM15.2763 20.1811L11.3766 14.1814L17.3776 7.60875L16.4281 6.74183L10.3802 13.3657L4.54841 11.033L19.5532 3.98986L15.2763 20.1811Z" fill="white" />
                   </svg>
 
                   Submit

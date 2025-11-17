@@ -1,8 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { engineerMaterialsAPI } from "../../../services";
 
+<<<<<<< HEAD
 
 // Thunk: Fetch projects for engineer
+=======
+//  Fetch projects for engineer
+>>>>>>> 534e5f5 (api)
 export const fetchEngineerProjects = createAsyncThunk(
   "engineerMaterials/fetchProjects",
   async (_, { rejectWithValue }) => {

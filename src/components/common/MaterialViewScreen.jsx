@@ -1,4 +1,4 @@
-//D:\ccs\Project\React JS\latest\buildflow\src\components\common\MaterialViewScreen.jsx
+//D:\ccs\Project\React JS\latest\PRECISE INFRATRACKER\src\components\common\MaterialViewScreen.jsx
 import React, { useEffect, useState } from "react";
 import { Form, Table, Dropdown } from "react-bootstrap";
 import { RiArrowDropDownLine } from "react-icons/ri";

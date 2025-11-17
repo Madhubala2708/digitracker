@@ -265,6 +265,8 @@ GET_BOQCODE : '/api/Project/getBoqDetailsBy-BOQCode',
 
   /**INVENTORY & MATERIALS - SITES */
   GET_APPROVED_PROJECTS_BY_EMPLOYEE: "/api/Project/get-approved-projects-by-employee",
-
+  GET_ENGINEER_MATERIALS_BY_PROJECT: "/api/Material/my-project/materials",
+  GET_MATERIAL_STOCK_ALERTS: "/api/MaterialStockAlerts/my-project/alerts",
+  GET_MATERIAL_STATUS_BY_PROJECT: "/api/MaterialStatus/", // append {projectId}
 };
 

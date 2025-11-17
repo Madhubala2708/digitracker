@@ -5,248 +5,114 @@ import Notification from "../../../components/common/NotificationTab";
 import { useProject } from "../../../hooks/Ceo/useCeoProject";
 import { useDispatch } from "react-redux";
 import ProjectProgressBar from "./ProjectProgressBar";
+import { engineerMaterialsAPI } from "../../../services"; 
 export const roleCheck = { role: "admin" };
 
-
-
-const materials = [
-  { material_list: "Cement (50kg)", in_stock_quantity: "33 Bags", required_quantity: "200 Bags", status: "Urgent" },
-  { material_list: "TMT Rod (10mm)", in_stock_quantity: "444 Rod", required_quantity: "200 Bags", status: "Delay" },
-  { material_list: "Cement (50kg)", in_stock_quantity: "44 Bags", required_quantity: "200 Bags", status: "Urgent" },
-];
-const pendingApprovals = [
-  {
-    id: 1,
-    site: "MAA Site",
-    department: "Finance",
-    user: "Marvin McKinney",
-    img: profile,
-    title: "Approval for Fund Rise",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation."
-  },
-  {
-    id: 2,
-    site: "Chennai Site",
-    department: "HR",
-    user: "Kathryn Murphy",
-    img: profile,
-    title: "Leave Approval",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation."
-  },
-  {
-    id: 3,
-    site: "Bangalore Office",
-    department: "IT",
-    user: "Jane Cooper",
-    img: profile,
-    title: "Hardware Purchase Request",
-    description: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation."
-  },
-  {
-    id: 4,
-    site: "MAA Site",
-    department: "Finance",
-    user: "Marvin McKinney",
-    img: profile,
-    title: "Approval for Fund Rise",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation."
-  },
-  {
-    id: 5,
-    site: "Chennai Site",
-    department: "HR",
-    user: "Kathryn Murphy",
-    img: profile,
-    title: "Leave Approval",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation."
-  },
-  {
-    id: 6,
-    site: "Bangalore Office",
-    department: "IT",
-    user: "Jane Cooper",
-    img: profile,
-    title: "Hardware Purchase Request",
-    description: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation."
-  },
-  {
-    id: 7,
-    site: "MAA Site",
-    department: "Finance",
-    user: "Marvin McKinney",
-    img: profile,
-    title: "Approval for Fund Rise",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation."
-  },
-  {
-    id: 8,
-    site: "Chennai Site",
-    department: "HR",
-    user: "Kathryn Murphy",
-    img: profile,
-    title: "Leave Approval",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation."
-  },
-  {
-    id: 9,
-    site: "Bangalore Office",
-    department: "IT",
-    user: "Jane Cooper",
-    img: profile,
-    title: "Hardware Purchase Request",
-    description: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation."
-  },
-  {
-    id: 10,
-    site: "MAA Site",
-    department: "Finance",
-    user: "Marvin McKinney",
-    img: profile,
-    title: "Approval for Fund Rise",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation."
-  },
-  {
-    id: 11,
-    site: "Chennai Site",
-    department: "HR",
-    user: "Kathryn Murphy",
-    img: profile,
-    title: "Leave Approval",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation."
-  },
-  {
-    id: 12,
-    site: "Bangalore Office",
-    department: "IT",
-    user: "Jane Cooper",
-    img: profile,
-    title: "Hardware Purchase Request",
-    description: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation."
-  },
-];
-const tasks = [
-  {
-    id: 1,
-    site: "MAA Site",
-    department: "Finance",
-    date: "04-03-2025",
-    title: "Approval for Fund Rise",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-  },
-  {
-    id: 2,
-    site: "MAA Site",
-    department: "Finance",
-    date: "04-03-2025",
-    title: "Approval for Fund Rise",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-  },
-  {
-    id: 3,
-    site: "MAA Site",
-    department: "Finance",
-    date: "04-03-2025",
-    title: "Approval for Fund Rise",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-  },
-  {
-    id: 4,
-    site: "MAA Site",
-    department: "Finance",
-    date: "04-03-2025",
-    title: "Approval for Fund Rise",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-  },
-  {
-    id: 5,
-    site: "MAA Site",
-    department: "Finance",
-    date: "04-03-2025",
-    title: "Approval for Fund Rise",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-  },
-  {
-    id: 6,
-    site: "MAA Site",
-    department: "Finance",
-    date: "04-03-2025",
-    title: "Approval for Fund Rise",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-  },
-];
-
-const workDelays = [
-  {
-    id: 1,
-    title: "4th Floor Painting (A Block)",
-    delayDays: "2 Days",
-    startDate: "27-02-2025",
-    plannedDate: "02-03-2025",
-    completedDate: "04-03-2025"
-  },
-  {
-    id: 2,
-    title: "4th Floor Painting (A Block)",
-    delayDays: "2 Days",
-    startDate: "27-02-2025",
-    plannedDate: "02-03-2025",
-    completedDate: "04-03-2025"
-  },
-  {
-    id: 3,
-    title: "4th Floor Painting (A Block)",
-    delayDays: "2 Days",
-    startDate: "27-02-2025",
-    plannedDate: "02-03-2025",
-    completedDate: "04-03-2025"
-  },
-  {
-    id: 4,
-    title: "4th Floor Painting (A Block)",
-    delayDays: "2 Days",
-    startDate: "27-02-2025",
-    plannedDate: "02-03-2025",
-    completedDate: "04-03-2025"
-  },
-  {
-    id: 5,
-    title: "4th Floor Painting (A Block)",
-    delayDays: "2 Days",
-    startDate: "27-02-2025",
-    plannedDate: "02-03-2025",
-    completedDate: "04-03-2025"
-  },
-  {
-    id: 6,
-    title: "4th Floor Painting (A Block)",
-    delayDays: "2 Days",
-    startDate: "27-02-2025",
-    plannedDate: "02-03-2025",
-    completedDate: "04-03-2025"
-  },
-];
 const EngineerDashboard = ({ progress = 50, maxValue = 100 }) => {
   const percentage = (progress / maxValue) * 100;
-  // const activeBoardName = findBoardById(userInfo.activeBoard);
-
   const navigate = useNavigate();
-
   const { fetchProjectDetails } = useProject();
 
   const [projectDetails, setProjectDetails] = useState(null);
   const dispatch = useDispatch();
+  
+  // Material stock alerts state
+  const [materials, setMaterials] = useState([]);
+  const [materialsLoading, setMaterialsLoading] = useState(false);
 
+  //  Add missing task data
+  const [tasks] = useState([
+    {
+      id: 1,
+      site: "Project A",
+      department: "Engineering",
+      date: "2025-01-14",
+      title: "Foundation Work",
+      description: "Complete foundation inspection and approval"
+    },
+    {
+      id: 2,
+      site: "Project B",
+      department: "Planning",
+      date: "2025-01-13",
+      title: "Design Review",
+      description: "Review architectural designs"
+    }
+  ]);
+
+  //  Add missing workDelays data
+  const [workDelays] = useState([
+    {
+      id: 1,
+      title: "Concrete Pouring",
+      delayDays: "+5 days",
+      startDate: "2025-01-01",
+      plannedDate: "2025-01-10",
+      completedDate: "2025-01-15"
+    },
+    {
+      id: 2,
+      title: "Steel Fabrication",
+      delayDays: "+3 days",
+      startDate: "2025-01-05",
+      plannedDate: "2025-01-12",
+      completedDate: "2025-01-15"
+    }
+  ]);
+
+  //  Add missing pendingApprovals data
+  const [pendingApprovals] = useState([
+    {
+      id: 1,
+      site: "Site A",
+      department: "Finance",
+      img: profile,
+      user: "John Doe",
+      title: "Budget Approval",
+      description: "Waiting for budget approval from CFO"
+    },
+    {
+      id: 2,
+      site: "Site B",
+      department: "HR",
+      img: profile,
+      user: "Jane Smith",
+      title: "Leave Approval",
+      description: "Employee leave request pending"
+    },
+    {
+      id: 3,
+      site: "Site C",
+      department: "Operations",
+      img: profile,
+      user: "Mike Johnson",
+      title: "Purchase Order",
+      description: "PO for equipment procurement"
+    }
+  ]);
 
   const defaultProjectId = localStorage.getItem("projectId");
   console.log("Project ID from localStorage:", defaultProjectId);
 
   const projectID = 1;
+
+  //  Fetch material stock alerts
+  useEffect(() => {
+    const fetchAlerts = async () => {
+      setMaterialsLoading(true);
+      try {
+        const alerts = await engineerMaterialsAPI.getMaterialStockAlerts();
+        console.log("Stock Alerts fetched:", alerts);
+        setMaterials(alerts || []);
+      } catch (error) {
+        console.error("Error fetching stock alerts:", error);
+        setMaterials([]);
+      } finally {
+        setMaterialsLoading(false);
+      }
+    };
+    fetchAlerts();
+  }, []);
 
   useEffect(() => {
     fetchProjectDetails(projectID).then((data) => {
@@ -260,6 +126,62 @@ const EngineerDashboard = ({ progress = 50, maxValue = 100 }) => {
 
 
   const userData = JSON.parse(localStorage.getItem('userData'));
+
+  // helper: find a readable name inside object or primitive
+  const findName = (obj) => {
+    if (!obj && obj !== 0) return null;
+    if (typeof obj === "string") return obj.trim() || null;
+    if (typeof obj === "number") return String(obj);
+    if (typeof obj === "object") {
+      const keys = ["materialName", "material", "itemName", "name", "title", "label", "item"];
+      for (const k of keys) {
+        if (obj[k]) {
+          if (typeof obj[k] === "string" && obj[k].trim()) return obj[k].trim();
+          if (typeof obj[k] === "object") {
+            const nested = findName(obj[k]);
+            if (nested) return nested;
+          }
+        }
+      }
+      
+      for (const k in obj) {
+        const v = obj[k];
+        if (typeof v === "string" && v.trim().length > 0 && v.trim().length < 100) return v.trim();
+        if (typeof v === "object") {
+          const nested = findName(v);
+          if (nested) return nested;
+        }
+      }
+    }
+    return null;
+  };
+
+  // helper: format quantity without duplicating unit
+  const formatQty = (value, unit) => {
+    if (value === null || value === undefined) return `0 ${unit ?? "Units"}`;
+    // if value is numeric or numeric-string -> append unit
+    const numeric = typeof value === "number" || (/^\d+(\.\d+)?$/.test(String(value).trim()));
+    if (numeric) return `${Number(value).toFixed(2)} ${unit ?? "Units"}`;
+    // if value already contains letters (e.g. "100.00 Units") return as-is
+    return String(value).trim();
+  };
+
+  // ✅ NEW: Helper to map API response to table display (robust)
+  const normalizeAlert = (alert) => {
+    // material list might be a string or nested object
+    const materialName = findName(alert) || findName(alert?.material) || findName(alert?.item) || "N/A";
+
+    // quantities may already include units, so use formatQty
+    const inStock = formatQty(alert.inStockQuantity ?? alert.inStock ?? alert.availableQty ?? alert.stockQty, alert.unit);
+    const required = formatQty(alert.requiredQuantity ?? alert.required ?? alert.quantity ?? alert.qty, alert.unit);
+
+    return {
+      material_list: materialName,
+      in_stock_quantity: inStock,
+      required_quantity: required,
+      status: alert.status ?? alert.level ?? "Normal",
+    };
+  };
 
   return (
     <Fragment>
@@ -306,44 +228,54 @@ const EngineerDashboard = ({ progress = 50, maxValue = 100 }) => {
           </div>
           <div className="row">
             <div className="col-sm-12 col-md-12 col-lg-12">
-              <h4 className="fs-22-700 mt-1 mb-4">Material Stock Alerts </h4>
+              <h4 className="fs-22-700 mt-1 mb-4">Material Stock Alerts </h4>
               <div className="material-stock tbl-conatiner-material-stock">
-                <table className="tbl table-bordered mb-0">
-                  <thead>
-                    <tr>
-                      <th className="fs-16-500">Material List</th>
-                      <th className="fs-16-500">In Stock Quantity</th>
-                      <th className="fs-16-500">Required Quantity</th>
-                      <th className="fs-16-500">Status</th>
-                      <th className="fs-16-500">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {materials.map((material, index) => (
-                      <tr key={index}>
-                        <td className="text-center fs-16-500">{material.material_list}</td>
-                        <td className="text-left fs-16-500">{material.in_stock_quantity}</td>
-                        <td className="text-center fs-16-500 text-crimson-red">{material.required_quantity}</td>
-                        <td className={`text-center fs-16-500 ${material.status === "Urgent" ? "text-crimson-red" :
-                          material.status === "Delay" ? "text-golden-yellow" :
-                            material.status === "Completed" ? "text-success" :
-                              material.status === "On Hold" ? "text-info" :
-                                "text-secondary" // default class
-                          }`}>
-                          {material.status}
-                        </td>
-                        <td className="text-center">
-                          <button
-                            className="btn-link-clean"
-                            onClick={() => navigate('/admin/engineermaterialcreate')}
-                          >
-                            Create
-                          </button>
-                        </td>
+                {materialsLoading ? (
+                  <div className="text-center p-4">Loading alerts...</div>
+                ) : materials && materials.length > 0 ? (
+                  <table className="tbl table-bordered mb-0">
+                    <thead>
+                      <tr>
+                        <th className="fs-16-500">Material List</th>
+                        <th className="fs-16-500">In Stock Quantity</th>
+                        <th className="fs-16-500">Required Quantity</th>
+                        <th className="fs-16-500">Status</th>
+                        <th className="fs-16-500">Actions</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {materials.map((material, index) => {
+                        const normalized = normalizeAlert(material);
+                        return (
+                          <tr key={index}>
+                            <td className="text-center fs-16-500">{normalized.material_list}</td>
+                            <td className="text-left fs-16-500">{normalized.in_stock_quantity}</td>
+                            <td className="text-center fs-16-500 text-crimson-red">{normalized.required_quantity}</td>
+                            <td className={`text-center fs-16-500 ${normalized.status === "Urgent" ? "text-crimson-red" :
+                              normalized.status === "Delay" ? "text-golden-yellow" :
+                                normalized.status === "High" ? "text-crimson-red" :
+                                  normalized.status === "Medium" ? "text-golden-yellow" :
+                                    normalized.status === "Low" ? "text-success" :
+                                      "text-secondary"
+                              }`}>
+                              {normalized.status}
+                            </td>
+                            <td className="text-center">
+                              <button
+                                className="btn-link-clean"
+                                onClick={() => navigate('/admin/engineermaterialcreate')}
+                              >
+                                Create
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                ) : (
+                  <div className="text-center p-4 text-muted">No material stock alerts at this time.</div>
+                )}
               </div>
             </div>
           </div>

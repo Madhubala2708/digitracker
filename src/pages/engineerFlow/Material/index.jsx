@@ -1,22 +1,19 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useMemo } from "react";
 import { Table, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchEngineerProjects } from "../../../store/slice/Engineer/engineerMaterialsSlice";
+import { fetchEngineerMaterials } from "../../../store/slice/Engineer/engineerMaterialsSlice";
 
 const Material = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { projects, loading, error } = useSelector(
+  const { materials, materialsLoading } = useSelector(
     (state) => state.engineerMaterials
   );
 
-  const [selectedSite, setSelectedSite] = useState("");
-  const [boqItems, setBoqItems] = useState([]);
-
-  // ✅ Fetch projects automatically when page loads
+  // removed selectedSite: fetch engineer materials on component mount
   useEffect(() => {
-    dispatch(fetchEngineerProjects());
+    dispatch(fetchEngineerMaterials());
   }, [dispatch]);
 
   const getLevelBadge = (level) => {
@@ -49,59 +46,110 @@ const Material = () => {
       Rejected: "#D00416",
     };
     return (
-      <span
-        className="status-badge"
-        style={{ color: statusColors[status] || "black" }}
-      >
+      <span className="status-badge" style={{ color: statusColors[status] }}>
         {status}
       </span>
     );
   };
 
-  if (loading) return <p className="text-center mt-5">Loading Projects...</p>;
-  if (error) return <p className="text-danger mt-5 text-center">Error: {error}</p>;
+  // deep-search helper to find a human-friendly name in an object
+  const findName = (obj) => {
+    if (!obj || typeof obj !== "object") return null;
+    const keys = [
+      "itemName","name","materialName","material","item","item_name",
+      "boqItemName","productName","product","title","description","label","masterItemName"
+    ];
+    for (const k of keys) {
+      if (k in obj) {
+        const v = obj[k];
+        if (typeof v === "string" && v.trim()) return v.trim();
+        if (typeof v === "object") {
+          const rec = findName(v);
+          if (rec) return rec;
+        }
+      }
+    }
+    // fallback: scan all properties for a short string value or nested name
+    for (const k in obj) {
+      const v = obj[k];
+      if (typeof v === "string" && v.trim()) return v.trim();
+      if (typeof v === "object") {
+        const rec = findName(v);
+        if (rec) return rec;
+      }
+    }
+    return null;
+  };
+
+  // normalize for UI: support array of items OR array of BOQs with boqItems
+  const displayMaterials = useMemo(() => {
+    if (!Array.isArray(materials)) return [];
+
+    console.log("Raw materials payload:", materials); // inspect if still needed
+
+    const out = [];
+    materials.forEach((m) => {
+      if (Array.isArray(m.boqItems) && m.boqItems.length > 0) {
+        m.boqItems.forEach((it) => {
+          const itemName = findName(it) || findName(m) || "N/A";
+          const inStock =
+            it.inStockQuantity ?? it.inStock ?? it.stockQty ?? it.availableQty ?? 0;
+          const required =
+            it.requiredQuantity ?? it.quantity ?? it.qty ?? it.required ?? 0;
+
+          out.push({
+            boqId: m.boqId ?? m.id,
+            itemName,
+            inStockQuantity: inStock,
+            requiredQuantity: required,
+            level: it.level ?? m.level ?? "Low",
+            approvalStatus: m.approvalStatus ?? it.status ?? "Pending",
+            raw: { parent: m, item: it },
+          });
+        });
+      } else {
+        const itemName = findName(m) || m.boqName || "N/A";
+        const inStock =
+          m.inStockQuantity ?? m.inStock ?? m.stockQty ?? m.availableQty ?? 0;
+        const required =
+          m.requiredQuantity ?? m.quantity ?? m.qty ?? m.required ?? 0;
+
+        out.push({
+          boqId: m.boqId ?? m.id,
+          itemName,
+          inStockQuantity: inStock,
+          requiredQuantity: required,
+          level: m.level ?? "Low",
+          approvalStatus: m.approvalStatus ?? "Pending",
+          raw: { item: m },
+        });
+      }
+    });
+    return out;
+  }, [materials]);
 
   return (
     <Fragment>
       <main className="page-engineer-dashboard d-flex">
         <div className="left-container w-100">
           <div className="row mt-4 align-items-center">
-            {/* ✅ API-based Dropdown */}
+
+            {/* 🔥 Title instead of dropdown */}
             <div className="col-sm-6 col-md-6 col-lg-6 text-start">
-              <select
-                className="form-select select-custom"
-                style={{ backgroundColor: "#E8E8E8" }}
-                value={selectedSite}
-                onChange={(e) => setSelectedSite(e.target.value)}
-              >
-                <option value="">Select Project</option>
-                {projects?.length > 0 ? (
-                  projects.map((p) => (
-                    <option key={p.projectId} value={p.projectId}>
-                      {p.projectName}
-                    </option>
-                  ))
-                ) : (
-                  <option disabled>No Projects Available</option>
-                )}
-              </select>
+              <h2 className="fs-24-600 text-dark">SKS Park</h2>
             </div>
 
             <div className="col-sm-6 col-md-6 col-lg-6 text-right">
               <Button
                 className="create-button border-radius-2 fs-14-600 border-0"
-                onClick={() =>
-                  navigate("/admin/engineermaterialcreate", {
-                    state: { projectId: selectedSite },
-                  })
-                }
+                onClick={() => navigate("/admin/engineermaterialcreate")}
               >
                 Create
               </Button>
             </div>
           </div>
 
-          {/* ✅ Table (unchanged) */}
+          {/* Table */}
           <div className="row mt-5">
             <div className="col-lg-12">
               <div className="table-responsive">
@@ -117,25 +165,33 @@ const Material = () => {
                       <th className="fs-16-500 text-center text-dark">Action</th>
                     </tr>
                   </thead>
+
                   <tbody>
-                    {boqItems.length > 0 ? (
-                      boqItems.map((material, index) => (
-                        <tr key={index}>
+                    {materialsLoading ? (
+                      <tr>
+                        <td colSpan="7" className="text-center text-muted">
+                          Loading materials...
+                        </td>
+                      </tr>
+                    ) : displayMaterials && displayMaterials.length > 0 ? (
+                      displayMaterials.map((material, index) => (
+                        <tr key={material.boqId || index}>
                           <td className="text-center">{index + 1}</td>
-                          <td className="text-center">{material.itemName}</td>
-                          <td className="text-center">100</td>
-                          <td className="text-center">500</td>
-                          <td className="text-center">{getLevelBadge("High")}</td>
-                          <td className="text-center">
-                            {getStatusBadge(material.approvalStatus)}
-                          </td>
+                          <td className="text-center">{material.itemName || "N/A"}</td>
+                          <td className="text-center">{material.inStockQuantity || 0}</td>
+                          <td className="text-center">{material.requiredQuantity || 0}</td>
+                          <td className="text-center">{getLevelBadge(material.level || "Low")}</td>
+                          <td className="text-center">{getStatusBadge(material.approvalStatus || "Pending")}</td>
                           <td className="text-center">
                             <a
-                              href=""
+                              href="#"
                               style={{ color: "#0456D0" }}
-                              onClick={() =>
-                                navigate(`/admin/materialview/${material.boqId}`)
-                              }
+                              onClick={(e) => {
+                                e.preventDefault();
+                                navigate(`/admin/materialview/${material.boqId}`, {
+                                  state: { material },
+                                });
+                              }}
                             >
                               View
                             </a>
@@ -145,17 +201,17 @@ const Material = () => {
                     ) : (
                       <tr>
                         <td colSpan="7" className="text-center text-muted">
-                          {selectedSite
-                            ? "No materials found for this project."
-                            : "Select a project to view materials."}
+                          No materials found for SKS Park.
                         </td>
                       </tr>
                     )}
                   </tbody>
+
                 </table>
               </div>
             </div>
           </div>
+
         </div>
       </main>
     </Fragment>

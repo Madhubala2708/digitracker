@@ -1,4 +1,3 @@
-// src/store/slice/inventorySlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
   getApprovedProjectsByEmployee,
@@ -10,9 +9,7 @@ import {
   getProjectTeam,
 } from "../../../services/inventoryAPI";
 
-/* ===========================================================
-   1. FETCH APPROVED PROJECTS
-=========================================================== */
+//  1. FETCH APPROVED PROJECTS
 export const fetchProjectsByEmployee = createAsyncThunk(
   "inventory/fetchProjectsByEmployee",
   async (_, thunkAPI) => {
@@ -27,9 +24,7 @@ export const fetchProjectsByEmployee = createAsyncThunk(
   }
 );
 
-/* ===========================================================
-   2. FETCH VENDORS
-=========================================================== */
+//  2. FETCH VENDORS
 export const fetchVendors = createAsyncThunk(
   "inventory/fetchVendors",
   async (_, thunkAPI) => {
@@ -44,9 +39,7 @@ export const fetchVendors = createAsyncThunk(
   }
 );
 
-/* ===========================================================
-   3. FETCH STOCK INWARD LIST
-=========================================================== */
+//  3. FETCH STOCK INWARD LIST
 export const fetchStockInwards = createAsyncThunk(
   "inventory/fetchStockInwards",
   async (projectId, thunkAPI) => {
@@ -61,9 +54,7 @@ export const fetchStockInwards = createAsyncThunk(
   }
 );
 
-/* ===========================================================
-   4. FETCH STOCK OUTWARD LIST
-=========================================================== */
+//  4. FETCH STOCK OUTWARD LIST
 export const fetchStockOutwards = createAsyncThunk(
   "inventory/fetchStockOutwards",
   async (projectId, thunkAPI) => {
@@ -78,9 +69,7 @@ export const fetchStockOutwards = createAsyncThunk(
   }
 );
 
-/* ===========================================================
-   5. CREATE STOCK INWARD
-=========================================================== */
+//  5. CREATE STOCK INWARD
 export const addStockInward = createAsyncThunk(
   "inventory/addStockInward",
   async (payload, thunkAPI) => {
@@ -95,9 +84,7 @@ export const addStockInward = createAsyncThunk(
   }
 );
 
-/* ===========================================================
-   6. CREATE STOCK OUTWARD
-=========================================================== */
+//  6. CREATE STOCK OUTWARD
 export const addStockOutward = createAsyncThunk(
   "inventory/addStockOutward",
   async (payload, thunkAPI) => {
@@ -112,9 +99,7 @@ export const addStockOutward = createAsyncThunk(
   }
 );
 
-/* ===========================================================
-   7. FETCH PROJECT TEAM (MD, CEO, Engineer, etc)
-=========================================================== */
+//  7. FETCH PROJECT TEAM (MD, CEO, Engineer, etc)
 export const fetchProjectTeam = createAsyncThunk(
   "inventory/fetchProjectTeam",
   async (projectId, thunkAPI) => {
@@ -132,10 +117,7 @@ export const fetchProjectTeam = createAsyncThunk(
   }
 );
 
-
-/* ===========================================================
-   SLICE
-=========================================================== */
+//  SLICE
 const inventorySlice = createSlice({
   name: "inventory",
   initialState: {

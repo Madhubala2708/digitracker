@@ -16,7 +16,7 @@ import purchaseOrderReducer from "./slice/vendorflow/po-vendorslice";
 import reportReducer from './slice/report/reportslice';
 import vendorReducer from  "./slice/Vendor/getvendorslice";
 import ceoReportReducer from './slice/report/ceoreportslice';
-import inventoryReducer from "./slice/inventorySlice";
+import inventoryReducer from "./slice/Aqs/inventorySlice";
 import materialsReducer from "./slice/Aqs/materialsSlice";
 import engineerMaterialsReducer from "./slice/Engineer/engineerMaterialsSlice";
 import aqsBoqReducer from "./slice/Aqs/aqsBoqSlice";

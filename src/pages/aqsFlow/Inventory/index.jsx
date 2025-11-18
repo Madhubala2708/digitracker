@@ -3,54 +3,56 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import StockPopup from "./StockPopup";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProjectsByEmployee } from "../../../store/slice/inventorySlice";
+
+import {
+  fetchProjectsByEmployee,
+  fetchStockInwards,
+  fetchStockOutwards,
+  fetchVendors,
+  fetchProjectTeam,
+  addStockInward,
+  addStockOutward,
+} from "../../../store/slice/Aqs/inventorySlice";
 
 const AqsInventory = () => {
   const dispatch = useDispatch();
 
-  // ✅ Redux state for projects
-  const { projects, loading } = useSelector((state) => state.inventory);
+  const { projects, stockInwards, stockOutwards } = useSelector(
+    (state) => state.inventory
+  );
 
-  // ✅ Get logged-in employeeId
-  const employeeId = JSON.parse(localStorage.getItem("userData"))?.id;
-
-  const [selectedSite, setSelectedSite] = useState("");
+  const [selectedSiteId, setSelectedSiteId] = useState("");
+  const [selectedSiteName, setSelectedSiteName] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [popupTitle, setPopupTitle] = useState("");
   const [selectedStock, setSelectedStock] = useState(null);
 
-  const [stockInward, setStockInward] = useState([
-    {
-      grn: "GRN-10234",
-      item: "Cement (50kg)",
-      vendor: "SK Constructions",
-      quantity: "500 Bags",
-      date: "10 March 2025",
-      receivedBy: "Ralph Edwards",
-      status: "Approved",
-    },
-  ]);
-
-  const [stockOutward, setStockOutward] = useState([
-    {
-      issueNo: "ISS-5021",
-      item: "Cement (50kg)",
-      requestedBy: "Site Engineer",
-      quantity: "250 Bags",
-      issuedTo: "Site A",
-      date: "11 March 2025",
-      status: "Approved",
-    },
-  ]);
-
-  // ✅ Fetch Sites on page load
+  // LOAD PROJECTS + VENDORS
   useEffect(() => {
     dispatch(fetchProjectsByEmployee());
-  }, []);
+    dispatch(fetchVendors());
+  }, [dispatch]);
 
-  const handleSiteChange = (event) => setSelectedSite(event.target.value);
+  //       WHEN PROJECT CHANGES → FETCH DATA
+  useEffect(() => {
+    if (selectedSiteId) {
+      dispatch(fetchStockInwards(selectedSiteId));
+      dispatch(fetchStockOutwards(selectedSiteId));
+      dispatch(fetchProjectTeam(selectedSiteId));
+    }
+  }, [dispatch, selectedSiteId]);
 
-  // Popup logic
+  // WHEN SELECTING A PROJECT
+
+  const handleSiteChange = (event) => {
+    const selectedId = Number(event.target.value);
+    const projectObj = projects.find((p) => p.projectId === selectedId);
+
+    setSelectedSiteId(selectedId);
+    setSelectedSiteName(projectObj?.projectName || "");
+  };
+
+  // POPUP FUNCTIONS
   const openPopup = (title, record = null) => {
     setPopupTitle(title);
     setSelectedStock(record);
@@ -62,36 +64,51 @@ const AqsInventory = () => {
     setSelectedStock(null);
   };
 
-  const handleAddStock = (newStock) => {
-    if (popupTitle === "Stock Inward") {
-      setStockInward((prev) => [...prev, newStock]);
-    } else {
-      setStockOutward((prev) => [...prev, newStock]);
+  // ADD / UPDATE STOCK
+  const handleAddStock = async (newStock) => {
+    try {
+      if (selectedSiteId) newStock.projectId = Number(selectedSiteId);
+
+      if (popupTitle === "Stock Inward") {
+        await dispatch(addStockInward(newStock)).unwrap();
+        dispatch(fetchStockInwards(selectedSiteId));
+      } else {
+        await dispatch(addStockOutward(newStock)).unwrap();
+        dispatch(fetchStockOutwards(selectedSiteId));
+      }
+    } catch (err) {
+      console.error("Add stock error:", err);
+      alert("Failed to add stock.");
+    } finally {
+      setShowPopup(false);
     }
-    setShowPopup(false);
   };
 
   return (
     <div className="page-aqs-inventory inventory-container">
-      {/* ✅ Dynamic Site Dropdown */}
+
+      {/* SELECT PROJECT */}
       <div className="site-header">
         <div className="site-dropdown-container">
-          <select className="site-dropdown">
-            <option>Select Project</option>
-            {projects?.map((p) => (
-              <option key={p.projectId}>{p.projectName}</option>
+          <select
+            className="site-dropdown"
+            value={selectedSiteId}
+            onChange={handleSiteChange}
+          >
+            <option value="">Select Project</option>
+            {(projects || []).map((p) => (
+              <option key={p.projectId} value={p.projectId}>
+                {p.projectName}
+              </option>
             ))}
           </select>
         </div>
       </div>
 
-      {/* Stock Inward */}
+      {/* STOCK INWARD  */}
       <div className="table-header">
         <h3>Stock Inward</h3>
-        <button
-          className="add-stock-btn"
-          onClick={() => openPopup("Stock Inward")}
-        >
+        <button className="add-stock-btn" onClick={() => openPopup("Stock Inward")}>
           + Add Stock
         </button>
       </div>
@@ -109,16 +126,23 @@ const AqsInventory = () => {
             <th>Action</th>
           </tr>
         </thead>
+
         <tbody>
-          {stockInward.map((stock, index) => (
+          {(stockInwards || []).map((stock, index) => (
             <tr key={index}>
               <td>{stock.grn}</td>
-              <td>{stock.item}</td>
-              <td>{stock.vendor}</td>
-              <td>{stock.quantity}</td>
-              <td>{stock.date}</td>
-              <td>{stock.receivedBy}</td>
-              <td className={`status ${stock.status.toLowerCase()}`}>
+              <td>{stock.itemname || stock.item}</td>
+              <td>{stock.vendorName || stock.vendor}</td>
+              <td>
+                {stock.quantityReceived ?? "-"} {stock.unit || ""}
+              </td>
+              <td>
+                {stock.dateReceived
+                  ? new Date(stock.dateReceived).toLocaleDateString()
+                  : "-"}
+              </td>
+              <td>{stock.receivedByName || stock.receivedBy}</td>
+              <td className={`status ${String(stock.status || "").toLowerCase()}`}>
                 {stock.status}
               </td>
               <td>
@@ -134,13 +158,10 @@ const AqsInventory = () => {
         </tbody>
       </table>
 
-      {/* Stock Outward */}
+      {/*  STOCK OUTWARD  */}
       <div className="table-header">
         <h3>Stock Outward</h3>
-        <button
-          className="issue-stock-btn"
-          onClick={() => openPopup("Stock Outward")}
-        >
+        <button className="issue-stock-btn" onClick={() => openPopup("Stock Outward")}>
           + Issue Stock
         </button>
       </div>
@@ -159,15 +180,21 @@ const AqsInventory = () => {
           </tr>
         </thead>
         <tbody>
-          {stockOutward.map((stock, index) => (
+          {(stockOutwards || []).map((stock, index) => (
             <tr key={index}>
               <td>{stock.issueNo}</td>
-              <td>{stock.item}</td>
-              <td>{stock.requestedBy}</td>
-              <td>{stock.quantity}</td>
-              <td>{stock.issuedTo}</td>
-              <td>{stock.date}</td>
-              <td className={`status ${stock.status.toLowerCase()}`}>
+              <td>{stock.itemName}</td>
+              <td>{stock.requestedByName || "-"}</td>
+              <td>
+                {stock.issuedQuantity ?? "-"} {stock.unit || ""}
+              </td>
+              <td>{stock.issuedToName || "-"}</td>
+              <td>
+                {stock.dateIssued
+                  ? new Date(stock.dateIssued).toLocaleDateString()
+                  : "-"}
+              </td>
+              <td className={`status ${String(stock.status || "").toLowerCase()}`}>
                 {stock.status}
               </td>
               <td>
@@ -183,13 +210,15 @@ const AqsInventory = () => {
         </tbody>
       </table>
 
-      {/* Popup */}
+      {/* POPUP */}
       {showPopup && (
         <StockPopup
           title={popupTitle}
           data={selectedStock}
           onClose={closePopup}
           onSubmit={handleAddStock}
+          projectId={selectedSiteId}
+          projectName={selectedSiteName}
         />
       )}
     </div>

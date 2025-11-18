@@ -1,80 +1,159 @@
 import React, { useState, useEffect } from "react";
-import "./StockPopup.css";
-import { MdOutlineCalendarMonth } from "react-icons/md";
+import "../../../styles/components/css/aqsStyles/StockPopup.css";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchVendors,
+  fetchProjectTeam,
+} from "../../../store/slice/Aqs/inventorySlice";
 
-const StockPopup = ({ title, onClose, onSubmit, data }) => {
+const StockPopup = ({ title, onClose, onSubmit, data, projectId, projectName }) => {
+  const dispatch = useDispatch();
+
+  const vendors = useSelector((state) => state.inventory.vendors || []);
+  const projectTeam = useSelector((state) => state.inventory.projectTeam || []);
+
   const [status, setStatus] = useState("Approved");
   const [receivedDate, setReceivedDate] = useState(null);
-  const [project, setProject] = useState("MRM Site");
+  const [project, setProject] = useState(projectName || "");
   const [grnNo, setGrnNo] = useState("");
   const [itemName, setItemName] = useState("");
   const [quantity, setQuantity] = useState("");
   const [vendor, setVendor] = useState("");
   const [receivedBy, setReceivedBy] = useState("");
 
-  // ✅ Detect modes
-  const isInward = title.toLowerCase().includes("inward");
-  const isOutward = title.toLowerCase().includes("outward");
-  const isViewMode = title.toLowerCase().includes("view");
+  const isInward = title?.toLowerCase().includes("inward");
+  const isOutward = title?.toLowerCase().includes("outward");
+  const isViewMode = title?.toLowerCase().includes("view");
 
+  // Load team + vendors on popup open
   useEffect(() => {
-    if (data) {
-      // ✅ Fill popup fields with data when viewing/editing
-      setGrnNo(data.grn || data.issueNo || "");
-      setProject(data.project || "MRM Site");
-      setItemName(data.item || "");
-      setVendor(data.vendor || data.issuedTo || "");
-      setQuantity(data.quantity || "");
-      setReceivedBy(data.receivedBy || data.requestedBy || "");
+    if (projectId) {
+      dispatch(fetchProjectTeam(projectId));
+      dispatch(fetchVendors());
+    }
+  }, [dispatch, projectId]);
 
-      // ✅ Convert date properly even if it’s like "10 March 2025"
-      if (data.date) {
-        const parsedDate = new Date(data.date);
-        if (!isNaN(parsedDate)) {
-          setReceivedDate(parsedDate);
-        } else {
-          const [day, month, year] = data.date.split(/[-/]/);
-          const formatted = new Date(`${year}-${month}-${day}`);
-          if (!isNaN(formatted)) setReceivedDate(formatted);
-        }
+  // Fill values when popup loads (runs again after team list loads)
+  useEffect(() => {
+    // helper to resolve a team member name by many possible id keys
+    const findPersonNameById = (id) => {
+      if (id === undefined || id === null || id === "") return "";
+      const strId = String(id);
+      const t = projectTeam.find(
+        (p) =>
+          String(p.empId) === strId ||
+          String(p.employeeId) === strId ||
+          String(p.id) === strId
+      );
+      return t ? (t.fullName || t.employeeName || t.name || "") : "";
+    };
+
+    if (data) {
+      // Basic fields
+      setGrnNo(data.grn || data.issueNo || "");
+      setProject(data.projectName || projectName || "");
+      setItemName(data.itemName || data.itemname || data.item || "");
+
+      setQuantity(
+        data.quantityReceived ??
+        data.receivedQuantity ??
+        data.issuedQuantity ??
+        data.quantity ??
+        ""
+      );
+
+      // Date field
+      const rawDate = data.dateReceived || data.dateIssued || data.date || null;
+      if (rawDate) {
+        const parsed = new Date(rawDate);
+        if (!isNaN(parsed)) setReceivedDate(parsed);
       }
 
       setStatus(data.status || "Approved");
+
+      // MAP BOTH INWARD & OUTWARD
+      if (isOutward) {
+        // OUTWARD → try to resolve names by id first, then fallback to text fields
+        const issuedToName =
+          findPersonNameById(data.issuedToId) ||
+          data.issuedToName ||
+          data.issuedTo ||
+          "";
+        setVendor(issuedToName);
+
+        const requestedByName =
+          findPersonNameById(data.requestedById) ||
+          data.requestedByName ||
+          data.requestedBy ||
+          "";
+        setReceivedBy(requestedByName);
+      } else {
+        // INWARD → check id fields first, then name fields (covers multiple API shapes)
+        const receivedByFromId =
+          findPersonNameById(data.receivedById) ||
+          findPersonNameById(data.received_by) ||
+          findPersonNameById(data.received_employee_id) ||
+          "";
+
+        const receivedByFallback =
+          data.receivedByName ||
+          data.receivedbyname ||
+          data.received_employee_name ||
+          data.receivedEmployeeName ||
+          data.receivedName ||
+          data.received ||
+          data.receivedBy ||
+          "";
+
+        setReceivedBy(receivedByFromId || receivedByFallback);
+
+        setVendor(
+          data.vendorName ||
+          data.vendorname ||
+          data.vendor ||
+          ""
+        );
+      }
     } else {
-      // ✅ Auto-generate numbers and set today's date for new entries
-      const randomNum = Math.floor(1000 + Math.random() * 9000);
-      if (isInward) setGrnNo(`GRN-${randomNum}`);
-      if (isOutward) setGrnNo(`ISS-${randomNum}`);
+      // NEW RECORD MODE
+      const random = Math.floor(1000 + Math.random() * 9000);
+      setGrnNo(isInward ? `GRN-${random}` : `ISS-${random}`);
+      setProject(projectName || "");
       setReceivedDate(new Date());
     }
-  }, [isInward, isOutward, data]);
+  }, [data, projectName, isInward, isOutward, projectTeam]);
 
+  // Submit logic
   const handleSubmit = () => {
     if (isViewMode) return onClose();
 
-    const formattedDate = receivedDate
-      ? receivedDate.toLocaleDateString("en-GB")
-      : "N/A";
+    if (!itemName || !quantity || !vendor || !receivedBy) {
+      alert("Please fill all required fields.");
+      return;
+    }
+
+    const formattedDate = receivedDate ? receivedDate.toISOString() : null;
+    const engineer = projectTeam.find(t => t.fullName === receivedBy);
 
     const newStock = isInward
       ? {
+          projectId,
           grn: grnNo,
-          project,
-          item: itemName,
-          vendor,
-          quantity: `${quantity}`,
-          date: formattedDate,
-          receivedBy,
+          itemName,
+          vendorId: vendors.find(v => v.vendorName === vendor)?.id || null,
+          quantityReceived: Number(quantity),
+          dateReceived: formattedDate,
+          receivedById: engineer?.empId || null,
           status,
         }
       : {
+          projectId,
           issueNo: grnNo,
-          project,
-          item: itemName,
-          issuedTo: vendor,
-          quantity: `${quantity}`,
-          date: formattedDate,
-          issuedBy: receivedBy,
+          itemName,
+          requestedById: engineer?.empId || null,
+          issuedQuantity: Number(quantity),
+          issuedToId: engineer?.empId || null,
+          dateIssued: formattedDate,
           status,
         };
 
@@ -86,12 +165,11 @@ const StockPopup = ({ title, onClose, onSubmit, data }) => {
       <div className="popup-box">
         <div className="popup-header">
           <h4>{title}</h4>
-          <button className="close-btn" onClick={onClose}>
-            ×
-          </button>
+          <button className="close-btn" onClick={onClose}>×</button>
         </div>
 
         <form className="popup-form" onSubmit={(e) => e.preventDefault()}>
+          
           {/* Row 1 */}
           <div className="form-row">
             <div className="form-group">
@@ -108,95 +186,81 @@ const StockPopup = ({ title, onClose, onSubmit, data }) => {
           {/* Row 2 */}
           <div className="form-row">
             <div className="form-group">
-              <label>
-                Item Name <span className="required">*</span>
-              </label>
+              <label>Item Name *</label>
               <select
                 value={itemName}
                 onChange={(e) => setItemName(e.target.value)}
                 disabled={isViewMode}
               >
                 <option value="">Select Item</option>
-                <option value="Cement">Cement</option>
-                <option value="Steel">Steel</option>
+                <option value="Cement (50kg)">Cement (50kg)</option>
+                <option value="Steel Rods (50mm)">Steel Rods (50mm)</option>
+                <option value="PVC Pipes">PVC Pipes</option>
+                <option value="Wire (4mm)">Wire (4mm)</option>
+                <option value="Bricks">Bricks</option>
                 <option value="Sand">Sand</option>
               </select>
             </div>
 
             <div className="form-group">
-              <label>
-                Quantity <span className="required">*</span>
-              </label>
-              <div className="quantity-input-wrapper">
-                <input
-                  type="text"
-                  value={quantity}
-                  onChange={(e) => setQuantity(e.target.value)}
-                  placeholder="Eg. bags, units"
-                  disabled={isViewMode}
-                  className="quantity-input"
-                />
-             
-              </div>
+              <label>Quantity *</label>
+              <input
+                type="text"
+                value={quantity}
+                onChange={(e) => setQuantity(e.target.value)}
+                disabled={isViewMode}
+                placeholder="Eg. bags, Units"
+              />
             </div>
           </div>
 
           {/* Row 3 */}
           <div className="form-row">
             <div className="form-group">
-              <label>
-                {isInward ? "Vendor" : "Issued To"}{" "}
-                <span className="required">*</span>
-              </label>
+              <label>{isInward ? "Vendor" : "Issued To"} *</label>
               <select
                 value={vendor}
                 onChange={(e) => setVendor(e.target.value)}
                 disabled={isViewMode}
               >
-                <option value="">Select vendor</option>
-                <option value="ABC Traders">ABC Traders</option>
-                <option value="XYZ Supplies">XYZ Supplies</option>
-                <option value="SK Construction">SK Construction</option>
+                <option value="">
+                  {isInward ? "Select Vendor" : "Select Engineer"}
+                </option>
+
+                {isInward
+                  ? vendors.map(v => (
+                      <option key={v.id} value={v.vendorName}>{v.vendorName}</option>
+                    ))
+                  : projectTeam.map(t => (
+                      <option key={t.empId} value={t.fullName}>{t.fullName}</option>
+                    ))}
               </select>
             </div>
 
             <div className="form-group">
-              <label>
-                {isInward ? "Received Date" : "Issued Date"}{" "}
-                <span className="required">*</span>
-              </label>
-              <div className="calendar-input-wrapper">
-                <input
-                  type="date"
-                  value={
-                    receivedDate
-                      ? receivedDate.toISOString().split("T")[0]
-                      : ""
-                  }
-                  onChange={(e) => setReceivedDate(new Date(e.target.value))}
-                  disabled={isViewMode}
-                />
-
-              </div>
+              <label>{isInward ? "Received Date" : "Issued Date"} *</label>
+              <input
+                type="date"
+                value={receivedDate ? receivedDate.toISOString().split("T")[0] : ""}
+                onChange={(e) => setReceivedDate(new Date(e.target.value))}
+                disabled={isViewMode}
+              />
             </div>
           </div>
 
           {/* Row 4 */}
           <div className="form-row">
             <div className="form-group">
-              <label>
-                {isInward ? "Received By" : "Issued By"}{" "}
-                <span className="required">*</span>
-              </label>
+              <label>{isInward ? "Received By" : "Requested By"} *</label>
               <select
                 value={receivedBy}
                 onChange={(e) => setReceivedBy(e.target.value)}
                 disabled={isViewMode}
               >
                 <option value="">Select Engineer</option>
-                <option value="Ravi Kumar">Ravi Kumar</option>
-                <option value="Suresh">Suresh</option>
-                <option value="Ralph Edwards">Ralph Edwards</option>
+                {projectTeam.map(t => (
+                  <option key={t.empId} value={t.fullName}>{t.fullName}</option>
+                ))}
               </select>
             </div>
 
@@ -214,12 +278,13 @@ const StockPopup = ({ title, onClose, onSubmit, data }) => {
             </div>
           </div>
 
-          {/* Button */}
+          {/* Submit */}
           <div className="form-actions d-flex justify-content-center">
-            <button type="button" className="update-btn" onClick={handleSubmit}>
+            <button type="button" onClick={handleSubmit} className="update-btn">
               {isViewMode ? "Close" : "Update"}
             </button>
           </div>
+
         </form>
       </div>
     </div>

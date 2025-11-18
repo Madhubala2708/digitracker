@@ -13,17 +13,10 @@ import employeeReducer from "./slice/hr/createemployeeslice";
 import boqReducer from "./slice/Engineer/upsertboqslice";
 import purchaseReducer from "./slice/Purchase/purchaseorderidslice";
 import purchaseOrderReducer from "./slice/vendorflow/po-vendorslice";
-<<<<<<< HEAD
-import reportReducer from "./slice/report/reportslice";
-import vendorReducer from "./slice/Vendor/getvendorslice";
-import ceoReportReducer from "./slice/report/ceoreportslice";
-import inventoryReducer from "./slice/inventorySlice";
-=======
 import reportReducer from './slice/report/reportslice';
 import vendorReducer from  "./slice/Vendor/getvendorslice";
 import ceoReportReducer from './slice/report/ceoreportslice';
 import inventoryReducer from "./slice/Aqs/inventorySlice";
->>>>>>> origin/main
 import materialsReducer from "./slice/Aqs/materialsSlice";
 import engineerMaterialsReducer from "./slice/Engineer/engineerMaterialsSlice";
 import aqsBoqReducer from "./slice/Aqs/aqsBoqSlice";

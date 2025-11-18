@@ -16,14 +16,13 @@ import purchaseOrderReducer from "./slice/vendorflow/po-vendorslice";
 import reportReducer from './slice/report/reportslice';
 import vendorReducer from  "./slice/Vendor/getvendorslice";
 import ceoReportReducer from './slice/report/ceoreportslice';
-import inventoryReducer from "./slice/inventorySlice";
+import inventoryReducer from "./slice/Aqs/inventorySlice";
 import materialsReducer from "./slice/Aqs/materialsSlice";
 import engineerMaterialsReducer from "./slice/Engineer/engineerMaterialsSlice";
 import aqsBoqReducer from "./slice/Aqs/aqsBoqSlice";
 import costEstimationReducer from "./slice/Aqs/costEstimationSlice";
 import aqsVendorReducer from "./slice/Aqs/aqsVendorSlice";
 import reportSitesReducer from "./slice/Engineer/reportSlice";
-
 
 export const rootReducer = combineReducers({
   auth: authSlice.reducer,
@@ -51,6 +50,7 @@ export const rootReducer = combineReducers({
   aqsBoq: aqsBoqReducer,
   costEstimation: costEstimationReducer,
   aqsVendor: aqsVendorReducer,
-  reportSites: reportSitesReducer,
-    
+
+   reportSites: reportSitesReducer,
+
 });

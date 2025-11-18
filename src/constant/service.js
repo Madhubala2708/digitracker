@@ -1,5 +1,4 @@
 export const API = {
-  /*Buildflow Login */
   GET_LOGIN: "/api/Login/login",
   LOGOUT: "/api/auth/logout",
   GET_USER_PROFILE: "/v1.0/me",
@@ -8,30 +7,30 @@ export const API = {
 
   /*Ceo Project */
   Get_PROJECTTYPE_SECTOR: "/api/Project/getProjectTypesAndProjectSectors",
-  CREATE_CEO_PROJECT:"/api/Project/upsertProject",
-  CREATE_PROJECT_BUDGET :"/api/Project/upsertProjectBudget",
-  CREATE_PROJECT_TEAM :"/api/Project/upsertProjectTeam",
-  CREATE_FINACIAL_APPROVAL :"/api/Project/upsertPermissionFinanceApproval",
-  CREATE_PROJECT_MILESTONE : "/api/Project/upsertProjectMilestones",
+  CREATE_CEO_PROJECT: "/api/Project/upsertProject",
+  CREATE_PROJECT_BUDGET: "/api/Project/upsertProjectBudget",
+  CREATE_PROJECT_TEAM: "/api/Project/upsertProjectTeam",
+  CREATE_FINACIAL_APPROVAL: "/api/Project/upsertPermissionFinanceApproval",
+  CREATE_PROJECT_MILESTONE: "/api/Project/upsertProjectMilestones",
   GET_PROJECT_DETAILS_BY_ID: "/api/Project/getProjectDetails",
-  GET_ALL_PROJECT_FILTER : "/api/Project/get-projects-by-status",
-  GET_TICKET_BY_ID : "/api/Ticket/get-ticket-by-id",
-  GET_TICKET_LABELS : "/api/Login/labels-with-tickets",
-  CREATE_NEW_TICKET_TASK : "/api/Ticket/create-custom-ticket",
+  GET_ALL_PROJECT_FILTER: "/api/Project/get-projects-by-status",
+  GET_TICKET_BY_ID: "/api/Ticket/get-ticket-by-id",
+  GET_TICKET_LABELS: "/api/Login/labels-with-tickets",
+  CREATE_NEW_TICKET_TASK: "/api/Ticket/create-custom-ticket",
   UPDATE_PROJECT_APPROVAL: '/api/Ticket/update-ticket-by-id',
-  UPSERTRISK_UPLOAD:"/api/Project/upsertRisk",
-//department //
- GET_DEPARTMENTS : "/api/Department/get-department",
- GET_DEPARTMENTS_BY_ID : "/api/Login/getEmployeesByDepartment/",
+  UPSERTRISK_UPLOAD: "/api/Project/upsertRisk",
+  //department //
+  GET_DEPARTMENTS: "/api/Department/get-department",
+  GET_DEPARTMENTS_BY_ID: "/api/Login/getEmployeesByDepartment/",
   /*PM FLOW  */
-  GET_PROJECT_DETAILS:"/api/Project/getProjectDetails",
+  GET_PROJECT_DETAILS: "/api/Project/getProjectDetails",
 
-  
- /* Employee data */
- GET_EMPLOYEES_BY_ROLES: "/api/Login/getEmployeesByRoles",
- GET_VENDORS_AND_SUBCONTRACTORS: "/api/Login/getVendorsAndSubcontractors",
 
-//Notification
+  /* Employee data */
+  GET_EMPLOYEES_BY_ROLES: "/api/Login/getEmployeesByRoles",
+  GET_VENDORS_AND_SUBCONTRACTORS: "/api/Login/getVendorsAndSubcontractors",
+
+  //Notification
   CREATE_NOTIFICATION: "/api/Notification/create-notification",
   GET_NOTIFICATION: "/api/Notification/get-notification",
   //Ticket Comment Create
@@ -51,12 +50,12 @@ export const API = {
   GET_FILTERED_BOARD_DATA: "/api/BoardManagement/boardfilter",
   GET_FILTERED_UPDATE_BOARD_DATA: "/api/UpdatesBoardList/boardfilter",
   /** GET BOQ ITEMS BY ID */
-GET_BOQ_ITEMS_BY_ID: '/api/Project/boq-items',
+  GET_BOQ_ITEMS_BY_ID: '/api/Project/boq-items',
   // LOGIN BOARD DETAILS 
   LOGIN_BOARD_DETAILS: '/api/Login/board-details',
-/** GET PURCHASE ORDER DETAILS */
-GET_PURCHASE_ORDER_DETAILS : '/api/Vendor/Getpurchase-order-details',
-GET_BOQCODE : '/api/Project/getBoqDetailsBy-BOQCode',
+  /** GET PURCHASE ORDER DETAILS */
+  GET_PURCHASE_ORDER_DETAILS: '/api/Vendor/Getpurchase-order-details',
+  GET_BOQCODE: '/api/Project/getBoqDetailsBy-BOQCode',
 
   //** BOQ Get DATA ***/
   GET_BOQ_DETAILS: "/api/Project/getBoqDetails",
@@ -74,7 +73,7 @@ GET_BOQCODE : '/api/Project/getBoqDetailsBy-BOQCode',
   ADD_DEPARTMENT: "/api/DepartmentManagement/add",
   UPDATE_DEPARTMENT: "/api/DepartmentManagement/update",
   DELETE_DEPARTMENT: "/api/DepartmentManagement/delete",
-  ADD_BOARD:"/api/BoardManagement/addboardwithlabel",
+  ADD_BOARD: "/api/BoardManagement/addboardwithlabel",
   GET_BOARD: "/api/BoardManagement/boardlist",
   EDIT_BOARD: "/api/BoardManagement/updateboardwithlabel",
   GET_DESIGNATION: "/api/Designation/designations",
@@ -93,18 +92,18 @@ GET_BOQCODE : '/api/Project/getBoqDetailsBy-BOQCode',
   GET_CUSTOMER_REGION: "/api/MarketManagement/markets",
   GET_CUSTOMER_TYPE: "/api/TypeManagement/customertypes",
   GET_PACKAGE: "/api/PackageManagement/categories",
-  STATUS_CODE_MASTER:"/api/StatusCodeMaster/statuscodemaster",
-  GET_FONT_FAMILY_MASTER:"/api/FontFamily/fonts",
-  ADD_FONT_FAMILY_MASTER:"/api/FontFamily/add",
-  UPDATE_FONT_FAMILY_MASTER:"/api/FontFamily/update",
-  DELETE_FONT_FAMILY_MASTER:"/api/FontFamily/delete",
+  STATUS_CODE_MASTER: "/api/StatusCodeMaster/statuscodemaster",
+  GET_FONT_FAMILY_MASTER: "/api/FontFamily/fonts",
+  ADD_FONT_FAMILY_MASTER: "/api/FontFamily/add",
+  UPDATE_FONT_FAMILY_MASTER: "/api/FontFamily/update",
+  DELETE_FONT_FAMILY_MASTER: "/api/FontFamily/delete",
   GET_LABELS: "/api/Label/labels",
   ADD_LABEL: "/api/Label/add",
   UPDATE_LABEL: "/api/Label/update",
   GET_CUSTOMER_LANGUAGE: "/api/Role/customerlanguage",
   GET_PRIMARY_MARKET: "/api/MarketManagement/markets",
   GET_ALL_COUNTRY_DETAIL: "/api/CountryDetail/getallcountrydetail",
-   
+
   /**** TOOLS MASTER DATA ***/
   GET_PRODUCT_TOOLS: "/api/Tool/tools",
   PLATFORMS_LIST: "/api/Tool/platforms",
@@ -143,9 +142,9 @@ GET_BOQCODE : '/api/Project/getBoqDetailsBy-BOQCode',
   CUSTOMER_SEARCH_WITH_TYPE: "/api/CustomerManagement/customersearch",
 
   /**** TOOLS MANAGEMENT ***/
-  ADD_TOOLS : '/api/ToolManagement/add-tools',
-  UPDATE_TOOLS : '/api/ToolManagement/update-tools',
-  EDITOR_VIEW_TOOL : '/api/ToolManagement/editorviewtool/id?id=',
+  ADD_TOOLS: '/api/ToolManagement/add-tools',
+  UPDATE_TOOLS: '/api/ToolManagement/update-tools',
+  EDITOR_VIEW_TOOL: '/api/ToolManagement/editorviewtool/id?id=',
   TOOLS_LIST: '/api/ToolManagement/listorgridviewtool',
   DELETE_TOOL: '/api/ToolManagement/deletetool?id=',
 
@@ -202,14 +201,14 @@ GET_BOQCODE : '/api/Project/getBoqDetailsBy-BOQCode',
   GET_ALL_UPDATES_LABEL: "/api/UpdatesMaster/getallupdateslabel",
   ADD_UPDATES_LABEL: "/api/UpdatesMaster/addupdateslabel",
 
-  /** PERIODIC UPDATES TICKET COMMENT **/  
+  /** PERIODIC UPDATES TICKET COMMENT **/
   GET_UPDATES_COMMENT_DETAILS: '/api/UpdatesTicketComment/updatesticketcommentdetails',
   ADD_UPDATE_PERIODIC_COMMENT: '/api/UpdatesTicketComment/addupdateupdatesticketcomment',
   DELETE_PERIODIC_COMMENT: '/api/UpdatesTicketComment/deleteupdatescommentdetails',
   FINANACIAL_YEAR_BASED_GET_UPDATES_COMMENT_DETAILS: '/api/UpdatesTicketComment/updatesticketcommentfinancialdetails',
 
   /** PERIODIC UPDATES TICKET MASTER **/
-  CREATE_PERIODIC_TICKET:'/api/UpdatesTicketMaster/addupdatesticket',
+  CREATE_PERIODIC_TICKET: '/api/UpdatesTicketMaster/addupdatesticket',
   PERIODIC_TICKET_FILE_UPLOAD: '/api/UpdatesTicketMaster/singlefileupload',
   PERIODIC_FILE_DOWNLOAD: 'api/UpdatesTicketMaster/filedownload',
   DELETE_PERIODIC_TICKET_ATTACHMENT: '/api/UpdatesTicketMaster/deleteupdatesticketattachmentdetail',
@@ -228,20 +227,20 @@ GET_BOQCODE : '/api/Project/getBoqDetailsBy-BOQCode',
   GET_CALENDAR_EVENTS: "/api/UpdatesTicketTool/getcalendarview",
   SAVE_EVENT_NOTES: "/api/UpdatesTicketMaster/savenotes",
   GEt_EVENT_DETAILS: "/api/UpdatesTicketMaster/event-details",
- 
+
   /** AGENCY & AGENCY USER */
   GET_ALL_AGENCY: "/api/Agency/getallagency",
   AGENCY_USER_SIGNUP: "/api/AgencyUser/addagencyuser",
   APPROVE_REJECT_AGENCY_USER: "/api/AgencyUser/approverejectagencyuser",
   GET_ALL_AGENCY_USER_LIST: "/api/AgencyUser/agencyuserdetail",
 
-  /** AGENCY & ADD WATCHLIST */  
-  ADD_WATCHLIST:"/api/AgencyTicket/addwatchlist",
+  /** AGENCY & ADD WATCHLIST */
+  ADD_WATCHLIST: "/api/AgencyTicket/addwatchlist",
   /** AGENCY & TICKET */
   GET_AGENCY_BOARD_LIST: "/api/AgencyBoard/agencyboardlist",
-  CREATE_AGENCY_TICKET:"/api/AgencyTicket/addupdateagencycard",
-  GET_AGENCY_TICKET_DETAILS:"/api/AgencyTicket/agencyticketdetails",
-  GET_AGENCY_TICKET_COMMENT_DETAILS:"/api/AgencyTicketComment/agencyticketcommentdetails",
+  CREATE_AGENCY_TICKET: "/api/AgencyTicket/addupdateagencycard",
+  GET_AGENCY_TICKET_DETAILS: "/api/AgencyTicket/agencyticketdetails",
+  GET_AGENCY_TICKET_COMMENT_DETAILS: "/api/AgencyTicketComment/agencyticketcommentdetails",
   ADD_UPDATE_AGENCY_TICKET_COMMENT: "/api/AgencyTicketComment/addupdateagencyticketcomment",
   DELETE_AGENCY_COMMENT_DETAILS: "/api/AgencyTicketComment/deleteagencycommentdetails",
   AGENCY_TICKET_SINGLE_FILE_UPLOAD: "/api/AgencyTicket/singlefileupload",
@@ -258,15 +257,29 @@ GET_BOQCODE : '/api/Project/getBoqDetailsBy-BOQCode',
   AGENCY_TOOL_SUBSCRIPTION: "/api/AgencyTicket/agency-tool-subscription",
   GET_TIME_ZONE_DETAIL: '/api/TimeZoneDetail/GetAllTimeZoneDetail',
   GET_PEERS_INDICES_SEARCH: '/api/PeerAndIndices/getpeerandindicesdetails',
-  
+
   /** AGENCY - CONTACT US */
   GET_AGENCY_ISSUETYPE: 'api/Agency/getagencyissuetype',
   SUBMIT_CONTACT_US_FORM: 'api/AgencyBoard/add-agencycontactusdetails',
 
   /**INVENTORY & MATERIALS - SITES */
   GET_APPROVED_PROJECTS_BY_EMPLOYEE: "/api/Project/get-approved-projects-by-employee",
+
   GET_ENGINEER_MATERIALS_BY_PROJECT: "/api/Material/my-project/materials",
   GET_MATERIAL_STOCK_ALERTS: "/api/MaterialStockAlerts/my-project/alerts",
   GET_MATERIAL_STATUS_BY_PROJECT: "/api/MaterialStatus/", // append {projectId}
+
+
+  // stockinward and stockoutward
+  CREATE_STOCK_INWARD: "/api/Inventory/create-stock-inward",
+  CREATE_STOCK_OUTWARD: "/api/Inventory/create-stock-outward",
+
+  // GET APIs for project-wise stock fetching
+  GET_STOCK_INWARD_BY_PROJECT: "/api/Inventory/get-stock-inward-by-project",
+  GET_STOCK_OUTWARD_BY_PROJECT: "/api/Inventory/get-stock-outward-by-project",
+
+
+
 };
+
 

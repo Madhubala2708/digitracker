@@ -51,12 +51,8 @@ export const rootReducer = combineReducers({
   aqsBoq: aqsBoqReducer,
   costEstimation: costEstimationReducer,
   aqsVendor: aqsVendorReducer,
-<<<<<<< HEAD
 
-   reportSites: reportSitesReducer,
-
-=======
   reportSites: reportSitesReducer,
     
->>>>>>> 534e5f5 (api)
+
 });

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import inTransitIcon from "../../../assets/images/intransit.jpg";
 import { useNavigate } from "react-router-dom";
-
 import { useDispatch, useSelector } from "react-redux";
 import { fetchVendorProjects } from "../../../store/slice/Aqs/aqsVendorSlice";
 

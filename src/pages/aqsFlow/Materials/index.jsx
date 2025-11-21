@@ -9,6 +9,7 @@ import AqsNotificationTab from "./NotificationTab";
 
 const AqsMaterials = () => {
   const dispatch = useDispatch();
+
   const [selectedSite, setSelectedSite] = useState("");
 
   const { projects, loading, error, statusRows, statusLoading } = useSelector(
@@ -30,16 +31,15 @@ const AqsMaterials = () => {
     dispatch(fetchMaterialStatusByProject(selectedSite));
   }, [selectedSite, dispatch]);
 
-
-
   const formatQtyForDisplay = (row) => {
-    const directIn = row?.inStockDisplay ?? row?.in_stock_display ?? row?.inStockDisplayText;
-    const directReq = row?.requiredDisplay ?? row?.required_display ?? row?.requiredDisplayText;
+    const directIn =
+      row?.inStockDisplay ?? row?.in_stock_display ?? row?.inStockDisplayText;
+    const directReq =
+      row?.requiredDisplay ?? row?.required_display ?? row?.requiredDisplayText;
     if (directIn || directReq) {
       return {
         inDisplay: directIn ?? "0 Units",
         reqDisplay: directReq ?? "0 Units",
-
       };
     }
   };
@@ -62,7 +62,10 @@ const AqsMaterials = () => {
                   {loading && <option>Loading...</option>}
                   {!loading &&
                     projects?.map((p) => (
-                      <option key={p.projectId ?? p.id} value={p.projectId ?? p.id}>
+                      <option
+                        key={p.projectId ?? p.id}
+                        value={p.projectId ?? p.id}
+                      >
                         {p.projectName ?? p.name}
                       </option>
                     ))}
@@ -80,6 +83,7 @@ const AqsMaterials = () => {
                     <th>Required Quantity</th>
                   </tr>
                 </thead>
+
                 <tbody>
                   {statusLoading ? (
                     <tr>
@@ -91,7 +95,13 @@ const AqsMaterials = () => {
                       return (
                         <tr key={idx}>
                           <td>{idx + 1}</td>
-                          <td>{r.itemName ?? r.materialName ?? r.item ?? r.name ?? "N/A"}</td>
+                          <td>
+                            {r.itemName ??
+                              r.materialName ??
+                              r.item ??
+                              r.name ??
+                              "N/A"}
+                          </td>
                           <td>{inDisplay}</td>
                           <td>{reqDisplay}</td>
                         </tr>

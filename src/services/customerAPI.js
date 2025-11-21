@@ -1,26 +1,28 @@
 import axios from "axios";
 import Config from "../config";
 import loggerService from "./logger.service";
-import { issetAuthToken, getAuthToken } from '../utils/storage';
+import { issetAuthToken, getAuthToken } from "../utils/storage";
 
 // Request methods
-const GET = 'GET';
-const POST = 'POST';
-const PUT = 'PUT';
-const DELETE = 'DELETE';
+const GET = "GET";
+const POST = "POST";
+const PUT = "PUT";
+const DELETE = "DELETE";
 
-/**
-* Set headers & base url
-*/
-export function getHttpHeader(){
+//Set headers & base url
+export function getHttpHeader() {
   // Set default headers
-  const headers = { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Timezone': Intl.DateTimeFormat().resolvedOptions().timeZone };
+  const headers = {
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*",
+    Timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  };
   return headers;
 }
 
 export const axiosBase = axios.create({
   baseURL: Config.customerBaseUrl,
-  headers: getHttpHeader()
+  headers: getHttpHeader(),
 });
 
 // Create an Axios request interceptor
@@ -30,10 +32,10 @@ axiosBase.interceptors.request.use(
 
     // Update the headers based on the user's authentication status
     if (issetAuthToken()) {
-      config.headers['Authorization'] = `Bearer ${getAuthToken()}`;
+      config.headers["Authorization"] = `Bearer ${getAuthToken()}`;
     } else {
       // Remove the Authorization header if the user is not authenticated
-      delete config.headers['Authorization'];
+      delete config.headers["Authorization"];
     }
 
     return config;
@@ -44,117 +46,119 @@ axiosBase.interceptors.request.use(
 );
 
 /**
-* Http request
-*/
-export const request = async(method, path, httpParams, body, disableLoader = false) => {
-  
+ * Http request
+ */
+export const request = async (
+  method,
+  path,
+  httpParams,
+  body,
+  disableLoader = false
+) => {
   // Console request time
-  consoleRequestResponseTime('request', Config.customerBaseUrl+''+path);
+  consoleRequestResponseTime("request", Config.customerBaseUrl + "" + path);
 
   // Check method
   switch (method) {
     // Get
     case GET:
-      return axiosBase.get(path, { params: httpParams })
-      .then(function (response) {
-        // handle success
-        const processedData = processResponseData('success', path, response);
-        return processedData;
-      })
-      .catch(function (error) {
-        // handle error
-        processResponseData('failure', path, error);
-        throw error;
-      })
-      .finally(function () {});
-    
+      return axiosBase
+        .get(path, { params: httpParams })
+        .then(function (response) {
+          // handle success
+          const processedData = processResponseData("success", path, response);
+          return processedData;
+        })
+        .catch(function (error) {
+          // handle error
+          processResponseData("failure", path, error);
+          throw error;
+        })
+        .finally(function () {});
+
     // Post
     case POST:
-      return axiosBase.post(path, body, { params: httpParams })
-      .then(function (response) {
-        // handle success
-        const processedData = processResponseData('success', path, response);
-        return processedData;
-      })
-      .catch(function (error) {
-        // handle error
-        processResponseData('failure', path, error);
-        throw error;
-      })
-      .finally(function () {});
+      return axiosBase
+        .post(path, body, { params: httpParams })
+        .then(function (response) {
+          // handle success
+          const processedData = processResponseData("success", path, response);
+          return processedData;
+        })
+        .catch(function (error) {
+          // handle error
+          processResponseData("failure", path, error);
+          throw error;
+        })
+        .finally(function () {});
 
     // Put
     case PUT:
-      return axiosBase.put(path, body, { params: httpParams })
-      .then(function (response) {
-        // handle success
-        const processedData = processResponseData('success', path, response);
-        return processedData;
-      })
-      .catch(function (error) {
-        // handle error
-        processResponseData('failure', path, error);
-        throw error;
-      })
-      .finally(function () {});
+      return axiosBase
+        .put(path, body, { params: httpParams })
+        .then(function (response) {
+          // handle success
+          const processedData = processResponseData("success", path, response);
+          return processedData;
+        })
+        .catch(function (error) {
+          // handle error
+          processResponseData("failure", path, error);
+          throw error;
+        })
+        .finally(function () {});
   }
-}
+};
 
 /**
-* Process the response data
-*/
+ * Process the response data
+ */
 export const processResponseData = (type, path, data) => {
   // If success and data is object
-  if (type === 'success') {
+  if (type === "success") {
     // data = convertNulltoEmpty(data);
     if (Config.trackHttpResponseInConsole) {
-      loggerService.showLog('Response Success');
-      loggerService.showLog(['Request Url', Config.customerBaseUrl+''+path]);
-      loggerService.showLog(['Body', data]);
+      loggerService.showLog("Response Success");
+      loggerService.showLog([
+        "Request Url",
+        Config.customerBaseUrl + "" + path,
+      ]);
+      loggerService.showLog(["Body", data]);
     }
     return data;
   } else {
     if (Config.trackHttpResponseInConsole) {
-      loggerService.showLog('Response Failure');
-      loggerService.showLog(['Url', Config.customerBaseUrl+''+path]);
-      loggerService.showLog(['Body', data]);
+      loggerService.showLog("Response Failure");
+      loggerService.showLog(["Url", Config.customerBaseUrl + "" + path]);
+      loggerService.showLog(["Body", data]);
     }
-
-    /**
-     * Show error msg if
-     * 1. Message available in service
-     * 2. Otherwise show custom error from each service request
-     * 3. Otherwise, show default message 'Service Failure'
-     */
-    // Need to Confirm params
   }
-}
+};
 
 /**
-* Convert json null to empty write console
-*/
+ * Convert json null to empty write console
+ */
 export const convertNulltoEmpty = (data) => {
   let stringifyData = JSON.stringify(data).replace(/null/i, '""');
   stringifyData = stringifyData.replace(/null/g, '""');
   const json = JSON.parse(stringifyData);
   return json;
-}
+};
 
 /**
-* Request / Response Time Tracker
-*/
+ * Request / Response Time Tracker
+ */
 const consoleRequestResponseTime = (type, url) => {
   if (Config.trackHttpTimeInConsole) {
-    if (type === 'request') {
-      console.log('Request Url', url);
-      console.log('Time Started', new Date());
+    if (type === "request") {
+      console.log("Request Url", url);
+      console.log("Time Started", new Date());
     } else {
-      console.log('Response Url', url);
-      console.log('Time Ended', new Date());
+      console.log("Response Url", url);
+      console.log("Time Ended", new Date());
     }
   }
-}
-
+};
 
 export default {
   GET: (path, ...props) => request(GET, path, ...props),

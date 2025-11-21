@@ -1,6 +1,3 @@
-
-// src/store/slice/inventorySlice.js
-
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
   getApprovedProjectsByEmployee,
@@ -71,7 +68,6 @@ export const fetchStockOutwards = createAsyncThunk(
   }
 );
 
-
 //  5. CREATE STOCK INWARD
 export const addStockInward = createAsyncThunk(
   "inventory/addStockInward",
@@ -86,7 +82,6 @@ export const addStockInward = createAsyncThunk(
     }
   }
 );
-
 
 //  6. CREATE STOCK OUTWARD
 export const addStockOutward = createAsyncThunk(
@@ -103,7 +98,6 @@ export const addStockOutward = createAsyncThunk(
   }
 );
 
-
 //  7. FETCH PROJECT TEAM (MD, CEO, Engineer, etc)
 export const fetchProjectTeam = createAsyncThunk(
   "inventory/fetchProjectTeam",
@@ -113,7 +107,7 @@ export const fetchProjectTeam = createAsyncThunk(
 
       console.log("TEAM API RAW RESPONSE →", response.data);
 
-      return response.data || [];  // DIRECT ARRAY
+      return response.data || []; // DIRECT ARRAY
     } catch (err) {
       return thunkAPI.rejectWithValue(
         err.response?.data || "Error fetching team"
@@ -121,7 +115,6 @@ export const fetchProjectTeam = createAsyncThunk(
     }
   }
 );
-
 
 //  SLICE
 const inventorySlice = createSlice({

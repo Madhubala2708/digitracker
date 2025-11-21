@@ -91,26 +91,26 @@ const MaterialCreateScreen = () => {
       dispatch(getEmployeeRoles(projectId))
         .unwrap()
         .then((result) => {
-          // The API response seems to have the roles directly, not under employeesByRole
-          const employeesByRole = result; // Changed this line
+          console.log("RAW API RESPONSE FROM BACKEND:", result);
+          console.log("AQS DATA:", result?.AssistantQuantitySurveyor);
 
-          const APPROVER_ROLE_CODES = [
-            "CEO",
-            "HEADFINANCE",
-            "MD",
-            "PROJECTMANAGER",
-            "AQS",
-          ];
+          // The API response seems to have the roles directly, not under employeesByRole
+          const employeesByRole = result;
 
           const approverList = [];
 
-          for (const roleGroup of Object.values(employeesByRole)) {
-            if (Array.isArray(roleGroup)) {
-              roleGroup.forEach((employee) => {
-                if (APPROVER_ROLE_CODES.includes(employee.role_code)) {
+          // Add Engineer approvers
+          for (const [key, value] of Object.entries(employeesByRole)) {
+            if (Array.isArray(value)) {
+              value.forEach((employee) => {
+                if (
+                  ["CEO", "HEADFINANCE", "MD", "PROJECTMANAGER"].includes(
+                    employee.role_code
+                  )
+                ) {
                   approverList.push({
                     value: employee.emp_id,
-                    label: `${employee.role_name}`,
+                    label: employee.role_name,
                     empId: employee.emp_id,
                   });
                 }
@@ -118,7 +118,31 @@ const MaterialCreateScreen = () => {
             }
           }
 
-          setInitialApproverArray(approverList);
+          // ADD AQS if exists
+          if (
+            employeesByRole.AssistantQuantitySurveyor &&
+            employeesByRole.AssistantQuantitySurveyor.length > 0
+          ) {
+            const aqsEmployee = employeesByRole.AssistantQuantitySurveyor[0];
+            approverList.push({
+              value: aqsEmployee.emp_id,
+              label: aqsEmployee.role_name,
+              empId: aqsEmployee.emp_id,
+            });
+          }
+
+          // remove duplicates
+          const unique = [];
+          const found = new Set();
+
+          for (const item of approverList) {
+            if (!found.has(item.empId)) {
+              found.add(item.empId);
+              unique.push(item);
+            }
+          }
+
+          setInitialApproverArray(unique);
         })
         .catch((error) => {
           console.error("Failed to fetch employees:", error);
@@ -180,11 +204,12 @@ const MaterialCreateScreen = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       if (validationErrors.title) toast.warn("Please enter a title.");
       if (validationErrors.vendor) toast.warn("Please select a vendor.");
-      if (validationErrors.approver) toast.warn("Please select at least one approver.");
+      if (validationErrors.approver)
+        toast.warn("Please select at least one approver.");
       return;
     }
 
@@ -222,7 +247,7 @@ const MaterialCreateScreen = () => {
         toast.success("BOQ created successfully.");
         const boqId = boqResponse?.payload?.data?.boqId;
 
-        // ✅ Step 2: Create Ticket with error handling
+        // Step 2: Create Ticket with error handling
         try {
           const ticketResponse = await createTicket({
             boqId: boqId,
@@ -255,30 +280,33 @@ const MaterialCreateScreen = () => {
 
             // Step 4: Fetch Ticket Details and Navigate
             try {
-              const ticketDetails = await dispatch(
-                getticketbyidAction(ticketId)
-              ).unwrap();
+              const ticketId = ticketResponse?.data?.data?.ticketId;
 
-              setTimeout(() => {
-                navigate(`../ticket/${ticketId}`, {
+              // ALWAYS show in Engineer Approval page
+              navigate("/admin/engineerapprovals", {
+                state: {
+                  from: "engineer",
+                  ticketId,
+                  flow: selectedApprover.map((a) => a.empId),
+                },
+              });
+
+              // IF approver includes AQS → also show in AQS approval page
+              const hasAqs = selectedApprover.some(
+                (a) => a.label === "Assistant QS" || a.label === "AQS"
+              );
+
+              if (hasAqs) {
+                navigate("/aqs/aqsapprovals", {
                   state: {
-                    ticket: ticketDetails,
-                    from: "kanban",
-                    boqId: boqId,
+                    from: "engineer",
+                    ticketId,
+                    flow: selectedApprover.map((a) => a.empId),
                   },
                 });
-              }, 500);
-            } catch (detailsError) {
-              console.error("Failed to fetch ticket details:", detailsError);
-              // Still navigate even if details fetch fails
-              setTimeout(() => {
-                navigate(`../ticket/${ticketId}`, {
-                  state: {
-                    from: "kanban",
-                    boqId: boqId,
-                  },
-                });
-              }, 500);
+              }
+            } catch (err) {
+              console.error("Navigation Error:", err);
             }
 
             // Reset form
@@ -289,20 +317,22 @@ const MaterialCreateScreen = () => {
             setSelectedVendorId("");
             setSelectedApprover([]);
           } else {
-            // ✅ If ticket creation fails, still show BOQ success
-            toast.error(ticketResponse?.data?.message || "Ticket creation failed.");
+            // If ticket creation fails, still show BOQ success
+            toast.error(
+              ticketResponse?.data?.message || "Ticket creation failed."
+            );
             console.error("Ticket creation error:", ticketResponse?.data);
-            
+
             // Navigate to material page after BOQ creation
             setTimeout(() => {
               navigate("/admin/engineermaterial");
             }, 1500);
           }
         } catch (ticketError) {
-          // ✅ Catch ticket creation error
+          // Catch ticket creation error
           console.error("Ticket API Error:", ticketError);
           toast.error("Ticket creation failed. Please contact support.");
-          
+
           // Navigate to material page with BOQ created
           setTimeout(() => {
             navigate("/admin/engineermaterial");

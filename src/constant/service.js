@@ -18,15 +18,13 @@ export const API = {
   GET_TICKET_LABELS: "/api/Login/labels-with-tickets",
   CREATE_NEW_TICKET_TASK: "/api/Ticket/create-custom-ticket",
 
-  UPDATE_PROJECT_APPROVAL: '/api/Ticket/update-ticket-by-id',
+  UPDATE_PROJECT_APPROVAL: "/api/Ticket/update-ticket-by-id",
   UPSERTRISK_UPLOAD: "/api/Project/upsertRisk",
   //department //
   GET_DEPARTMENTS: "/api/Department/get-department",
   GET_DEPARTMENTS_BY_ID: "/api/Login/getEmployeesByDepartment/",
   /*PM FLOW  */
   GET_PROJECT_DETAILS: "/api/Project/getProjectDetails",
-
-
 
   /* Employee data */
   GET_EMPLOYEES_BY_ROLES: "/api/Login/getEmployeesByRoles",
@@ -53,12 +51,12 @@ export const API = {
   GET_FILTERED_UPDATE_BOARD_DATA: "/api/UpdatesBoardList/boardfilter",
   /** GET BOQ ITEMS BY ID */
 
-  GET_BOQ_ITEMS_BY_ID: '/api/Project/boq-items',
-  // LOGIN BOARD DETAILS 
-  LOGIN_BOARD_DETAILS: '/api/Login/board-details',
+  GET_BOQ_ITEMS_BY_ID: "/api/Project/boq-items",
+  // LOGIN BOARD DETAILS
+  LOGIN_BOARD_DETAILS: "/api/Login/board-details",
   /** GET PURCHASE ORDER DETAILS */
-  GET_PURCHASE_ORDER_DETAILS: '/api/Vendor/Getpurchase-order-details',
-  GET_BOQCODE: '/api/Project/getBoqDetailsBy-BOQCode',
+  GET_PURCHASE_ORDER_DETAILS: "/api/Vendor/Getpurchase-order-details",
+  GET_BOQCODE: "/api/Project/getBoqDetailsBy-BOQCode",
 
   //** BOQ Get DATA ***/
   GET_BOQ_DETAILS: "/api/Project/getBoqDetails",
@@ -146,11 +144,11 @@ export const API = {
 
   /**** TOOLS MANAGEMENT ***/
 
-  ADD_TOOLS: '/api/ToolManagement/add-tools',
-  UPDATE_TOOLS: '/api/ToolManagement/update-tools',
-  EDITOR_VIEW_TOOL: '/api/ToolManagement/editorviewtool/id?id=',
-  TOOLS_LIST: '/api/ToolManagement/listorgridviewtool',
-  DELETE_TOOL: '/api/ToolManagement/deletetool?id=',
+  ADD_TOOLS: "/api/ToolManagement/add-tools",
+  UPDATE_TOOLS: "/api/ToolManagement/update-tools",
+  EDITOR_VIEW_TOOL: "/api/ToolManagement/editorviewtool/id?id=",
+  TOOLS_LIST: "/api/ToolManagement/listorgridviewtool",
+  DELETE_TOOL: "/api/ToolManagement/deletetool?id=",
 
   /** TASK/TICKET MANAGEMENT */
   ADD_TICKET: "/api/Ticket/createTicket",
@@ -212,24 +210,32 @@ export const API = {
 
   /** PERIODIC UPDATES TICKET COMMENT **/
 
-  GET_UPDATES_COMMENT_DETAILS: '/api/UpdatesTicketComment/updatesticketcommentdetails',
-  ADD_UPDATE_PERIODIC_COMMENT: '/api/UpdatesTicketComment/addupdateupdatesticketcomment',
-  DELETE_PERIODIC_COMMENT: '/api/UpdatesTicketComment/deleteupdatescommentdetails',
-  FINANACIAL_YEAR_BASED_GET_UPDATES_COMMENT_DETAILS: '/api/UpdatesTicketComment/updatesticketcommentfinancialdetails',
+  GET_UPDATES_COMMENT_DETAILS:
+    "/api/UpdatesTicketComment/updatesticketcommentdetails",
+  ADD_UPDATE_PERIODIC_COMMENT:
+    "/api/UpdatesTicketComment/addupdateupdatesticketcomment",
+  DELETE_PERIODIC_COMMENT:
+    "/api/UpdatesTicketComment/deleteupdatescommentdetails",
+  FINANACIAL_YEAR_BASED_GET_UPDATES_COMMENT_DETAILS:
+    "/api/UpdatesTicketComment/updatesticketcommentfinancialdetails",
 
   /** PERIODIC UPDATES TICKET MASTER **/
-  CREATE_PERIODIC_TICKET: '/api/UpdatesTicketMaster/addupdatesticket',
-  PERIODIC_TICKET_FILE_UPLOAD: '/api/UpdatesTicketMaster/singlefileupload',
-  PERIODIC_FILE_DOWNLOAD: 'api/UpdatesTicketMaster/filedownload',
-  DELETE_PERIODIC_TICKET_ATTACHMENT: '/api/UpdatesTicketMaster/deleteupdatesticketattachmentdetail',
-  GET_PERIODIC_TICKET_DETAILS: '/api/UpdatesTicketMaster/ticket-details',
-  PERIODIC_MOVE_TICKET: '/api/UpdatesTicketMaster/moveticket',
-  PERIODIC_TICKET_DUEDATE_UPDATE: '/api/UpdatesTicketMaster/updateduedate',
-  ADD_UPDATE_TICKET_TOOL_DETAIL: '/api/UpdatesTicketTool/addupdatetickettooldetail',
-  ADD_REMOVE_PARTICIPANT: '/api/UpdatesTicketMaster/addremoveparticipant',
-  UPDATE_ASSIGNEE_TICKET_DETAIL: '/api/UpdatesTicketMaster/updateassigneeticketdetail',
-  PERIODIC_UPDATES_MARKET_REGIONS: '/api/UpdatesMaster/getupdatesmarketdetails',
-  UPDATES_REQUIREMENT_FORM_DETAILS: '/api/UpdatesTicketMaster/requirement-details',
+  CREATE_PERIODIC_TICKET: "/api/UpdatesTicketMaster/addupdatesticket",
+  PERIODIC_TICKET_FILE_UPLOAD: "/api/UpdatesTicketMaster/singlefileupload",
+  PERIODIC_FILE_DOWNLOAD: "api/UpdatesTicketMaster/filedownload",
+  DELETE_PERIODIC_TICKET_ATTACHMENT:
+    "/api/UpdatesTicketMaster/deleteupdatesticketattachmentdetail",
+  GET_PERIODIC_TICKET_DETAILS: "/api/UpdatesTicketMaster/ticket-details",
+  PERIODIC_MOVE_TICKET: "/api/UpdatesTicketMaster/moveticket",
+  PERIODIC_TICKET_DUEDATE_UPDATE: "/api/UpdatesTicketMaster/updateduedate",
+  ADD_UPDATE_TICKET_TOOL_DETAIL:
+    "/api/UpdatesTicketTool/addupdatetickettooldetail",
+  ADD_REMOVE_PARTICIPANT: "/api/UpdatesTicketMaster/addremoveparticipant",
+  UPDATE_ASSIGNEE_TICKET_DETAIL:
+    "/api/UpdatesTicketMaster/updateassigneeticketdetail",
+  PERIODIC_UPDATES_MARKET_REGIONS: "/api/UpdatesMaster/getupdatesmarketdetails",
+  UPDATES_REQUIREMENT_FORM_DETAILS:
+    "/api/UpdatesTicketMaster/requirement-details",
   GET_ATTACHEMENT_FILES: "/api/UpdatesTicketMaster/getattachementfiles",
   GET_TOOLS_RELEASE_HISTORY: "/api/UpdatesTicketMaster/toolsreleasehistory",
 
@@ -250,9 +256,12 @@ export const API = {
   GET_AGENCY_BOARD_LIST: "/api/AgencyBoard/agencyboardlist",
   CREATE_AGENCY_TICKET: "/api/AgencyTicket/addupdateagencycard",
   GET_AGENCY_TICKET_DETAILS: "/api/AgencyTicket/agencyticketdetails",
-  GET_AGENCY_TICKET_COMMENT_DETAILS: "/api/AgencyTicketComment/agencyticketcommentdetails",
-  ADD_UPDATE_AGENCY_TICKET_COMMENT: "/api/AgencyTicketComment/addupdateagencyticketcomment",
-  DELETE_AGENCY_COMMENT_DETAILS: "/api/AgencyTicketComment/deleteagencycommentdetails",
+  GET_AGENCY_TICKET_COMMENT_DETAILS:
+    "/api/AgencyTicketComment/agencyticketcommentdetails",
+  ADD_UPDATE_AGENCY_TICKET_COMMENT:
+    "/api/AgencyTicketComment/addupdateagencyticketcomment",
+  DELETE_AGENCY_COMMENT_DETAILS:
+    "/api/AgencyTicketComment/deleteagencycommentdetails",
   AGENCY_TICKET_SINGLE_FILE_UPLOAD: "/api/AgencyTicket/singlefileupload",
   GET_AGENCY_ALL_PACKAGES: "/api/AgencyPackage/getallagencypackage",
   GET_ALL_AGENCY_LABELS: "/api/AgencyTicket/getallagencylabels",
@@ -268,8 +277,8 @@ export const API = {
   AGENCY_ADD_UPDATE_PACKAGE: "/api/AgencyPackage/addupdateagency",
   AGENCY_TOOL_SUBSCRIPTION: "/api/AgencyTicket/agency-tool-subscription",
 
-  GET_TIME_ZONE_DETAIL: '/api/TimeZoneDetail/GetAllTimeZoneDetail',
-  GET_PEERS_INDICES_SEARCH: '/api/PeerAndIndices/getpeerandindicesdetails',
+  GET_TIME_ZONE_DETAIL: "/api/TimeZoneDetail/GetAllTimeZoneDetail",
+  GET_PEERS_INDICES_SEARCH: "/api/PeerAndIndices/getpeerandindicesdetails",
 
   /** AGENCY - CONTACT US */
   GET_AGENCY_ISSUETYPE: "api/Agency/getagencyissuetype",
@@ -277,12 +286,12 @@ export const API = {
 
   /**INVENTORY & MATERIALS - SITES */
 
-  GET_APPROVED_PROJECTS_BY_EMPLOYEE: "/api/Project/get-approved-projects-by-employee",
+  GET_APPROVED_PROJECTS_BY_EMPLOYEE:
+    "/api/Project/get-approved-projects-by-employee",
 
   GET_ENGINEER_MATERIALS_BY_PROJECT: "/api/Material/my-project/materials",
   GET_MATERIAL_STOCK_ALERTS: "/api/MaterialStockAlerts/my-project/alerts",
   GET_MATERIAL_STATUS_BY_PROJECT: "/api/MaterialStatus/", // append {projectId}
-
 
   // stockinward and stockoutward
   CREATE_STOCK_INWARD: "/api/Inventory/create-stock-inward",
@@ -291,7 +300,4 @@ export const API = {
   // GET APIs for project-wise stock fetching
   GET_STOCK_INWARD_BY_PROJECT: "/api/Inventory/get-stock-inward-by-project",
   GET_STOCK_OUTWARD_BY_PROJECT: "/api/Inventory/get-stock-outward-by-project",
-
 };
-
-

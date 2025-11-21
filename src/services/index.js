@@ -6,7 +6,6 @@ import { API } from "../constant/service";
 import { objectToQueryString } from "../utils/common";
 import { engineerMaterialsAPI } from "./engineerMaterialsAPI";
 
-
 /**
  *
  * @param {Record<string, any>} params
@@ -34,7 +33,6 @@ export const getDepartmentsById = (id) => {
 export const getPurchaseOrderDetails = (purchaseOrderId) =>
   api.GET(`${API.GET_PURCHASE_ORDER_DETAILS}/${purchaseOrderId}`);
 
-
 // boq apis
 
 export const getBoqDetails = (boqId) => {
@@ -57,7 +55,7 @@ export const crateFinanceApproved = (params) =>
   api.POST(API.CREATE_FINACIAL_APPROVAL, params);
 export const createProjectMilestone = (params) =>
   api.POST(API.CREATE_PROJECT_MILESTONE, params);
-export const createUploadFiles = (params) => 
+export const createUploadFiles = (params) =>
   api.POST(API.UPSERTRISK_UPLOAD, params);
 /** Tickets Comments Create */
 export const createTicketsDetails = (params) =>
@@ -74,8 +72,8 @@ export const getTicketById = (ticketId) => {
 };
 
 //BOQCODE
-export const getBoqCode = (params) => api.GET(API.GET_BOQCODE + "/" + params.boqCode,params);
-
+export const getBoqCode = (params) =>
+  api.GET(API.GET_BOQCODE + "/" + params.boqCode, params);
 
 export const getTicketLabels = (params) =>
   api.GET(API.GET_TICKET_LABELS + "/" + params.empId, params);
@@ -98,7 +96,6 @@ export const getroles = (params) => api.GET(API.GET_ROLE, params);
 export const loginBoardDetails = (params) =>
   api.GET(API.LOGIN_BOARD_DETAILS + "/" + params);
 
-
 /** BOQ ITEMS BY ID */
 export const getBoqItemsById = (params) =>
   api.GET(API.GET_BOQ_ITEMS_BY_ID + "/" + params);
@@ -107,8 +104,10 @@ export const getBoqItemsById = (params) =>
 export const getPmProjectDetails = (params) =>
   api.GET(API.GET_PROJECT_DETAILS, params);
 //notification
-export const createNotification = (params) => api.POST(API.CREATE_NOTIFICATION, params);
-export const getnotification = (params) => api.GET(API.GET_NOTIFICATION + "?UserId=" + params);
+export const createNotification = (params) =>
+  api.POST(API.CREATE_NOTIFICATION, params);
+export const getnotification = (params) =>
+  api.GET(API.GET_NOTIFICATION + "?UserId=" + params);
 
 /** KANBAN BOARD */
 export const getAllBoard = (params) => api.GET(API.GET_ALL_BOARD, params);
@@ -569,6 +568,5 @@ export * from "./aqsBoqAPI";
 export { costEstimationAPI } from "./costEstimationAPI";
 export { vendorAPI } from "./vendorAPI";
 export { reportAPI } from "./reportAPI";
-
 export { default as aqsmaterialsAPI, getMaterialProjects, getMaterialStatusByProject } from "./aqsmaterialsAPI";
 

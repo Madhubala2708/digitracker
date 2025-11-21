@@ -17,14 +17,14 @@ export const API = {
   GET_TICKET_BY_ID: "/api/Ticket/get-ticket-by-id",
   GET_TICKET_LABELS: "/api/Login/labels-with-tickets",
   CREATE_NEW_TICKET_TASK: "/api/Ticket/create-custom-ticket",
-  UPDATE_PROJECT_APPROVAL: '/api/Ticket/update-ticket-by-id',
+
+  UPDATE_PROJECT_APPROVAL: "/api/Ticket/update-ticket-by-id",
   UPSERTRISK_UPLOAD: "/api/Project/upsertRisk",
   //department //
   GET_DEPARTMENTS: "/api/Department/get-department",
   GET_DEPARTMENTS_BY_ID: "/api/Login/getEmployeesByDepartment/",
   /*PM FLOW  */
   GET_PROJECT_DETAILS: "/api/Project/getProjectDetails",
-
 
   /* Employee data */
   GET_EMPLOYEES_BY_ROLES: "/api/Login/getEmployeesByRoles",
@@ -34,7 +34,7 @@ export const API = {
   CREATE_NOTIFICATION: "/api/Notification/create-notification",
   GET_NOTIFICATION: "/api/Notification/get-notification",
   //Ticket Comment Create
-  CREATE_TICKET_DETAILS: '/api/Ticket/add-comment-attachment',
+  CREATE_TICKET_DETAILS: "/api/Ticket/add-comment-attachment",
 
   /** KANBAN */
   GET_ALL_BOARD: "/api/BoardManagement/boards",
@@ -50,12 +50,13 @@ export const API = {
   GET_FILTERED_BOARD_DATA: "/api/BoardManagement/boardfilter",
   GET_FILTERED_UPDATE_BOARD_DATA: "/api/UpdatesBoardList/boardfilter",
   /** GET BOQ ITEMS BY ID */
-  GET_BOQ_ITEMS_BY_ID: '/api/Project/boq-items',
-  // LOGIN BOARD DETAILS 
-  LOGIN_BOARD_DETAILS: '/api/Login/board-details',
+
+  GET_BOQ_ITEMS_BY_ID: "/api/Project/boq-items",
+  // LOGIN BOARD DETAILS
+  LOGIN_BOARD_DETAILS: "/api/Login/board-details",
   /** GET PURCHASE ORDER DETAILS */
-  GET_PURCHASE_ORDER_DETAILS: '/api/Vendor/Getpurchase-order-details',
-  GET_BOQCODE: '/api/Project/getBoqDetailsBy-BOQCode',
+  GET_PURCHASE_ORDER_DETAILS: "/api/Vendor/Getpurchase-order-details",
+  GET_BOQCODE: "/api/Project/getBoqDetailsBy-BOQCode",
 
   //** BOQ Get DATA ***/
   GET_BOQ_DETAILS: "/api/Project/getBoqDetails",
@@ -142,86 +143,101 @@ export const API = {
   CUSTOMER_SEARCH_WITH_TYPE: "/api/CustomerManagement/customersearch",
 
   /**** TOOLS MANAGEMENT ***/
-  ADD_TOOLS: '/api/ToolManagement/add-tools',
-  UPDATE_TOOLS: '/api/ToolManagement/update-tools',
-  EDITOR_VIEW_TOOL: '/api/ToolManagement/editorviewtool/id?id=',
-  TOOLS_LIST: '/api/ToolManagement/listorgridviewtool',
-  DELETE_TOOL: '/api/ToolManagement/deletetool?id=',
+
+  ADD_TOOLS: "/api/ToolManagement/add-tools",
+  UPDATE_TOOLS: "/api/ToolManagement/update-tools",
+  EDITOR_VIEW_TOOL: "/api/ToolManagement/editorviewtool/id?id=",
+  TOOLS_LIST: "/api/ToolManagement/listorgridviewtool",
+  DELETE_TOOL: "/api/ToolManagement/deletetool?id=",
 
   /** TASK/TICKET MANAGEMENT */
-  ADD_TICKET: '/api/Ticket/createTicket',
-  UPDATE_TICKET: '/api/TicketManagement/update-ticket',
-  SUGGESTED_MEMBERS: '/api/TicketManagement/suggested-members',
-  CUSTOMER_SEARCH: '/api/TicketManagement/ticketcustomers?customersearch=',
-  GET_TICKET_DETAILS: '/api/TicketManagement/ticket-details',
-  UPDATE_TICKET_SALES_DATA: '/api/TicketManagement/add-update-ticket-detail',
-  UPDATE_TICKET_COMMON_DATA: '/api/TicketManagement/add-update-common-data',
-  GET_PACKAGE_TOOL_DETAILS: '/api/TicketManagement/package-tool-details',
-  TICKET_FILE_UPLOAD: '/api/TicketManagement/single-file-upload',
-  DELETE_TICKET_ATTACHMENT: '/api/TicketManagement/deleteticketattachmentdetail',
-  FILE_DOWNLOAD: '/api/TicketManagement/filedownload',
-  CUSTOMER_LATEST_ORDER_ID: '/api/TicketManagement/customerlatestorderid',
-  UPDATE_CUSTOMER_ORDER_ID: '/api/TicketManagement/updatecustomerorderid',
+  ADD_TICKET: "/api/Ticket/createTicket",
+  UPDATE_TICKET: "/api/TicketManagement/update-ticket",
+  SUGGESTED_MEMBERS: "/api/TicketManagement/suggested-members",
+  CUSTOMER_SEARCH: "/api/TicketManagement/ticketcustomers?customersearch=",
+  GET_TICKET_DETAILS: "/api/TicketManagement/ticket-details",
+  UPDATE_TICKET_SALES_DATA: "/api/TicketManagement/add-update-ticket-detail",
+  UPDATE_TICKET_COMMON_DATA: "/api/TicketManagement/add-update-common-data",
+  GET_PACKAGE_TOOL_DETAILS: "/api/TicketManagement/package-tool-details",
+  TICKET_FILE_UPLOAD: "/api/TicketManagement/single-file-upload",
+  DELETE_TICKET_ATTACHMENT:
+    "/api/TicketManagement/deleteticketattachmentdetail",
+  FILE_DOWNLOAD: "/api/TicketManagement/filedownload",
+  CUSTOMER_LATEST_ORDER_ID: "/api/TicketManagement/customerlatestorderid",
+  UPDATE_CUSTOMER_ORDER_ID: "/api/TicketManagement/updatecustomerorderid",
 
   /** TOOL TICKET MANAGEMENT */
-  UPDATE_TOOL_TICKET: '/api/TicketToolManagement/upserttoolticket',
-  TOOL_FILE_UPLOAD: '/api/TicketToolManagement/attachments',
-  MOVE_TICKET: '/api/TicketToolManagement/moveticket',
-  GET_COMMENT_DETAILS: '/api/TicketToolManagement/ticketcommentdetails',
-  ADD_UPDATE_COMMENT: '/api/TicketToolManagement/addupdatecomment',
-  DELETE_COMMENT: '/api/TicketToolManagement/deletecommentdetails',
-  DELETE_TOOL_ATTACHMENT: '/api/TicketToolManagement/deletetickettoolattachmentdetail',
-  ADD_ASSIGNEE_STATUS: '/api/TicketToolManagement/addassigneestatus',
-  DATA_DEPENDENCY_ADD: '/api/TicketToolManagement/addupdateteam',
-  DATA_DEPENDENCY_STATUS: '/api/TicketToolManagement/addupdateteamstatus',
+  UPDATE_TOOL_TICKET: "/api/TicketToolManagement/upserttoolticket",
+  TOOL_FILE_UPLOAD: "/api/TicketToolManagement/attachments",
+  MOVE_TICKET: "/api/TicketToolManagement/moveticket",
+  GET_COMMENT_DETAILS: "/api/TicketToolManagement/ticketcommentdetails",
+  ADD_UPDATE_COMMENT: "/api/TicketToolManagement/addupdatecomment",
+  DELETE_COMMENT: "/api/TicketToolManagement/deletecommentdetails",
+  DELETE_TOOL_ATTACHMENT:
+    "/api/TicketToolManagement/deletetickettoolattachmentdetail",
+  ADD_ASSIGNEE_STATUS: "/api/TicketToolManagement/addassigneestatus",
+  DATA_DEPENDENCY_ADD: "/api/TicketToolManagement/addupdateteam",
+  DATA_DEPENDENCY_STATUS: "/api/TicketToolManagement/addupdateteamstatus",
 
   /** SUBSCRIPTION/PACKAGE */
-  GET_ALL_PACKAGES: '/api/TicketManagement/package-details',
-  ADD_PACKAGE: '/api/TicketManagement/add-packages',
-  UPDATE_PACKAGE: '/api/TicketManagement/update-packages',
-  DELETE_PACKAGE: '/api/TicketManagement/delete_packages?id=',
+  GET_ALL_PACKAGES: "/api/TicketManagement/package-details",
+  ADD_PACKAGE: "/api/TicketManagement/add-packages",
+  UPDATE_PACKAGE: "/api/TicketManagement/update-packages",
+  DELETE_PACKAGE: "/api/TicketManagement/delete_packages?id=",
 
   /** NOTIFICATION */
-  GET_RECENT_NOTIFICATION: '/api/TicketManagement/getnotification',
-  UPDATE_NOTIFICATION: '/api/TicketManagement/updatenotification',
+  GET_RECENT_NOTIFICATION: "/api/TicketManagement/getnotification",
+  UPDATE_NOTIFICATION: "/api/TicketManagement/updatenotification",
   GET_PUSH_NOTIFICATION: "/api/TicketManagement/getpushnotification",
-  GET_PAGE_NOTIFICATION: '/api/TicketManagement/getpagenotification',
+  GET_PAGE_NOTIFICATION: "/api/TicketManagement/getpagenotification",
 
   /** PERIODIC UPDATES BOARD **/
   GET_PERIODIC_BOARD_LIST: "/api/UpdatesBoardList/boardlist",
   UPDATE_PERIODIC_BOARD_DEFAULT: "/api/UpdatesBoardList/setdefaultupdatesboard",
-  GET_PERIODIC_TICKET_BY_BOARD_LABEL: "/api/UpdatesBoardList/ticketsbyboardlabel",
-  PERIODIC_BOARD_STATUS_MOVEMENT: "/api/UpdatesBoardList/getboardstatusmovement",
-  TICKETS_BY_BOARD_PARTICIPANTS: "/api/UpdatesBoardList/ticketsbyboardParticipants",
+  GET_PERIODIC_TICKET_BY_BOARD_LABEL:
+    "/api/UpdatesBoardList/ticketsbyboardlabel",
+  PERIODIC_BOARD_STATUS_MOVEMENT:
+    "/api/UpdatesBoardList/getboardstatusmovement",
+  TICKETS_BY_BOARD_PARTICIPANTS:
+    "/api/UpdatesBoardList/ticketsbyboardParticipants",
 
   /** PERIODIC UPDATES MASTER**/
-  PERIODIC_TOOLS_MASTER: '/api/UpdatesMaster/updatestools',
-  PERIODIC_DETAILS_MASTER: '/api/UpdatesMaster/allperiodicdetail',
+  PERIODIC_TOOLS_MASTER: "/api/UpdatesMaster/updatestools",
+  PERIODIC_DETAILS_MASTER: "/api/UpdatesMaster/allperiodicdetail",
   UPDATE_DEFAULT_WORKSPACE: "/api/UpdatesMaster/setdefaultworkspace",
   GET_ALL_UPDATES_LABEL: "/api/UpdatesMaster/getallupdateslabel",
   ADD_UPDATES_LABEL: "/api/UpdatesMaster/addupdateslabel",
 
   /** PERIODIC UPDATES TICKET COMMENT **/
-  GET_UPDATES_COMMENT_DETAILS: '/api/UpdatesTicketComment/updatesticketcommentdetails',
-  ADD_UPDATE_PERIODIC_COMMENT: '/api/UpdatesTicketComment/addupdateupdatesticketcomment',
-  DELETE_PERIODIC_COMMENT: '/api/UpdatesTicketComment/deleteupdatescommentdetails',
-  FINANACIAL_YEAR_BASED_GET_UPDATES_COMMENT_DETAILS: '/api/UpdatesTicketComment/updatesticketcommentfinancialdetails',
+
+  GET_UPDATES_COMMENT_DETAILS:
+    "/api/UpdatesTicketComment/updatesticketcommentdetails",
+  ADD_UPDATE_PERIODIC_COMMENT:
+    "/api/UpdatesTicketComment/addupdateupdatesticketcomment",
+  DELETE_PERIODIC_COMMENT:
+    "/api/UpdatesTicketComment/deleteupdatescommentdetails",
+  FINANACIAL_YEAR_BASED_GET_UPDATES_COMMENT_DETAILS:
+    "/api/UpdatesTicketComment/updatesticketcommentfinancialdetails",
 
   /** PERIODIC UPDATES TICKET MASTER **/
-  CREATE_PERIODIC_TICKET: '/api/UpdatesTicketMaster/addupdatesticket',
-  PERIODIC_TICKET_FILE_UPLOAD: '/api/UpdatesTicketMaster/singlefileupload',
-  PERIODIC_FILE_DOWNLOAD: 'api/UpdatesTicketMaster/filedownload',
-  DELETE_PERIODIC_TICKET_ATTACHMENT: '/api/UpdatesTicketMaster/deleteupdatesticketattachmentdetail',
-  GET_PERIODIC_TICKET_DETAILS: '/api/UpdatesTicketMaster/ticket-details',
-  PERIODIC_MOVE_TICKET: '/api/UpdatesTicketMaster/moveticket',
-  PERIODIC_TICKET_DUEDATE_UPDATE: '/api/UpdatesTicketMaster/updateduedate',
-  ADD_UPDATE_TICKET_TOOL_DETAIL: '/api/UpdatesTicketTool/addupdatetickettooldetail',
-  ADD_REMOVE_PARTICIPANT: '/api/UpdatesTicketMaster/addremoveparticipant',
-  UPDATE_ASSIGNEE_TICKET_DETAIL: '/api/UpdatesTicketMaster/updateassigneeticketdetail',
-  PERIODIC_UPDATES_MARKET_REGIONS: '/api/UpdatesMaster/getupdatesmarketdetails',
-  UPDATES_REQUIREMENT_FORM_DETAILS: '/api/UpdatesTicketMaster/requirement-details',
+  CREATE_PERIODIC_TICKET: "/api/UpdatesTicketMaster/addupdatesticket",
+  PERIODIC_TICKET_FILE_UPLOAD: "/api/UpdatesTicketMaster/singlefileupload",
+  PERIODIC_FILE_DOWNLOAD: "api/UpdatesTicketMaster/filedownload",
+  DELETE_PERIODIC_TICKET_ATTACHMENT:
+    "/api/UpdatesTicketMaster/deleteupdatesticketattachmentdetail",
+  GET_PERIODIC_TICKET_DETAILS: "/api/UpdatesTicketMaster/ticket-details",
+  PERIODIC_MOVE_TICKET: "/api/UpdatesTicketMaster/moveticket",
+  PERIODIC_TICKET_DUEDATE_UPDATE: "/api/UpdatesTicketMaster/updateduedate",
+  ADD_UPDATE_TICKET_TOOL_DETAIL:
+    "/api/UpdatesTicketTool/addupdatetickettooldetail",
+  ADD_REMOVE_PARTICIPANT: "/api/UpdatesTicketMaster/addremoveparticipant",
+  UPDATE_ASSIGNEE_TICKET_DETAIL:
+    "/api/UpdatesTicketMaster/updateassigneeticketdetail",
+  PERIODIC_UPDATES_MARKET_REGIONS: "/api/UpdatesMaster/getupdatesmarketdetails",
+  UPDATES_REQUIREMENT_FORM_DETAILS:
+    "/api/UpdatesTicketMaster/requirement-details",
   GET_ATTACHEMENT_FILES: "/api/UpdatesTicketMaster/getattachementfiles",
-  GET_TOOLS_RELEASE_HISTORY: '/api/UpdatesTicketMaster/toolsreleasehistory',
+  GET_TOOLS_RELEASE_HISTORY: "/api/UpdatesTicketMaster/toolsreleasehistory",
 
   /** PERIODIC UPDATES BOARD CALENDAR **/
   GET_CALENDAR_EVENTS: "/api/UpdatesTicketTool/getcalendarview",
@@ -240,35 +256,42 @@ export const API = {
   GET_AGENCY_BOARD_LIST: "/api/AgencyBoard/agencyboardlist",
   CREATE_AGENCY_TICKET: "/api/AgencyTicket/addupdateagencycard",
   GET_AGENCY_TICKET_DETAILS: "/api/AgencyTicket/agencyticketdetails",
-  GET_AGENCY_TICKET_COMMENT_DETAILS: "/api/AgencyTicketComment/agencyticketcommentdetails",
-  ADD_UPDATE_AGENCY_TICKET_COMMENT: "/api/AgencyTicketComment/addupdateagencyticketcomment",
-  DELETE_AGENCY_COMMENT_DETAILS: "/api/AgencyTicketComment/deleteagencycommentdetails",
+  GET_AGENCY_TICKET_COMMENT_DETAILS:
+    "/api/AgencyTicketComment/agencyticketcommentdetails",
+  ADD_UPDATE_AGENCY_TICKET_COMMENT:
+    "/api/AgencyTicketComment/addupdateagencyticketcomment",
+  DELETE_AGENCY_COMMENT_DETAILS:
+    "/api/AgencyTicketComment/deleteagencycommentdetails",
   AGENCY_TICKET_SINGLE_FILE_UPLOAD: "/api/AgencyTicket/singlefileupload",
   GET_AGENCY_ALL_PACKAGES: "/api/AgencyPackage/getallagencypackage",
   GET_ALL_AGENCY_LABELS: "/api/AgencyTicket/getallagencylabels",
   UPDATE_AGENCY_TICKET_DETAIL: "/api/AgencyTicket/updateagencyticketdetail",
-  GET_AGENCY_TICKET_BY_BOARD_LABEL: "/api/AgencyTicket/agencyticketsbyboardlabel",
-  AGENCY_FILE_DOWNLOAD: 'api/AgencyTicket/filedownload',
-  DELETE_AGENCY_TICKET_ATTACHMENT: "/api/AgencyTicket/deleteagencyticketattachmentdetail",
+  GET_AGENCY_TICKET_BY_BOARD_LABEL:
+    "/api/AgencyTicket/agencyticketsbyboardlabel",
+  AGENCY_FILE_DOWNLOAD: "api/AgencyTicket/filedownload",
+  DELETE_AGENCY_TICKET_ATTACHMENT:
+    "/api/AgencyTicket/deleteagencyticketattachmentdetail",
   AGENCY_MOVE_TICKET: "/api/AgencyTicket/agencymoveticket",
   AGENCY_BOARD_STATUS_MOVEMENT: "/api/AgencyBoard/getagencyboardstatusmovement",
   TICKET_ADD_UPDATE_TOOL_STATUS: "/api/AgencyTicket/addupdatetoolstatus",
   AGENCY_ADD_UPDATE_PACKAGE: "/api/AgencyPackage/addupdateagency",
   AGENCY_TOOL_SUBSCRIPTION: "/api/AgencyTicket/agency-tool-subscription",
-  GET_TIME_ZONE_DETAIL: '/api/TimeZoneDetail/GetAllTimeZoneDetail',
-  GET_PEERS_INDICES_SEARCH: '/api/PeerAndIndices/getpeerandindicesdetails',
+
+  GET_TIME_ZONE_DETAIL: "/api/TimeZoneDetail/GetAllTimeZoneDetail",
+  GET_PEERS_INDICES_SEARCH: "/api/PeerAndIndices/getpeerandindicesdetails",
 
   /** AGENCY - CONTACT US */
-  GET_AGENCY_ISSUETYPE: 'api/Agency/getagencyissuetype',
-  SUBMIT_CONTACT_US_FORM: 'api/AgencyBoard/add-agencycontactusdetails',
+  GET_AGENCY_ISSUETYPE: "api/Agency/getagencyissuetype",
+  SUBMIT_CONTACT_US_FORM: "api/AgencyBoard/add-agencycontactusdetails",
 
   /**INVENTORY & MATERIALS - SITES */
-  GET_APPROVED_PROJECTS_BY_EMPLOYEE: "/api/Project/get-approved-projects-by-employee",
+
+  GET_APPROVED_PROJECTS_BY_EMPLOYEE:
+    "/api/Project/get-approved-projects-by-employee",
 
   GET_ENGINEER_MATERIALS_BY_PROJECT: "/api/Material/my-project/materials",
   GET_MATERIAL_STOCK_ALERTS: "/api/MaterialStockAlerts/my-project/alerts",
   GET_MATERIAL_STATUS_BY_PROJECT: "/api/MaterialStatus/", // append {projectId}
-
 
   // stockinward and stockoutward
   CREATE_STOCK_INWARD: "/api/Inventory/create-stock-inward",
@@ -277,9 +300,4 @@ export const API = {
   // GET APIs for project-wise stock fetching
   GET_STOCK_INWARD_BY_PROJECT: "/api/Inventory/get-stock-inward-by-project",
   GET_STOCK_OUTWARD_BY_PROJECT: "/api/Inventory/get-stock-outward-by-project",
-
-
-
 };
-
-

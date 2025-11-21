@@ -91,26 +91,26 @@ const MaterialCreateScreen = () => {
       dispatch(getEmployeeRoles(projectId))
         .unwrap()
         .then((result) => {
-          // The API response seems to have the roles directly, not under employeesByRole
-          const employeesByRole = result; // Changed this line
+          console.log("RAW API RESPONSE FROM BACKEND:", result);
+          console.log("AQS DATA:", result?.AssistantQuantitySurveyor);
 
-          const APPROVER_ROLE_CODES = [
-            "CEO",
-            "HEADFINANCE",
-            "MD",
-            "PROJECTMANAGER",
-            "AQS",
-          ];
+          // The API response seems to have the roles directly, not under employeesByRole
+          const employeesByRole = result;
 
           const approverList = [];
 
-          for (const roleGroup of Object.values(employeesByRole)) {
-            if (Array.isArray(roleGroup)) {
-              roleGroup.forEach((employee) => {
-                if (APPROVER_ROLE_CODES.includes(employee.role_code)) {
+          // Add Engineer approvers
+          for (const [key, value] of Object.entries(employeesByRole)) {
+            if (Array.isArray(value)) {
+              value.forEach((employee) => {
+                if (
+                  ["CEO", "HEADFINANCE", "MD", "PROJECTMANAGER"].includes(
+                    employee.role_code
+                  )
+                ) {
                   approverList.push({
                     value: employee.emp_id,
-                    label: `${employee.role_name}`,
+                    label: employee.role_name,
                     empId: employee.emp_id,
                   });
                 }
@@ -118,7 +118,31 @@ const MaterialCreateScreen = () => {
             }
           }
 
-          setInitialApproverArray(approverList);
+          // ADD AQS if exists
+          if (
+            employeesByRole.AssistantQuantitySurveyor &&
+            employeesByRole.AssistantQuantitySurveyor.length > 0
+          ) {
+            const aqsEmployee = employeesByRole.AssistantQuantitySurveyor[0];
+            approverList.push({
+              value: aqsEmployee.emp_id,
+              label: aqsEmployee.role_name,
+              empId: aqsEmployee.emp_id,
+            });
+          }
+
+          // remove duplicates
+          const unique = [];
+          const found = new Set();
+
+          for (const item of approverList) {
+            if (!found.has(item.empId)) {
+              found.add(item.empId);
+              unique.push(item);
+            }
+          }
+
+          setInitialApproverArray(unique);
         })
         .catch((error) => {
           console.error("Failed to fetch employees:", error);
@@ -180,11 +204,12 @@ const MaterialCreateScreen = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       if (validationErrors.title) toast.warn("Please enter a title.");
       if (validationErrors.vendor) toast.warn("Please select a vendor.");
-      if (validationErrors.approver) toast.warn("Please select at least one approver.");
+      if (validationErrors.approver)
+        toast.warn("Please select at least one approver.");
       return;
     }
 
@@ -222,7 +247,7 @@ const MaterialCreateScreen = () => {
         toast.success("BOQ created successfully.");
         const boqId = boqResponse?.payload?.data?.boqId;
 
-        // ✅ Step 2: Create Ticket with error handling
+        // Step 2: Create Ticket with error handling
         try {
           const ticketResponse = await createTicket({
             boqId: boqId,
@@ -255,30 +280,33 @@ const MaterialCreateScreen = () => {
 
             // Step 4: Fetch Ticket Details and Navigate
             try {
-              const ticketDetails = await dispatch(
-                getticketbyidAction(ticketId)
-              ).unwrap();
+              const ticketId = ticketResponse?.data?.data?.ticketId;
 
-              setTimeout(() => {
-                navigate(`../ticket/${ticketId}`, {
+              // ALWAYS show in Engineer Approval page
+              navigate("/admin/engineerapprovals", {
+                state: {
+                  from: "engineer",
+                  ticketId,
+                  flow: selectedApprover.map((a) => a.empId),
+                },
+              });
+
+              // IF approver includes AQS → also show in AQS approval page
+              const hasAqs = selectedApprover.some(
+                (a) => a.label === "Assistant QS" || a.label === "AQS"
+              );
+
+              if (hasAqs) {
+                navigate("/aqs/aqsapprovals", {
                   state: {
-                    ticket: ticketDetails,
-                    from: "kanban",
-                    boqId: boqId,
+                    from: "engineer",
+                    ticketId,
+                    flow: selectedApprover.map((a) => a.empId),
                   },
                 });
-              }, 500);
-            } catch (detailsError) {
-              console.error("Failed to fetch ticket details:", detailsError);
-              // Still navigate even if details fetch fails
-              setTimeout(() => {
-                navigate(`../ticket/${ticketId}`, {
-                  state: {
-                    from: "kanban",
-                    boqId: boqId,
-                  },
-                });
-              }, 500);
+              }
+            } catch (err) {
+              console.error("Navigation Error:", err);
             }
 
             // Reset form
@@ -289,20 +317,22 @@ const MaterialCreateScreen = () => {
             setSelectedVendorId("");
             setSelectedApprover([]);
           } else {
-            // ✅ If ticket creation fails, still show BOQ success
-            toast.error(ticketResponse?.data?.message || "Ticket creation failed.");
+            // If ticket creation fails, still show BOQ success
+            toast.error(
+              ticketResponse?.data?.message || "Ticket creation failed."
+            );
             console.error("Ticket creation error:", ticketResponse?.data);
-            
+
             // Navigate to material page after BOQ creation
             setTimeout(() => {
               navigate("/admin/engineermaterial");
             }, 1500);
           }
         } catch (ticketError) {
-          // ✅ Catch ticket creation error
+          // Catch ticket creation error
           console.error("Ticket API Error:", ticketError);
           toast.error("Ticket creation failed. Please contact support.");
-          
+
           // Navigate to material page with BOQ created
           setTimeout(() => {
             navigate("/admin/engineermaterial");
@@ -365,8 +395,11 @@ const MaterialCreateScreen = () => {
               <div className="row">
                 <div className="col-md-6">
                   <Form.Group className="mb-3">
-                    <Form.Label className="text-black fs-5">BOQ ID <span className="text-danger">*</span></Form.Label>
-                    <Form.Control className="minh52px"
+                    <Form.Label className="text-black fs-5">
+                      BOQ ID <span className="text-danger">*</span>
+                    </Form.Label>
+                    <Form.Control
+                      className="minh52px"
                       style={{ backgroundColor: "white" }}
                       type="text"
                       placeholder="BOQ ID"
@@ -383,7 +416,7 @@ const MaterialCreateScreen = () => {
                       Title <span className="text-danger">*</span>
                     </Form.Label>
                     <Form.Control
-                    className="minh52px"
+                      className="minh52px"
                       type="text"
                       placeholder="BOQ TITLE"
                       value={title}
@@ -397,7 +430,9 @@ const MaterialCreateScreen = () => {
               <div className="row">
                 <div className="col-md-6">
                   <Form.Group className="mb-3">
-                    <Form.Label className="text-black fs-5">Vendor <span className="text-danger">*</span></Form.Label>
+                    <Form.Label className="text-black fs-5">
+                      Vendor <span className="text-danger">*</span>
+                    </Form.Label>
                     <Form.Select
                       className="form-control minh52px"
                       style={{ backgroundColor: "white" }}
@@ -426,7 +461,8 @@ const MaterialCreateScreen = () => {
                       Approved By <span className="text-danger">*</span>
                     </Form.Label>
 
-                    <MultipleSelect className="minh52px"
+                    <MultipleSelect
+                      className="minh52px"
                       required
                       selectedOptions={selectedApprover}
                       handleSelected={setSelectedApprover}
@@ -515,11 +551,21 @@ const MaterialCreateScreen = () => {
 
                 <Button
                   type="submit"
-                  className="mt-4 me-0 w180 bg-primary border-0 border-radius-4 fs-16-500 text-white d-flex align-items-center justify-content-center">                    
-                  <svg className="me-2" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M20.7885 2.50872C20.6693 2.40981 20.5245 2.34679 20.3709 2.32701C20.2173 2.30723 20.0612 2.33149 19.9209 2.39698L3.08105 10.3013V11.8307L10.1541 14.6599L14.6911 21.6399H16.2208L21.0544 3.34216C21.0936 3.19231 21.0895 3.03441 21.0424 2.88685C20.9953 2.73929 20.9072 2.60815 20.7885 2.50872ZM15.2763 20.1811L11.3766 14.1814L17.3776 7.60875L16.4281 6.74183L10.3802 13.3657L4.54841 11.033L19.5532 3.98986L15.2763 20.1811Z" fill="white"/>
+                  className="mt-4 me-0 w180 bg-primary border-0 border-radius-4 fs-16-500 text-white d-flex align-items-center justify-content-center"
+                >
+                  <svg
+                    className="me-2"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M20.7885 2.50872C20.6693 2.40981 20.5245 2.34679 20.3709 2.32701C20.2173 2.30723 20.0612 2.33149 19.9209 2.39698L3.08105 10.3013V11.8307L10.1541 14.6599L14.6911 21.6399H16.2208L21.0544 3.34216C21.0936 3.19231 21.0895 3.03441 21.0424 2.88685C20.9953 2.73929 20.9072 2.60815 20.7885 2.50872ZM15.2763 20.1811L11.3766 14.1814L17.3776 7.60875L16.4281 6.74183L10.3802 13.3657L4.54841 11.033L19.5532 3.98986L15.2763 20.1811Z"
+                      fill="white"
+                    />
                   </svg>
-
                   Submit
                 </Button>
               </div>

@@ -37,7 +37,7 @@ const BOQDashboard = () => {
 
   const { projects, loading, error } = useSelector((state) => state.aqsBoq);
 
-  // ✅ Fetch API data on mount
+  // Fetch API data on mount
   useEffect(() => {
     dispatch(fetchBoqProjects());
   }, [dispatch]);

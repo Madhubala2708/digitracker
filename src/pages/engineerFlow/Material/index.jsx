@@ -56,8 +56,19 @@ const Material = () => {
   const findName = (obj) => {
     if (!obj || typeof obj !== "object") return null;
     const keys = [
-      "itemName","name","materialName","material","item","item_name",
-      "boqItemName","productName","product","title","description","label","masterItemName"
+      "itemName",
+      "name",
+      "materialName",
+      "material",
+      "item",
+      "item_name",
+      "boqItemName",
+      "productName",
+      "product",
+      "title",
+      "description",
+      "label",
+      "masterItemName",
     ];
     for (const k of keys) {
       if (k in obj) {
@@ -93,7 +104,11 @@ const Material = () => {
         m.boqItems.forEach((it) => {
           const itemName = findName(it) || findName(m) || "N/A";
           const inStock =
-            it.inStockQuantity ?? it.inStock ?? it.stockQty ?? it.availableQty ?? 0;
+            it.inStockQuantity ??
+            it.inStock ??
+            it.stockQty ??
+            it.availableQty ??
+            0;
           const required =
             it.requiredQuantity ?? it.quantity ?? it.qty ?? it.required ?? 0;
 
@@ -133,8 +148,7 @@ const Material = () => {
       <main className="page-engineer-dashboard d-flex">
         <div className="left-container w-100">
           <div className="row mt-4 align-items-center">
-
-            {/* 🔥 Title instead of dropdown */}
+            {/* Title instead of dropdown */}
             <div className="col-sm-6 col-md-6 col-lg-6 text-start">
               <h2 className="fs-24-600 text-dark">SKS Park</h2>
             </div>
@@ -157,12 +171,22 @@ const Material = () => {
                   <thead>
                     <tr>
                       <th className="fs-16-500 text-center text-dark">S.No</th>
-                      <th className="fs-16-500 text-center text-dark">Material List</th>
-                      <th className="fs-16-500 text-center text-dark">In Stock Quantity</th>
-                      <th className="fs-16-500 text-center text-dark">Required Quantity</th>
+                      <th className="fs-16-500 text-center text-dark">
+                        Material List
+                      </th>
+                      <th className="fs-16-500 text-center text-dark">
+                        In Stock Quantity
+                      </th>
+                      <th className="fs-16-500 text-center text-dark">
+                        Required Quantity
+                      </th>
                       <th className="fs-16-500 text-center text-dark">Level</th>
-                      <th className="fs-16-500 text-center text-dark">Request Status</th>
-                      <th className="fs-16-500 text-center text-dark">Action</th>
+                      <th className="fs-16-500 text-center text-dark">
+                        Request Status
+                      </th>
+                      <th className="fs-16-500 text-center text-dark">
+                        Action
+                      </th>
                     </tr>
                   </thead>
 
@@ -177,20 +201,36 @@ const Material = () => {
                       displayMaterials.map((material, index) => (
                         <tr key={material.boqId || index}>
                           <td className="text-center">{index + 1}</td>
-                          <td className="text-center">{material.itemName || "N/A"}</td>
-                          <td className="text-center">{material.inStockQuantity || 0}</td>
-                          <td className="text-center">{material.requiredQuantity || 0}</td>
-                          <td className="text-center">{getLevelBadge(material.level || "Low")}</td>
-                          <td className="text-center">{getStatusBadge(material.approvalStatus || "Pending")}</td>
+
+                          <td className="text-center">
+                            {material.itemName || "N/A"}
+                          </td>
+                          <td className="text-center">
+                            {material.inStockQuantity || 0}
+                          </td>
+                          <td className="text-center">
+                            {material.requiredQuantity || 0}
+                          </td>
+                          <td className="text-center">
+                            {getLevelBadge(material.level || "Low")}
+                          </td>
+                          <td className="text-center">
+                            {getStatusBadge(
+                              material.approvalStatus || "Pending"
+                            )}
+                          </td>
                           <td className="text-center">
                             <a
                               href="#"
                               style={{ color: "#0456D0" }}
                               onClick={(e) => {
                                 e.preventDefault();
-                                navigate(`/admin/materialview/${material.boqId}`, {
-                                  state: { material },
-                                });
+                                navigate(
+                                  `/admin/materialview/${material.boqId}`,
+                                  {
+                                    state: { material },
+                                  }
+                                );
                               }}
                             >
                               View
@@ -206,12 +246,10 @@ const Material = () => {
                       </tr>
                     )}
                   </tbody>
-
                 </table>
               </div>
             </div>
           </div>
-
         </div>
       </main>
     </Fragment>

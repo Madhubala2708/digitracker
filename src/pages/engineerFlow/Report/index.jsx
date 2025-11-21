@@ -2,25 +2,19 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-
-// Existing reports API
 import { getReports } from "../../../store/actions/report/reportcreateaction";
-
-// NEW — API sites slice
 import { fetchReportSites } from "../../../store/slice/Engineer/reportSlice";
 
 function Report() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // ⬇ existing report data
   const {
     data: reportDataRaw = [],
     loading,
     error,
   } = useSelector((state) => state.report);
 
-  // ⬇ NEW — sites state
   const {
     sites = [],
     loading: siteLoading,
@@ -66,12 +60,18 @@ function Report() {
     return first + second;
   };
 
-  // Random color
   const getRandomColor = () => {
     const colors = [
-      "#FF5733", "#33B5E5", "#8E44AD", "#16A085",
-      "#E67E22", "#2ECC71", "#3498DB", "#F39C12",
-      "#1ABC9C", "#E74C3C",
+      "#FF5733",
+      "#33B5E5",
+      "#8E44AD",
+      "#16A085",
+      "#E67E22",
+      "#2ECC71",
+      "#3498DB",
+      "#F39C12",
+      "#1ABC9C",
+      "#E74C3C",
     ];
     return colors[Math.floor(Math.random() * colors.length)];
   };
@@ -80,7 +80,7 @@ function Report() {
     <div className="reports-container">
       {/* Header */}
       <div className="reports-header">
-        {/* ▼ NEW — Sites Dropdown from API */}
+        {/*Sites Dropdown from API */}
         <select
           className="form-select select-custom"
           style={{ backgroundColor: "#E8E8E8" }}
@@ -162,7 +162,9 @@ function Report() {
                         navigate(`/admin/engineerreportview/${report.reportId}`)
                       }
                     >
-                      <a href="#" className="view-link">View</a>
+                      <a href="#" className="view-link">
+                        View
+                      </a>
                     </td>
                   </tr>
                 ))}
@@ -177,7 +179,9 @@ function Report() {
               style={{ marginTop: "1rem", textAlign: "center" }}
             >
               <button
-                onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
+                onClick={() =>
+                  currentPage > 1 && setCurrentPage(currentPage - 1)
+                }
                 disabled={currentPage === 1}
                 style={{
                   margin: "0 5px",
@@ -222,7 +226,8 @@ function Report() {
                     style={{
                       margin: "0 5px",
                       padding: "6px 12px",
-                      backgroundColor: currentPage === page ? "#e56c00" : "#eee",
+                      backgroundColor:
+                        currentPage === page ? "#e56c00" : "#eee",
                       color: currentPage === page ? "#fff" : "#000",
                       border: "none",
                       borderRadius: "4px",

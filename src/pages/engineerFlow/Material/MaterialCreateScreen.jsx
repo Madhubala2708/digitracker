@@ -379,7 +379,7 @@ const MaterialCreateScreen = () => {
               );
 
               if (hasAqs) {
-                navigate("/aqs/aqsapprovals", {
+                navigate(`/admin/engineerapprovals/ticketdetails/${ticketId}`, {
                   state: {
 
                     from: "engineer",

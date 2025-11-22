@@ -33,7 +33,7 @@ const AqsInventory = () => {
     dispatch(fetchVendors());
   }, [dispatch]);
 
-  //       WHEN PROJECT CHANGES → FETCH DATA
+  // WHEN PROJECT CHANGES → FETCH DATA
   useEffect(() => {
     if (selectedSiteId) {
       dispatch(fetchStockInwards(selectedSiteId));
@@ -158,7 +158,7 @@ const AqsInventory = () => {
         </tbody>
       </table>
 
-      {/*  STOCK OUTWARD  */}
+      {/* STOCK OUTWARD  */}
       <div className="table-header">
         <h3>Stock Outward</h3>
         <button className="issue-stock-btn" onClick={() => openPopup("Stock Outward")}>

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchVendors,
   fetchProjectTeam,
+  ProjectTeam,
 } from "../../../store/slice/Aqs/inventorySlice";
 
 const StockPopup = ({ title, onClose, onSubmit, data, projectId, projectName }) => {
@@ -18,8 +19,8 @@ const StockPopup = ({ title, onClose, onSubmit, data, projectId, projectName }) 
   const [grnNo, setGrnNo] = useState("");
   const [itemName, setItemName] = useState("");
   const [quantity, setQuantity] = useState("");
-  const [vendor, setVendor] = useState("");
-  const [receivedBy, setReceivedBy] = useState("");
+  const [vendor, setVendor] = useState("");      // will store empId for OUTWARD
+  const [receivedBy, setReceivedBy] = useState(""); // will store empId
 
   const isInward = title?.toLowerCase().includes("inward");
   const isOutward = title?.toLowerCase().includes("outward");
@@ -30,26 +31,13 @@ const StockPopup = ({ title, onClose, onSubmit, data, projectId, projectName }) 
     if (projectId) {
       dispatch(fetchProjectTeam(projectId));
       dispatch(fetchVendors());
+      dispatch(ProjectTeam(projectId));
     }
   }, [dispatch, projectId]);
 
-  // Fill values when popup loads (runs again after team list loads)
+  // Load data for edit/view
   useEffect(() => {
-    // helper to resolve a team member name by many possible id keys
-    const findPersonNameById = (id) => {
-      if (id === undefined || id === null || id === "") return "";
-      const strId = String(id);
-      const t = projectTeam.find(
-        (p) =>
-          String(p.empId) === strId ||
-          String(p.employeeId) === strId ||
-          String(p.id) === strId
-      );
-      return t ? (t.fullName || t.employeeName || t.name || "") : "";
-    };
-
     if (data) {
-      // Basic fields
       setGrnNo(data.grn || data.issueNo || "");
       setProject(data.projectName || projectName || "");
       setItemName(data.itemName || data.itemname || data.item || "");
@@ -62,7 +50,6 @@ const StockPopup = ({ title, onClose, onSubmit, data, projectId, projectName }) 
         ""
       );
 
-      // Date field
       const rawDate = data.dateReceived || data.dateIssued || data.date || null;
       if (rawDate) {
         const parsed = new Date(rawDate);
@@ -71,88 +58,55 @@ const StockPopup = ({ title, onClose, onSubmit, data, projectId, projectName }) 
 
       setStatus(data.status || "Approved");
 
-      // MAP BOTH INWARD & OUTWARD
       if (isOutward) {
-        // OUTWARD → try to resolve names by id first, then fallback to text fields
-        const issuedToName =
-          findPersonNameById(data.issuedToId) ||
-          data.issuedToName ||
-          data.issuedTo ||
-          "";
-        setVendor(issuedToName);
-
-        const requestedByName =
-          findPersonNameById(data.requestedById) ||
-          data.requestedByName ||
-          data.requestedBy ||
-          "";
-        setReceivedBy(requestedByName);
+        setVendor(data.issuedToId || "");       // store empId
+        setReceivedBy(data.requestedById || ""); // store empId
       } else {
-        // INWARD → check id fields first, then name fields (covers multiple API shapes)
-        const receivedByFromId =
-          findPersonNameById(data.receivedById) ||
-          findPersonNameById(data.received_by) ||
-          findPersonNameById(data.received_employee_id) ||
-          "";
-
-        const receivedByFallback =
-          data.receivedByName ||
-          data.receivedbyname ||
-          data.received_employee_name ||
-          data.receivedEmployeeName ||
-          data.receivedName ||
-          data.received ||
-          data.receivedBy ||
-          "";
-
-        setReceivedBy(receivedByFromId || receivedByFallback);
-
-        setVendor(
-          data.vendorName ||
-          data.vendorname ||
-          data.vendor ||
-          ""
-        );
+        setReceivedBy(data.receivedById || "");
+        setVendor(data.vendorId || ""); // vendorId only for inward
       }
+
     } else {
-      // NEW RECORD MODE
       const random = Math.floor(1000 + Math.random() * 9000);
       setGrnNo(isInward ? `GRN-${random}` : `ISS-${random}`);
       setProject(projectName || "");
       setReceivedDate(new Date());
     }
-  }, [data, projectName, isInward, isOutward, projectTeam]);
+  }, [data, projectName, isInward, isOutward]);
 
   // Submit logic
   const handleSubmit = () => {
     if (isViewMode) return onClose();
 
-    if (!itemName || !quantity || !vendor || !receivedBy) {
+    if (!itemName || !quantity || !receivedBy) {
       alert("Please fill all required fields.");
       return;
     }
 
     const formattedDate = receivedDate ? receivedDate.toISOString() : null;
-    const engineer = projectTeam.find(t => t.fullName === receivedBy);
 
     const newStock = isInward
       ? {
           projectId,
           grn: grnNo,
           itemName,
-          vendorId: vendors.find(v => v.vendorName === vendor)?.id || null,
+
+          vendorId: vendor, // vendorId for inward
           quantityReceived: Number(quantity),
           dateReceived: formattedDate,
-          receivedById: engineer?.empId || null,
+
+          receivedById: receivedBy, // empId
           status,
         }
       : {
           projectId,
           issueNo: grnNo,
           itemName,
-          requestedById: engineer?.empId || null,
+
+          requestedById: receivedBy, // empId
+          issuedToId: vendor,        // empId
+
           issuedQuantity: Number(quantity),
-          issuedToId: engineer?.empId || null,
           dateIssued: formattedDate,
           status,
         };
@@ -169,7 +123,7 @@ const StockPopup = ({ title, onClose, onSubmit, data, projectId, projectName }) 
         </div>
 
         <form className="popup-form" onSubmit={(e) => e.preventDefault()}>
-          
+
           {/* Row 1 */}
           <div className="form-row">
             <div className="form-group">
@@ -229,10 +183,10 @@ const StockPopup = ({ title, onClose, onSubmit, data, projectId, projectName }) 
 
                 {isInward
                   ? vendors.map(v => (
-                      <option key={v.id} value={v.vendorName}>{v.vendorName}</option>
+                      <option key={v.id} value={v.id}>{v.vendorName}</option>
                     ))
-                  : projectTeam.map(t => (
-                      <option key={t.empId} value={t.fullName}>{t.fullName}</option>
+                  : projectTeam.map(p => (
+                      <option key={p.empId} value={p.empId}>{p.fullName}</option>
                     ))}
               </select>
             </div>
@@ -259,7 +213,7 @@ const StockPopup = ({ title, onClose, onSubmit, data, projectId, projectName }) 
               >
                 <option value="">Select Engineer</option>
                 {projectTeam.map(t => (
-                  <option key={t.empId} value={t.fullName}>{t.fullName}</option>
+                  <option key={t.empId} value={t.empId}>{t.fullName}</option>
                 ))}
               </select>
             </div>

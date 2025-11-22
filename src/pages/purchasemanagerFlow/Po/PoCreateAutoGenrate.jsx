@@ -1,4 +1,4 @@
-//D:\ccs\Project\React JS\latest\buildflow\src\pages\purchasemanagerFlow\Po\purchaseOrderCreate.jsx
+//D:\ccs\Project\React JS\latest\PRECISE INFRATRACKER\src\pages\purchasemanagerFlow\Po\purchaseOrderCreate.jsx
 "use client";
 import { useLocation, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";

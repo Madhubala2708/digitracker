@@ -32,17 +32,20 @@ const AqsMaterials = () => {
   }, [selectedSite, dispatch]);
 
   const formatQtyForDisplay = (row) => {
-    const directIn =
-      row?.inStockDisplay ?? row?.in_stock_display ?? row?.inStockDisplayText;
-    const directReq =
-      row?.requiredDisplay ?? row?.required_display ?? row?.requiredDisplayText;
-    if (directIn || directReq) {
-      return {
-        inDisplay: directIn ?? "0 Units",
-        reqDisplay: directReq ?? "0 Units",
-      };
-    }
+  if (!row) {
+    return { inDisplay: "0 Units", reqDisplay: "0 Units" };
+  }
+
+  const inQty = row.inStock ?? row.in_stock ?? row.in;
+  const reqQty = row.requiredQty ?? row.required_qty ?? row.required;
+
+  return {
+    inDisplay: inQty !== undefined ? String(inQty) : "0",
+    reqDisplay: reqQty !== undefined ? String(reqQty) : "0",
   };
+};
+
+
 
   return (
     <Fragment>

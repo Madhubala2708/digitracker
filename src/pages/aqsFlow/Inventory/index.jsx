@@ -10,6 +10,7 @@ import {
   fetchStockOutwards,
   fetchVendors,
   fetchProjectTeam,
+  fetchMaterialNames,
   addStockInward,
   addStockOutward,
 } from "../../../store/slice/Aqs/inventorySlice";
@@ -17,9 +18,12 @@ import {
 const AqsInventory = () => {
   const dispatch = useDispatch();
 
-  const { projects, stockInwards, stockOutwards } = useSelector(
-    (state) => state.inventory
-  );
+  const {
+    projects,
+    stockInwards,
+    stockOutwards,
+    materialNames, // ✅ added
+  } = useSelector((state) => state.inventory);
 
   const [selectedSiteId, setSelectedSiteId] = useState("");
   const [selectedSiteName, setSelectedSiteName] = useState("");
@@ -33,17 +37,17 @@ const AqsInventory = () => {
     dispatch(fetchVendors());
   }, [dispatch]);
 
-  // WHEN PROJECT CHANGES → FETCH DATA
+  // WHEN PROJECT CHANGES → FETCH ALL DATA
   useEffect(() => {
     if (selectedSiteId) {
       dispatch(fetchStockInwards(selectedSiteId));
       dispatch(fetchStockOutwards(selectedSiteId));
       dispatch(fetchProjectTeam(selectedSiteId));
+      dispatch(fetchMaterialNames(selectedSiteId)); // ✅ correct
     }
   }, [dispatch, selectedSiteId]);
 
-  // WHEN SELECTING A PROJECT
-
+  // HANDLE PROJECT CHANGE
   const handleSiteChange = (event) => {
     const selectedId = Number(event.target.value);
     const projectObj = projects.find((p) => p.projectId === selectedId);
@@ -52,19 +56,26 @@ const AqsInventory = () => {
     setSelectedSiteName(projectObj?.projectName || "");
   };
 
-  // POPUP FUNCTIONS
+  // OPEN POPUP
   const openPopup = (title, record = null) => {
     setPopupTitle(title);
     setSelectedStock(record);
+
+    // reload material names inside popup
+    if (selectedSiteId) {
+      dispatch(fetchMaterialNames(selectedSiteId));
+    }
+
     setShowPopup(true);
   };
 
+  // CLOSE POPUP
   const closePopup = () => {
     setShowPopup(false);
     setSelectedStock(null);
   };
 
-  // ADD / UPDATE STOCK
+  // HANDLE SUBMIT
   const handleAddStock = async (newStock) => {
     try {
       if (selectedSiteId) newStock.projectId = Number(selectedSiteId);
@@ -105,7 +116,7 @@ const AqsInventory = () => {
         </div>
       </div>
 
-      {/* STOCK INWARD  */}
+      {/* STOCK INWARD HEADER */}
       <div className="table-header">
         <h3>Stock Inward</h3>
         <button className="add-stock-btn" onClick={() => openPopup("Stock Inward")}>
@@ -113,6 +124,7 @@ const AqsInventory = () => {
         </button>
       </div>
 
+      {/* STOCK INWARD TABLE */}
       <table className="tbl table table-bordered">
         <thead>
           <tr>
@@ -131,17 +143,15 @@ const AqsInventory = () => {
           {(stockInwards || []).map((stock, index) => (
             <tr key={index}>
               <td>{stock.grn}</td>
-              <td>{stock.itemname || stock.item}</td>
-              <td>{stock.vendorName || stock.vendor}</td>
-              <td>
-                {stock.quantityReceived ?? "-"} {stock.unit || ""}
-              </td>
+              <td>{stock.itemName || stock.itemname || "-"}</td>
+              <td>{stock.vendorName || "-"}</td>
+              <td>{stock.quantityReceived ?? "-"} {stock.unit || ""}</td>
               <td>
                 {stock.dateReceived
                   ? new Date(stock.dateReceived).toLocaleDateString()
                   : "-"}
               </td>
-              <td>{stock.receivedByName || stock.receivedBy}</td>
+              <td>{stock.receivedByName || "-"}</td>
               <td className={`status ${String(stock.status || "").toLowerCase()}`}>
                 {stock.status}
               </td>
@@ -158,7 +168,7 @@ const AqsInventory = () => {
         </tbody>
       </table>
 
-      {/* STOCK OUTWARD  */}
+      {/* STOCK OUTWARD HEADER */}
       <div className="table-header">
         <h3>Stock Outward</h3>
         <button className="issue-stock-btn" onClick={() => openPopup("Stock Outward")}>
@@ -166,6 +176,7 @@ const AqsInventory = () => {
         </button>
       </div>
 
+      {/* STOCK OUTWARD TABLE */}
       <table className="tbl table table-bordered">
         <thead>
           <tr>
@@ -179,15 +190,14 @@ const AqsInventory = () => {
             <th>Action</th>
           </tr>
         </thead>
+
         <tbody>
           {(stockOutwards || []).map((stock, index) => (
             <tr key={index}>
               <td>{stock.issueNo}</td>
               <td>{stock.itemName}</td>
               <td>{stock.requestedByName || "-"}</td>
-              <td>
-                {stock.issuedQuantity ?? "-"} {stock.unit || ""}
-              </td>
+              <td>{stock.issuedQuantity ?? "-"} {stock.unit || ""}</td>
               <td>{stock.issuedToName || "-"}</td>
               <td>
                 {stock.dateIssued
@@ -219,6 +229,7 @@ const AqsInventory = () => {
           onSubmit={handleAddStock}
           projectId={selectedSiteId}
           projectName={selectedSiteName}
+          materialNames={materialNames}  
         />
       )}
     </div>

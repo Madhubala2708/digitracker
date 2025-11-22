@@ -356,7 +356,7 @@ const EngineerTicketDetails = () => {
       if (result.success) {
         showToastNotification("Ticket updated successfully");
 
-        // ✅ Refetch the updated ticket
+        // Refetch the updated ticket
         const updatedData = await dispatch(
           getticketbyidAction(payload.ticketId)
         ).unwrap();
@@ -410,8 +410,7 @@ const EngineerTicketDetails = () => {
     // Append each file as fileUpload
     [...uploadedFiles, ...uploadedImages].forEach((fileObj) => {
       if (fileObj?.file instanceof File) {
-        formData.append("File", fileObj.file); // ✅ correct name
-
+        formData.append("File", fileObj.file);
         console.log(fileObj.file instanceof File, fileObj.file);
       }
     });
@@ -452,7 +451,7 @@ const EngineerTicketDetails = () => {
 
     const newFiles = files.map((file) => ({
       id: Date.now() + Math.random(),
-      file, // ✅ include the File object
+      file,
       name: file.name,
       size: file.size,
       type: file.type,
@@ -474,7 +473,7 @@ const EngineerTicketDetails = () => {
     if (imageFiles.length > 0) {
       const newImages = imageFiles.map((file) => ({
         id: Date.now() + Math.random(),
-        file, // ✅ include the File object
+        file,
         name: file.name,
         size: file.size,
         type: file.type,
@@ -595,7 +594,11 @@ const EngineerTicketDetails = () => {
       getticketbyidAction(ticket?.ticket_id)
     ).unwrap();
 
-    navigate(`../engineermaterialview/${location?.state?.boqId || ticketId?.transaction_id}`);
+    navigate(
+      `../engineermaterialview/${
+        location?.state?.boqId || ticketId?.transaction_id
+      }`
+    );
   };
 
   return (

@@ -362,32 +362,13 @@ const MaterialCreateScreen = () => {
 
             // Step 4: Fetch Ticket Details and Navigate
             try {
-              const ticketId = ticketResponse?.data?.data?.ticketId;
-
-              // ALWAYS show in Engineer Approval page
-              navigate("/admin/engineerapprovals", {
+              navigate(`/admin/engineerapprovals/ticketdetails/${ticketId}`, {
                 state: {
                   from: "engineer",
                   ticketId,
                   flow: selectedApprover.map((a) => a.empId),
                 },
               });
-
-              // IF approver includes AQS → also show in AQS approval page
-              const hasAqs = selectedApprover.some(
-                (a) => a.label === "Assistant QS" || a.label === "AQS"
-              );
-
-              if (hasAqs) {
-                navigate("/aqs/aqsapprovals", {
-                  state: {
-
-                    from: "engineer",
-                    ticketId,
-                    flow: selectedApprover.map((a) => a.empId),
-                  },
-                });
-              }
             } catch (err) {
               console.error("Navigation Error:", err);
 

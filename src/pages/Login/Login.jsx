@@ -278,7 +278,9 @@ export default function Login({ onLoginSuccess }) {
                     className="mb-5"
                     src={PRODUCT_LOGO}
                     alt="Agent Board Icon"
+
                     style={{ width: "230px", height: "52px" }}
+
                   />
 
                   <div className="user-row">

@@ -26,3 +26,8 @@ export const getVendorsAndSubcontractors = () =>
 //  PROJECT TEAM
 export const getProjectTeam = (projectId) =>
   api.GET(`/api/Inventory/project-team/${projectId}`);
+
+export const getItemNames = (projectId) =>
+  api.GET(`/api/Material/material-names/${projectId}`);
+
+

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchVendors,
   fetchProjectTeam,
-  ProjectTeam,
+  fetchMaterialNames,
 } from "../../../store/slice/Aqs/inventorySlice";
 
 const StockPopup = ({ title, onClose, onSubmit, data, projectId, projectName }) => {
@@ -12,6 +12,7 @@ const StockPopup = ({ title, onClose, onSubmit, data, projectId, projectName }) 
 
   const vendors = useSelector((state) => state.inventory.vendors || []);
   const projectTeam = useSelector((state) => state.inventory.projectTeam || []);
+  const materialNames = useSelector((state) => state.inventory.materialNames || []);
 
   const [status, setStatus] = useState("Approved");
   const [receivedDate, setReceivedDate] = useState(null);
@@ -19,53 +20,50 @@ const StockPopup = ({ title, onClose, onSubmit, data, projectId, projectName }) 
   const [grnNo, setGrnNo] = useState("");
   const [itemName, setItemName] = useState("");
   const [quantity, setQuantity] = useState("");
-  const [vendor, setVendor] = useState("");      // will store empId for OUTWARD
-  const [receivedBy, setReceivedBy] = useState(""); // will store empId
+  const [vendor, setVendor] = useState("");
+  const [receivedBy, setReceivedBy] = useState("");
 
   const isInward = title?.toLowerCase().includes("inward");
   const isOutward = title?.toLowerCase().includes("outward");
   const isViewMode = title?.toLowerCase().includes("view");
 
-  // Load team + vendors on popup open
+  // load vendors/team/materials when projectId available
   useEffect(() => {
     if (projectId) {
       dispatch(fetchProjectTeam(projectId));
       dispatch(fetchVendors());
-      dispatch(ProjectTeam(projectId));
+      dispatch(fetchMaterialNames(projectId));
     }
   }, [dispatch, projectId]);
 
-  // Load data for edit/view
+  // populate fields when editing/viewing
   useEffect(() => {
     if (data) {
       setGrnNo(data.grn || data.issueNo || "");
       setProject(data.projectName || projectName || "");
       setItemName(data.itemName || data.itemname || data.item || "");
-
       setQuantity(
         data.quantityReceived ??
-        data.receivedQuantity ??
-        data.issuedQuantity ??
-        data.quantity ??
-        ""
+          data.receivedQuantity ??
+          data.issuedQuantity ??
+          data.quantity ??
+          ""
       );
 
-      const rawDate = data.dateReceived || data.dateIssued || data.date || null;
+      const rawDate = data.dateReceived || data.dateIssued || data.date;
       if (rawDate) {
         const parsed = new Date(rawDate);
         if (!isNaN(parsed)) setReceivedDate(parsed);
       }
-
       setStatus(data.status || "Approved");
 
       if (isOutward) {
-        setVendor(data.issuedToId || "");       // store empId
-        setReceivedBy(data.requestedById || ""); // store empId
+        setVendor(data.issuedToId || "");
+        setReceivedBy(data.requestedById || "");
       } else {
+        setVendor(data.vendorId || "");
         setReceivedBy(data.receivedById || "");
-        setVendor(data.vendorId || ""); // vendorId only for inward
       }
-
     } else {
       const random = Math.floor(1000 + Math.random() * 9000);
       setGrnNo(isInward ? `GRN-${random}` : `ISS-${random}`);
@@ -74,7 +72,7 @@ const StockPopup = ({ title, onClose, onSubmit, data, projectId, projectName }) 
     }
   }, [data, projectName, isInward, isOutward]);
 
-  // Submit logic
+  // submit handler
   const handleSubmit = () => {
     if (isViewMode) return onClose();
 
@@ -89,23 +87,19 @@ const StockPopup = ({ title, onClose, onSubmit, data, projectId, projectName }) 
       ? {
           projectId,
           grn: grnNo,
-          itemName,
-
-          vendorId: vendor, // vendorId for inward
+          itemName: itemName,
+          vendorId: vendor,
           quantityReceived: Number(quantity),
           dateReceived: formattedDate,
-
-          receivedById: receivedBy, // empId
+          receivedById: receivedBy,
           status,
         }
       : {
           projectId,
           issueNo: grnNo,
-          itemName,
-
-          requestedById: receivedBy, // empId
-          issuedToId: vendor,        // empId
-
+          itemName: itemName,
+          requestedById: receivedBy,
+          issuedToId: vendor,
           issuedQuantity: Number(quantity),
           dateIssued: formattedDate,
           status,
@@ -114,16 +108,44 @@ const StockPopup = ({ title, onClose, onSubmit, data, projectId, projectName }) 
     onSubmit(newStock);
   };
 
+  // helper to render options for materialNames (supports string[] or object[])
+  const renderMaterialOptions = () => {
+    if (!materialNames || materialNames.length === 0) return null;
+
+    return materialNames.map((m, idx) => {
+      // case: array of strings
+      if (typeof m === "string") {
+        return (
+          <option key={`mat-${m}-${idx}`} value={m}>
+            {m}
+          </option>
+        );
+      }
+
+      // otherwise object: try common keys
+      const key = m.materialId || m.id || m.material_id || idx;
+      const value = m.materialName || m.name || m.material || m.value || "";
+      const label = value || JSON.stringify(m);
+
+      return (
+        <option key={`mat-${key}`} value={value}>
+          {label}
+        </option>
+      );
+    });
+  };
+
   return (
     <div className="popup-overlay">
       <div className="popup-box">
         <div className="popup-header">
           <h4>{title}</h4>
-          <button className="close-btn" onClick={onClose}>×</button>
+          <button className="close-btn" onClick={onClose}>
+            ×
+          </button>
         </div>
 
         <form className="popup-form" onSubmit={(e) => e.preventDefault()}>
-
           {/* Row 1 */}
           <div className="form-row">
             <div className="form-group">
@@ -147,12 +169,7 @@ const StockPopup = ({ title, onClose, onSubmit, data, projectId, projectName }) 
                 disabled={isViewMode}
               >
                 <option value="">Select Item</option>
-                <option value="Cement (50kg)">Cement (50kg)</option>
-                <option value="Steel Rods (50mm)">Steel Rods (50mm)</option>
-                <option value="PVC Pipes">PVC Pipes</option>
-                <option value="Wire (4mm)">Wire (4mm)</option>
-                <option value="Bricks">Bricks</option>
-                <option value="Sand">Sand</option>
+                {renderMaterialOptions()}
               </select>
             </div>
 
@@ -163,7 +180,7 @@ const StockPopup = ({ title, onClose, onSubmit, data, projectId, projectName }) 
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
                 disabled={isViewMode}
-                placeholder="Eg. bags, Units"
+                placeholder="Eg. Bags, Units"
               />
             </div>
           </div>
@@ -177,16 +194,18 @@ const StockPopup = ({ title, onClose, onSubmit, data, projectId, projectName }) 
                 onChange={(e) => setVendor(e.target.value)}
                 disabled={isViewMode}
               >
-                <option value="">
-                  {isInward ? "Select Vendor" : "Select Engineer"}
-                </option>
+                <option value="">{isInward ? "Select Vendor" : "Select Engineer"}</option>
 
                 {isInward
-                  ? vendors.map(v => (
-                      <option key={v.id} value={v.id}>{v.vendorName}</option>
+                  ? vendors.map((v) => (
+                      <option key={v.id || v.vendorId || v.empId} value={v.id || v.vendorId || v.empId}>
+                        {v.vendorName || v.name || v.fullName || "Vendor"}
+                      </option>
                     ))
-                  : projectTeam.map(p => (
-                      <option key={p.empId} value={p.empId}>{p.fullName}</option>
+                  : projectTeam.map((p) => (
+                      <option key={p.empId} value={p.empId}>
+                        {p.fullName}
+                      </option>
                     ))}
               </select>
             </div>
@@ -212,19 +231,17 @@ const StockPopup = ({ title, onClose, onSubmit, data, projectId, projectName }) 
                 disabled={isViewMode}
               >
                 <option value="">Select Engineer</option>
-                {projectTeam.map(t => (
-                  <option key={t.empId} value={t.empId}>{t.fullName}</option>
+                {projectTeam.map((t) => (
+                  <option key={t.empId} value={t.empId}>
+                    {t.fullName}
+                  </option>
                 ))}
               </select>
             </div>
 
             <div className="form-group">
               <label>Status</label>
-              <select
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-                disabled={isViewMode}
-              >
+              <select value={status} onChange={(e) => setStatus(e.target.value)} disabled={isViewMode}>
                 <option value="Approved">Approved</option>
                 <option value="Pending">Pending</option>
                 <option value="Rejected">Rejected</option>
@@ -238,7 +255,6 @@ const StockPopup = ({ title, onClose, onSubmit, data, projectId, projectName }) 
               {isViewMode ? "Close" : "Update"}
             </button>
           </div>
-
         </form>
       </div>
     </div>

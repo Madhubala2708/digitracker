@@ -7,9 +7,10 @@ import {
   getStockOutwardsByProject,
   getVendorsAndSubcontractors,
   getProjectTeam,
+  getItemNames,
 } from "../../../services/inventoryAPI";
 
-//  1. FETCH APPROVED PROJECTS
+// ------------------ PROJECTS ------------------
 export const fetchProjectsByEmployee = createAsyncThunk(
   "inventory/fetchProjectsByEmployee",
   async (_, thunkAPI) => {
@@ -17,13 +18,12 @@ export const fetchProjectsByEmployee = createAsyncThunk(
       const response = await getApprovedProjectsByEmployee();
       return response.data || [];
     } catch (err) {
-      return thunkAPI.rejectWithValue(
-        err.response?.data || "Error fetching projects"
-      );
+      return thunkAPI.rejectWithValue(err.response?.data || "Error fetching projects");
     }
   }
 );
-//  2. FETCH VENDORS
+
+// ------------------ VENDORS ------------------
 export const fetchVendors = createAsyncThunk(
   "inventory/fetchVendors",
   async (_, thunkAPI) => {
@@ -31,14 +31,12 @@ export const fetchVendors = createAsyncThunk(
       const response = await getVendorsAndSubcontractors();
       return response.data?.vendors || [];
     } catch (err) {
-      return thunkAPI.rejectWithValue(
-        err.response?.data || "Error fetching vendors"
-      );
+      return thunkAPI.rejectWithValue(err.response?.data || "Error fetching vendors");
     }
   }
 );
 
-//  3. FETCH STOCK INWARD LIST
+// ------------------ STOCK INWARD ------------------
 export const fetchStockInwards = createAsyncThunk(
   "inventory/fetchStockInwards",
   async (projectId, thunkAPI) => {
@@ -46,14 +44,12 @@ export const fetchStockInwards = createAsyncThunk(
       const response = await getStockInwardsByProject(projectId);
       return response.data || [];
     } catch (err) {
-      return thunkAPI.rejectWithValue(
-        err.response?.data || "Error fetching stock inwards"
-      );
+      return thunkAPI.rejectWithValue(err.response?.data || "Error fetching stock inwards");
     }
   }
 );
 
-//  4. FETCH STOCK OUTWARD LIST
+// ------------------ STOCK OUTWARD ------------------
 export const fetchStockOutwards = createAsyncThunk(
   "inventory/fetchStockOutwards",
   async (projectId, thunkAPI) => {
@@ -61,14 +57,12 @@ export const fetchStockOutwards = createAsyncThunk(
       const response = await getStockOutwardsByProject(projectId);
       return response.data || [];
     } catch (err) {
-      return thunkAPI.rejectWithValue(
-        err.response?.data || "Error fetching stock outwards"
-      );
+      return thunkAPI.rejectWithValue(err.response?.data || "Error fetching stock outwards");
     }
   }
 );
 
-//  5. CREATE STOCK INWARD
+// ------------------ CREATE INWARD ------------------
 export const addStockInward = createAsyncThunk(
   "inventory/addStockInward",
   async (payload, thunkAPI) => {
@@ -76,14 +70,12 @@ export const addStockInward = createAsyncThunk(
       const response = await createStockInward(payload);
       return response.data || payload;
     } catch (err) {
-      return thunkAPI.rejectWithValue(
-        err.response?.data || "Error creating stock inward"
-      );
+      return thunkAPI.rejectWithValue(err.response?.data || "Error creating stock inward");
     }
   }
 );
 
-//  6. CREATE STOCK OUTWARD
+// ------------------ CREATE OUTWARD ------------------
 export const addStockOutward = createAsyncThunk(
   "inventory/addStockOutward",
   async (payload, thunkAPI) => {
@@ -91,49 +83,42 @@ export const addStockOutward = createAsyncThunk(
       const response = await createStockOutward(payload);
       return response.data || payload;
     } catch (err) {
-      return thunkAPI.rejectWithValue(
-        err.response?.data || "Error creating stock outward"
-      );
+      return thunkAPI.rejectWithValue(err.response?.data || "Error creating stock outward");
     }
   }
 );
 
-//  7. FETCH PROJECT TEAM (MD, CEO, Engineer, etc)
+// ------------------ TEAM ------------------
 export const fetchProjectTeam = createAsyncThunk(
   "inventory/fetchProjectTeam",
   async (projectId, thunkAPI) => {
     try {
       const response = await getProjectTeam(projectId);
-
-      console.log("TEAM API RAW RESPONSE →", response.data);
-
-      return response.data || []; // DIRECT ARRAY
+      return response.data || [];
     } catch (err) {
-      return thunkAPI.rejectWithValue(
-        err.response?.data || "Error fetching team"
-      );
+      return thunkAPI.rejectWithValue(err.response?.data || "Error fetching team");
     }
   }
 );
-export const ProjectTeam = createAsyncThunk(
-  "inventory/fetchProjectTeam",
+
+// ------------------ MATERIAL NAMES (FIXED) ------------------
+export const fetchMaterialNames = createAsyncThunk(
+  "inventory/fetchMaterialNames",
   async (projectId, thunkAPI) => {
     try {
-      const response = await getProjectTeam(projectId);
-
-      console.log("TEAM API RAW RESPONSE →", response.data);
-
-      return response.data || [];  // DIRECT ARRAY
+      const response = await getItemNames(projectId);
+      return response.data || [];
     } catch (err) {
       return thunkAPI.rejectWithValue(
-        err.response?.data || "Error fetching team"
+        err.response?.data || "Error fetching material names"
       );
     }
   }
 );
 
 
-//  SLICE
+
+// ------------------ SLICE ------------------
 const inventorySlice = createSlice({
   name: "inventory",
   initialState: {
@@ -142,55 +127,45 @@ const inventorySlice = createSlice({
     projectTeam: [],
     stockInwards: [],
     stockOutwards: [],
+    materialNames: [],   
     loading: false,
     error: null,
   },
   reducers: {},
 
   extraReducers: (builder) => {
-   //------------ PROJECTS -----------
     builder
-      .addCase(fetchProjectsByEmployee.pending, (state) => {
-        state.loading = true;
-      })
       .addCase(fetchProjectsByEmployee.fulfilled, (state, action) => {
-        state.loading = false;
         state.projects = action.payload;
       })
-      .addCase(fetchProjectsByEmployee.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
+
+      .addCase(fetchVendors.fulfilled, (state, action) => {
+        state.vendors = action.payload;
+      })
+
+      .addCase(fetchStockInwards.fulfilled, (state, action) => {
+        state.stockInwards = action.payload;
+      })
+
+      .addCase(fetchStockOutwards.fulfilled, (state, action) => {
+        state.stockOutwards = action.payload;
+      })
+
+      .addCase(addStockInward.fulfilled, (state, action) => {
+        state.stockInwards.push(action.payload);
+      })
+
+      .addCase(addStockOutward.fulfilled, (state, action) => {
+        state.stockOutwards.push(action.payload);
+      })
+
+      .addCase(fetchProjectTeam.fulfilled, (state, action) => {
+        state.projectTeam = action.payload;
+      })
+
+      .addCase(fetchMaterialNames.fulfilled, (state, action) => {
+        state.materialNames = action.payload;
       });
-
-    //------------ VENDORS ------------ 
-    builder.addCase(fetchVendors.fulfilled, (state, action) => {
-      state.vendors = action.payload;
-    });
-
-    // ------------ STOCK INWARD LIST ------------ 
-    builder.addCase(fetchStockInwards.fulfilled, (state, action) => {
-      state.stockInwards = action.payload;
-    });
-
-    // ------------ STOCK OUTWARD LIST ------------ 
-    builder.addCase(fetchStockOutwards.fulfilled, (state, action) => {
-      state.stockOutwards = action.payload;
-    });
-
-    //------------ ADD STOCK INWARD ------------
-    builder.addCase(addStockInward.fulfilled, (state, action) => {
-      state.stockInwards.push(action.payload);
-    });
-
-    //------------ ADD STOCK OUTWARD ------------ 
-    builder.addCase(addStockOutward.fulfilled, (state, action) => {
-      state.stockOutwards.push(action.payload);
-    });
-
-    //------------ PROJECT TEAM ------------ 
-    builder.addCase(fetchProjectTeam.fulfilled, (state, action) => {
-      state.projectTeam = action.payload;
-    });
   },
 });
 

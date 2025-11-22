@@ -306,6 +306,10 @@ const EngineerTicketDetails = () => {
 
     fetchTicketDetails();
   }, [dispatch, ticketDetails, ticket]);
+  const handleQueryAccept = () => {
+    showToastNotification("Query accepted");
+  };
+
 
   const handleApproval = (status) => {
     setApprovalStatus(status);
@@ -673,16 +677,16 @@ const EngineerTicketDetails = () => {
                 {getInitials(ticketDetails?.ticket_owner_name)}
               </div>
               <div className="flex-grow-1">
-                <Form className="position-relative">
-                  <Form.Control
-                    as="textarea"
+                <div className="position-relative">
+                  <textarea
                     rows={5}
                     placeholder="Ask Updates"
-                    className="mb-2 pe-5"
+                    className="form-control mb-2 pe-5"
                     value={commentText}
                     onChange={(e) => setCommentText(e.target.value)}
                     style={{ paddingRight: "50px" }}
-                  />
+                  ></textarea>
+
 
                   {/* Display attached files */}
                   {uploadedFiles.length > 0 && (
@@ -758,7 +762,7 @@ const EngineerTicketDetails = () => {
                       <Button
                         variant="link"
                         className="text-muted p-1"
-                        onClick={() => {}}
+                        onClick={() => { }}
                       >
                         <BsLink />
                       </Button>
@@ -801,7 +805,7 @@ const EngineerTicketDetails = () => {
                       Send
                     </Button>
                   </div>
-                </Form>
+                </div>
               </div>
             </div>
 
@@ -825,9 +829,8 @@ const EngineerTicketDetails = () => {
               >
                 <Nav.Item>
                   <Nav.Link
-                    className={`px-3 py-2 ${
-                      activeTab === "all" ? "text-white" : "text-dark"
-                    }`}
+                    className={`px-3 py-2 ${activeTab === "all" ? "text-white" : "text-dark"
+                      }`}
                     onClick={() => handleTabChange("all")}
                     style={{
                       borderRadius: "4px 4px 0 0",
@@ -840,11 +843,10 @@ const EngineerTicketDetails = () => {
                 </Nav.Item>
                 <Nav.Item>
                   <Nav.Link
-                    className={`px-3 py-2 ${
-                      activeTab === "approvalstatus"
-                        ? "text-white"
-                        : "text-dark"
-                    }`}
+                    className={`px-3 py-2 ${activeTab === "approvalstatus"
+                      ? "text-white"
+                      : "text-dark"
+                      }`}
                     onClick={() => handleTabChange("approvalstatus")}
                     style={{
                       borderRadius: "4px 4px 0 0",
@@ -860,9 +862,8 @@ const EngineerTicketDetails = () => {
                 </Nav.Item>
                 <Nav.Item>
                   <Nav.Link
-                    className={`px-3 py-2 ${
-                      activeTab === "comments" ? "text-white" : "text-dark"
-                    }`}
+                    className={`px-3 py-2 ${activeTab === "comments" ? "text-white" : "text-dark"
+                      }`}
                     onClick={() => handleTabChange("comments")}
                     style={{
                       borderRadius: "4px 4px 0 0",
@@ -875,9 +876,8 @@ const EngineerTicketDetails = () => {
                 </Nav.Item>
                 <Nav.Item>
                   <Nav.Link
-                    className={`px-3 py-2 ${
-                      activeTab === "files" ? "text-white" : "text-dark"
-                    }`}
+                    className={`px-3 py-2 ${activeTab === "files" ? "text-white" : "text-dark"
+                      }`}
                     onClick={() => handleTabChange("files")}
                     style={{
                       borderRadius: "4px 4px 0 0",
@@ -890,9 +890,8 @@ const EngineerTicketDetails = () => {
                 </Nav.Item>
                 <Nav.Item>
                   <Nav.Link
-                    className={`px-3 py-2 ${
-                      activeTab === "history" ? "text-white" : "text-dark"
-                    }`}
+                    className={`px-3 py-2 ${activeTab === "history" ? "text-white" : "text-dark"
+                      }`}
                     onClick={() => handleTabChange("history")}
                     style={{
                       borderRadius: "4px 4px 0 0",
@@ -1071,19 +1070,19 @@ const EngineerTicketDetails = () => {
 
                 {comments.flatMap((comment) => comment.files || []).length ===
                   0 && (
-                  <div className="text-center py-5 text-muted">
-                    <BsPaperclip size={32} />
-                    <p className="mt-2">No files attached yet</p>
-                    <Button
-                      variant="outline-warning"
-                      style={{ backgroundColor: "#FF6F00", color: "white" }}
-                      size="sm"
-                      onClick={() => fileInputRef.current.click()}
-                    >
-                      Upload File
-                    </Button>
-                  </div>
-                )}
+                    <div className="text-center py-5 text-muted">
+                      <BsPaperclip size={32} />
+                      <p className="mt-2">No files attached yet</p>
+                      <Button
+                        variant="outline-warning"
+                        style={{ backgroundColor: "#FF6F00", color: "white" }}
+                        size="sm"
+                        onClick={() => fileInputRef.current.click()}
+                      >
+                        Upload File
+                      </Button>
+                    </div>
+                  )}
 
                 <div className="row">
                   {comments
@@ -1120,19 +1119,19 @@ const EngineerTicketDetails = () => {
 
                 {comments.flatMap((comment) => comment.images || []).length ===
                   0 && (
-                  <div className="text-center py-5 text-muted">
-                    <BsImage size={32} />
-                    <p className="mt-2">No images attached yet</p>
-                    <Button
-                      variant="outline-warning"
-                      style={{ backgroundColor: "#FF6F00", color: "white" }}
-                      size="sm"
-                      onClick={() => imageInputRef.current.click()}
-                    >
-                      Upload Image
-                    </Button>
-                  </div>
-                )}
+                    <div className="text-center py-5 text-muted">
+                      <BsImage size={32} />
+                      <p className="mt-2">No images attached yet</p>
+                      <Button
+                        variant="outline-warning"
+                        style={{ backgroundColor: "#FF6F00", color: "white" }}
+                        size="sm"
+                        onClick={() => imageInputRef.current.click()}
+                      >
+                        Upload Image
+                      </Button>
+                    </div>
+                  )}
 
                 <div className="row">
                   {comments
@@ -1254,7 +1253,7 @@ const EngineerTicketDetails = () => {
             overflowY: "auto",
             position: "sticky",
             top: "0",
-            marginTop: "-100px",
+            marginTop: "0px",
           }}
         >
           <div
@@ -1402,21 +1401,27 @@ const EngineerTicketDetails = () => {
             <div className="mb-3 d-flex justify-content-between align-items-center border-bottom pb-3">
               <span className="text-muted">Query</span>
               <div className="d-flex align-items-center">
+
+                {/* Cancel */}
                 <button
+                  type="button"   // ✅ PREVENTS FORM SUBMIT
                   className="text-dark-gray px-2 py-1 rounded"
                   style={{ width: "80px", border: "none", marginRight: "5px" }}
                   onClick={() => navigate("/approvals")}
                 >
                   Cancel
                 </button>
+
+                {/* Accept */}
                 <button
+                  type="button"   // ✅ THIS FIXES YOUR ISSUE
                   className="text-white px-2 py-1 rounded"
                   style={{
                     backgroundColor: "#30A335",
                     width: "90px",
                     border: "none",
                   }}
-                  onClick={handleSave}
+                  onClick={handleQueryAccept}
                 >
                   Accept
                 </button>
@@ -1542,8 +1547,8 @@ const EngineerTicketDetails = () => {
                     {currentEmployee
                       ? currentEmployee.employeeName
                       : currentDepartment
-                      ? currentDepartment.deptName
-                      : "Select Move To"}
+                        ? currentDepartment.deptName
+                        : "Select Move To"}
                   </p>
                 </div>
               ) : null}
@@ -1554,22 +1559,20 @@ const EngineerTicketDetails = () => {
               <span className="text-muted">Action</span>
               <div className="d-flex align-items-center">
                 <button
-                  className={`btn me-2 ${
-                    approvalStatus === "Rejected"
-                      ? "btn-danger"
-                      : "btn-outline-danger"
-                  }`}
+                  className={`btn me-2 ${approvalStatus === "Rejected"
+                    ? "btn-danger"
+                    : "btn-outline-danger"
+                    }`}
                   onClick={() => handleApproval("Rejected")}
                   disabled={isLoading}
                 >
                   Reject
                 </button>
                 <button
-                  className={`btn ${
-                    approvalStatus === "Approved"
-                      ? "btn-success"
-                      : "btn-outline-success"
-                  }`}
+                  className={`btn ${approvalStatus === "Approved"
+                    ? "btn-success"
+                    : "btn-outline-success"
+                    }`}
                   onClick={() => handleApproval("Approved")}
                   disabled={isLoading}
                 >

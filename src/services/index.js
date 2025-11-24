@@ -568,7 +568,8 @@ export * from "./aqsBoqAPI";
 export { costEstimationAPI } from "./costEstimationAPI";
 export { vendorAPI } from "./vendorAPI";
 export { reportAPI } from "./reportAPI";
-export { default as aqsmaterialsAPI, getMaterialProjects, getMaterialStatusByProject } from "./aqsmaterialsAPI";
-
-
-
+export {
+  default as aqsmaterialsAPI,
+  getMaterialProjects,
+  getMaterialStatusByProject,
+} from "./aqsmaterialsAPI";

@@ -32,20 +32,18 @@ const AqsMaterials = () => {
   }, [selectedSite, dispatch]);
 
   const formatQtyForDisplay = (row) => {
-  if (!row) {
-    return { inDisplay: "0 Units", reqDisplay: "0 Units" };
-  }
+    if (!row) {
+      return { inDisplay: "0 Units", reqDisplay: "0 Units" };
+    }
 
-  const inQty = row.inStock ?? row.in_stock ?? row.in;
-  const reqQty = row.requiredQty ?? row.required_qty ?? row.required;
+    const inQty = row.inStock ?? row.in_stock ?? row.in;
+    const reqQty = row.requiredQty ?? row.required_qty ?? row.required;
 
-  return {
-    inDisplay: inQty !== undefined ? String(inQty) : "0",
-    reqDisplay: reqQty !== undefined ? String(reqQty) : "0",
+    return {
+      inDisplay: inQty !== undefined ? String(inQty) : "0",
+      reqDisplay: reqQty !== undefined ? String(reqQty) : "0",
+    };
   };
-};
-
-
 
   return (
     <Fragment>
@@ -93,27 +91,18 @@ const AqsMaterials = () => {
                       <td colSpan="4">Loading...</td>
                     </tr>
                   ) : statusRows && statusRows.length > 0 ? (
-                    statusRows.map((r, idx) => {
-                      const { inDisplay, reqDisplay } = formatQtyForDisplay(r);
-                      return (
-                        <tr key={idx}>
-                          <td>{idx + 1}</td>
-                          <td>
-                            {r.itemName ??
-                              r.materialName ??
-                              r.item ??
-                              r.name ??
-                              "N/A"}
-                          </td>
-                          <td>{inDisplay}</td>
-                          <td>{reqDisplay}</td>
-                        </tr>
-                      );
-                    })
+                    statusRows.map((row) => (
+                      <tr key={row.sNo}>
+                        <td>{row.sNo}</td>
+                        <td>{row.materialList}</td>
+                        <td>{row.inStockQuantity}</td>
+                        <td>{row.requiredQuantity}</td>
+                      </tr>
+                    ))
                   ) : (
                     <tr>
                       <td colSpan="4" className="text-center">
-                        No data for selected project.
+                        No data available.
                       </td>
                     </tr>
                   )}

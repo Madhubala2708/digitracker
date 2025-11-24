@@ -7,12 +7,21 @@ import {
   fetchMaterialNames,
 } from "../../../store/slice/Aqs/inventorySlice";
 
-const StockPopup = ({ title, onClose, onSubmit, data, projectId, projectName }) => {
+const StockPopup = ({
+  title,
+  onClose,
+  onSubmit,
+  data,
+  projectId,
+  projectName,
+}) => {
   const dispatch = useDispatch();
 
   const vendors = useSelector((state) => state.inventory.vendors || []);
   const projectTeam = useSelector((state) => state.inventory.projectTeam || []);
-  const materialNames = useSelector((state) => state.inventory.materialNames || []);
+  const materialNames = useSelector(
+    (state) => state.inventory.materialNames || []
+  );
 
   const [status, setStatus] = useState("Approved");
   const [receivedDate, setReceivedDate] = useState(null);
@@ -180,7 +189,7 @@ const StockPopup = ({ title, onClose, onSubmit, data, projectId, projectName }) 
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
                 disabled={isViewMode}
-                placeholder="Eg. Bags, Units"
+                placeholder=""
               />
             </div>
           </div>
@@ -189,24 +198,38 @@ const StockPopup = ({ title, onClose, onSubmit, data, projectId, projectName }) 
           <div className="form-row">
             <div className="form-group">
               <label>{isInward ? "Vendor" : "Issued To"} *</label>
+
               <select
                 value={vendor}
                 onChange={(e) => setVendor(e.target.value)}
                 disabled={isViewMode}
               >
-                <option value="">{isInward ? "Select Vendor" : "Select Engineer"}</option>
+                <option value="">
+                  {isInward ? "Select Vendor" : "Select Engineer"}
+                </option>
 
                 {isInward
-                  ? vendors.map((v) => (
-                      <option key={v.id || v.vendorId || v.empId} value={v.id || v.vendorId || v.empId}>
-                        {v.vendorName || v.name || v.fullName || "Vendor"}
+                  ? // INWARD → Vendor list from API
+                    vendors.map((v) => (
+                      <option
+                        key={v.id || v.vendorId}
+                        value={v.id || v.vendorId}
+                      >
+                        {v.vendorName}
                       </option>
                     ))
-                  : projectTeam.map((p) => (
-                      <option key={p.empId} value={p.empId}>
-                        {p.fullName}
-                      </option>
-                    ))}
+                  : // OUTWARD → ONLY LOGGED-IN USER (NO API)
+                    (() => {
+                      const user = JSON.parse(localStorage.getItem("userData"));
+
+                      if (!user) return null;
+
+                      return (
+                        <option value={user.empId}>
+                          {user.fullName || user.firstName || "User"}
+                        </option>
+                      );
+                    })()}
               </select>
             </div>
 
@@ -214,7 +237,9 @@ const StockPopup = ({ title, onClose, onSubmit, data, projectId, projectName }) 
               <label>{isInward ? "Received Date" : "Issued Date"} *</label>
               <input
                 type="date"
-                value={receivedDate ? receivedDate.toISOString().split("T")[0] : ""}
+                value={
+                  receivedDate ? receivedDate.toISOString().split("T")[0] : ""
+                }
                 onChange={(e) => setReceivedDate(new Date(e.target.value))}
                 disabled={isViewMode}
               />
@@ -241,7 +266,11 @@ const StockPopup = ({ title, onClose, onSubmit, data, projectId, projectName }) 
 
             <div className="form-group">
               <label>Status</label>
-              <select value={status} onChange={(e) => setStatus(e.target.value)} disabled={isViewMode}>
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+                disabled={isViewMode}
+              >
                 <option value="Approved">Approved</option>
                 <option value="Pending">Pending</option>
                 <option value="Rejected">Rejected</option>

@@ -1,8 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-// use the renamed service module
-import { getMaterialProjects, getMaterialStatusByProject } from "../../../services/aqsmaterialsAPI";
+import { 
+  getMaterialProjects, 
+  getMaterialStatusByProject 
+} from "../../../services/aqsmaterialsAPI";
 
-// Fetch list of projects for materials dropdown
+// Fetch list of projects for dropdown
 export const fetchMaterialsProjects = createAsyncThunk(
   "materials/fetchProjects",
   async (_, { rejectWithValue }) => {
@@ -15,7 +17,7 @@ export const fetchMaterialsProjects = createAsyncThunk(
   }
 );
 
-// Fetch material status rows for a specific projectId
+// Fetch material status for selected project
 export const fetchMaterialStatusByProject = createAsyncThunk(
   "materials/fetchStatusByProject",
   async (projectId, { rejectWithValue }) => {
@@ -77,10 +79,20 @@ const materialsSlice = createSlice({
         state.statusLoading = true;
         state.statusError = null;
       })
-      .addCase(fetchMaterialStatusByProject.fulfilled, (state, action) => {
-        state.statusLoading = false;
-        state.statusRows = Array.isArray(action.payload) ? action.payload : [];
-      })
+.addCase(fetchMaterialStatusByProject.fulfilled, (state, action) => {
+    state.statusLoading = false;
+
+    const raw = Array.isArray(action.payload) ? action.payload : [];
+
+    // Extract only needed fields
+    state.statusRows = raw.map((item, idx) => ({
+        sNo: item.sNo ?? idx + 1,
+        materialList: item.materialList ?? item.itemName ?? item.name ?? "N/A",
+        inStockQuantity: item.inStockQuantity ?? "0 Units",
+        requiredQuantity: item.requiredQuantity ?? "0 Units",
+    }));
+})
+
       .addCase(fetchMaterialStatusByProject.rejected, (state, action) => {
         state.statusLoading = false;
         state.statusError = action.payload ?? action.error?.message;

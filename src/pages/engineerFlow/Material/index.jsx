@@ -16,16 +16,19 @@ const Material = () => {
     dispatch(fetchEngineerMaterials());
   }, [dispatch]);
 
-  // LEVEL BADGE (SAFE)
+  // LEVEL BADGE
   const getLevelBadge = (level) => {
-    if (!level) return "—";
+    if (!level || level === "-") {
+      return <span className="text-muted">-</span>;
+    }
 
-    const levelColors = {
-      High: "#D00416",
-      Medium: "#F1C300",
-      Low: "#30A335",
-      Urgent: "#D00416",
-    };
+   const levelColors = {
+  Urgent: "#E53935",  
+  High: "#FB8C00",    
+  Medium: "#FDD835",  
+  Low: "#43A047",     
+};
+
 
     return (
       <span
@@ -42,19 +45,20 @@ const Material = () => {
     );
   };
 
-  // REQUEST STATUS BADGE — now uses API value "requestStatus"
+  // REQUEST STATUS BADGE
   const getStatusBadge = (status) => {
-    if (!status || status === "") status = "Pending";
+    if (!status || status === "-") {
+      return <span className="status-badge text-muted">-</span>;
+    }
 
     const statusColors = {
       Pending: "#F1C300",
       Approved: "#30A335",
       Rejected: "#D00416",
-      "Low Stock": "#606060",
     };
 
     return (
-      <span className="status-badge" style={{ color: statusColors[status] || "#606060" }}>
+      <span style={{ color: statusColors[status] || "#606060" }}>
         {status}
       </span>
     );
@@ -69,12 +73,22 @@ const Material = () => {
       itemName: m.materialList ?? m.itemName ?? m.name ?? "N/A",
       inStockQuantity: m.inStockQuantity ?? "0 Units",
       requiredQuantity: m.requiredQuantity ?? "0 Units",
-      level: m.level ?? "Low",
-      requestStatus: m.requestStatus ?? "Pending",
+
+      level:
+        m.level && m.level.trim() !== ""
+          ? m.level
+          : "-",
+
+      requestStatus:
+        m.requestStatus && m.requestStatus.trim() !== ""
+          ? m.requestStatus
+          : "-",
+
       boqId: m.boqId ?? m.id ?? index,
       raw: m,
     }));
   }, [materials]);
+
 
   return (
     <Fragment>

@@ -279,7 +279,6 @@ export default function Login({ onLoginSuccess }) {
                     src={PRODUCT_LOGO}
                     alt="Agent Board Icon"
                     style={{ width: "230px", height: "52px" }}
-
                   />
 
                   <div className="user-row">

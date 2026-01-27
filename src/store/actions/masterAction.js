@@ -53,21 +53,19 @@ import {
   getLabels,
   addLabel,
   updateLabel,
-  getCustomerLanguage,
-  getPrimaryMarket,
-  getPeriodicTools,
-  getPeriodicDetails,
   getAllAgency,
-  getAllCountryDetail,
-  getUpdatesMarketRegions,
-  getAllTimeZoneDetail,
   getTicketsbyboardParticipants,
   addBoard,
   getBoard,
-  updateBoard,
   editBoard,
   getPurchaseOrderDetails,
-  getBoqItemsById
+  getBoqItemsById,
+  getMileStoneList,
+  createMileStone,
+  updateMileStone,
+  deleteMileStone,
+  getProjectStatusMaster,
+  getTaskStatusMaster
 } from "../../services";
 import axios from "axios";
 import { getAuthToken } from "../../utils/storage";
@@ -579,41 +577,6 @@ export const updateLabelAction = createAsyncThunk(
   }
 );
 
-/** USED TO GET LANGUAGE */
-export const getCustomerLanguageAction = createAsyncThunk(
-  "getCustomerLanguage",
-  async (params) => {
-    const response = await getCustomerLanguage();
-    return response.data;
-  }
-);
-
-/** USED TO GET LANGUAGE */
-export const getPrimaryMarketAction = createAsyncThunk(
-  "getPrimaryMarket",
-  async (params) => {
-    const response = await getPrimaryMarket();
-    return response.data;
-  }
-);
-
-/** PERIODIC TOOLS MASTER */
-export const getPeriodicToolsAction = createAsyncThunk(
-  "getPeriodicTools",
-  async (params) => {
-    const response = await getPeriodicTools(params);
-    return response.data;
-  }
-);
-/** PERIODIC DETAILS MASTER */
-export const getPeriodicDetailsAction = createAsyncThunk(
-  "getPeriodicDetails",
-  async (params) => {
-    const response = await getPeriodicDetails(params);
-    return response.data;
-  }
-);
-
 /** AGENCY LIST MASTER */
 export const getAllAgencyAction = createAsyncThunk(
   "getAllAgency",
@@ -622,33 +585,6 @@ export const getAllAgencyAction = createAsyncThunk(
     return response.data;
   }
 );
-
-/** USED TO GET ALL COUNTRY DETAILED LISTING */
-export const getAllCountryDetailAction = createAsyncThunk(
-  "getAllCountryDetail",
-  async (params) => {
-    const response = await getAllCountryDetail();
-    return response.data;
-  }
-);
-/** USED TO GET ALL COUNTRY DETAILED LISTING */
-export const getUpdatesMarketRegionsAction = createAsyncThunk(
-  "getUpdatesMarketRegions",
-  async (params) => {
-    const response = await getUpdatesMarketRegions(params);
-    return response.data;
-  }
-);
-
-/** USED TO GET TIME ZONE DETAIL */
-export const getAllTimeZoneDetailAction = createAsyncThunk(
-  "getAllTimeZoneDetail",
-  async (params) => {
-    const response = await getAllTimeZoneDetail(params);
-    return response.data;
-  }
-);
-
 /** USED TO GET PARTICIPANTS UPDATES - KANBAN BOARD */
 export const getTicketsbyboardParticipantsAction = createAsyncThunk(
   "getTicketsbyboardParticipants",
@@ -768,5 +704,44 @@ export const createReportAttachmentAction = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
+  }
+);
+
+/** Milestone Master LIST */
+export const getMilestoneMasterAction = createAsyncThunk(
+  "getMilestoneMaster",
+  async (params) => {
+    const response = await getMileStoneList(params);
+    return response.data;
+  }
+);
+export const createMilestoneMasterAction = createAsyncThunk(
+  "createMilestoneMaster",
+  async (params) => {
+    const response = await createMileStone(params);
+    return response.data;
+  }
+);
+export const deleteMilestoneMasterAction = createAsyncThunk(
+  "deleteMilestoneMaster",
+  async (params) => {
+    const response = await deleteMileStone(params);
+    return response.data;
+  }
+);
+/** PROJECT Status Master List */
+export const getProjectStatusMasterAction = createAsyncThunk(
+  "getProjectStatusMaster",
+  async (params) => {
+    const response = await getProjectStatusMaster(params);
+    return response.data;
+  }
+);
+/** TASK Status Master List */
+export const getTaskStatusMasterAction = createAsyncThunk(
+  "getTaskStatusMaster",
+  async (params) => {
+    const response = await getTaskStatusMaster(params);
+    return response.data;
   }
 );

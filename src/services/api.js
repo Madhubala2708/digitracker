@@ -1,7 +1,13 @@
 import axios from "axios";
 import Config from "../config";
 import loggerService from "./logger.service";
-import {issetAuthToken, getAuthToken, getRefreshToken, setAuthToken, setRefreshToken} from "../utils/storage";
+import {
+  issetAuthToken,
+  getAuthToken,
+  getRefreshToken,
+  setAuthToken,
+  setRefreshToken,
+} from "../utils/storage";
 
 // Request methods
 const GET = "GET";
@@ -25,7 +31,7 @@ const createAxiosInstance = () => {
   let failedQueue = [];
 
   const processQueue = (error, token = null) => {
-    failedQueue.forEach(prom => {
+    failedQueue.forEach((prom) => {
       if (error) prom.reject(error);
       else prom.resolve(token);
     });
@@ -54,7 +60,10 @@ const createAxiosInstance = () => {
     async (error) => {
       const originalRequest = error.config;
 
-      if ((error.response?.status === 401 || error.response?.status === 403) && !originalRequest._retry) {
+      if (
+        (error.response?.status === 401 || error.response?.status === 403) &&
+        !originalRequest._retry
+      ) {
         const refreshToken = getRefreshToken();
 
         if (!refreshToken) {
@@ -70,16 +79,19 @@ const createAxiosInstance = () => {
               originalRequest.headers["Authorization"] = `Bearer ${token}`;
               return axios(originalRequest);
             })
-            .catch(err => Promise.reject(err));
+            .catch((err) => Promise.reject(err));
         }
 
         originalRequest._retry = true;
         isRefreshing = true;
 
         try {
-          const res = await axios.post(`${Config.apiBaseUrl}/api/Login/refresh-token`, {
-            refreshToken: refreshToken
-          });
+          const res = await axios.post(
+            `${Config.apiBaseUrl}/api/Login/refresh-token`,
+            {
+              refreshToken: refreshToken,
+            }
+          );
 
           const newToken = res.data?.Token;
           const newRefreshToken = res.data?.RefreshToken;
@@ -87,7 +99,9 @@ const createAxiosInstance = () => {
           if (newToken && newRefreshToken) {
             await setAuthToken(newToken);
             await setRefreshToken(newRefreshToken);
-            axios.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
+            axios.defaults.headers.common[
+              "Authorization"
+            ] = `Bearer ${newToken}`;
             processQueue(null, newToken);
             return axios(originalRequest);
           } else {
@@ -110,14 +124,22 @@ const createAxiosInstance = () => {
 
   return {
     instance,
-    setJustLoggedIn: (value) => { justLoggedIn = value; }
+    setJustLoggedIn: (value) => {
+      justLoggedIn = value;
+    },
   };
 };
 
 const { instance: axiosBase, setJustLoggedIn } = createAxiosInstance();
 
 /** Http Request */
-export const request = async (method, path, httpParams, body, disableLoader = false) => {
+export const request = async (
+  method,
+  path,
+  httpParams,
+  body,
+  disableLoader = false
+) => {
   consoleRequestResponseTime("request", Config.apiBaseUrl + path);
   try {
     let response;
@@ -132,7 +154,10 @@ export const request = async (method, path, httpParams, body, disableLoader = fa
         response = await axiosBase.put(path, body, { params: httpParams });
         break;
       case DELETE:
-        response = await axiosBase.delete(path, { params: httpParams, data: body });
+        response = await axiosBase.delete(path, {
+          params: httpParams,
+          data: body,
+        });
         break;
       default:
         throw new Error(`Unsupported method: ${method}`);
@@ -192,14 +217,17 @@ export const doFileUpload = async (url, params) => {
       formData.append("ToolId", body.toolId);
       formData.append("tool_ticket_id", body.tool_ticket_id);
     } else if (body?.pageType === "comment") {
-      file.forEach(val => formData.append("attachedFiles", val));
+      file.forEach((val) => formData.append("attachedFiles", val));
       formData.append("ticket_id", body.ticket_id);
       formData.append("tool_id", body.tool_id);
       formData.append("tool_ticket_id", body.tool_ticket_id);
       formData.append("comment_id", body.comment_id);
       formData.append("content", body.content);
       formData.append("mentions", body.mentions);
-      formData.append("deleted_attachments", body.deleted_attachments.join(","));
+      formData.append(
+        "deleted_attachments",
+        body.deleted_attachments.join(",")
+      );
     }
 
     const response = await axios.post(url, formData, {
@@ -207,8 +235,8 @@ export const doFileUpload = async (url, params) => {
       headers: {
         Accept: "multipart/form-data",
         "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${getAuthToken()}`
-      }
+        Authorization: `Bearer ${getAuthToken()}`,
+      },
     });
 
     return processResponseData("success", url, response.data);
@@ -219,12 +247,17 @@ export const doFileUpload = async (url, params) => {
 };
 
 /** File Download */
-export const doFileDownload = async (path, httpParams, body, disableLoader = false) => {
+export const doFileDownload = async (
+  path,
+  httpParams,
+  body,
+  disableLoader = false
+) => {
   consoleRequestResponseTime("request", Config.apiBaseUrl + path);
   try {
     const response = await axiosBase.post(path, body, {
       params: httpParams,
-      responseType: "blob"
+      responseType: "blob",
     });
 
     if (response?.data) {
@@ -241,14 +274,23 @@ export const doFileDownload = async (path, httpParams, body, disableLoader = fal
   }
 };
 
-
 export { setJustLoggedIn };
 
 export default {
-  GET: (path, ...props) => request(GET, path, ...props),
-  POST: (path, ...props) => request(POST, path, props.params, ...props),
-  PUT: (path, ...props) => request(PUT, path, props.params, ...props),
-  DELETE: (path, ...props) => request(DELETE, path, props.params, ...props),
-  FILEUPLOAD: (path, ...props) => doFileUpload(path, props),
-  FILEDOWNLOAD: (path, ...props) => doFileDownload(path, props.params, ...props),
+  GET: (path, httpParams = {}, disableLoader = false) =>
+    request(GET, path, httpParams, null, disableLoader),
+
+  POST: (path, body = {}, httpParams = {}, disableLoader = false) =>
+    request(POST, path, httpParams, body, disableLoader),
+
+  PUT: (path, body = {}, httpParams = {}, disableLoader = false) =>
+    request(PUT, path, httpParams, body, disableLoader),
+
+  DELETE: (path, body = {}, httpParams = {}, disableLoader = false) =>
+    request(DELETE, path, httpParams, body, disableLoader),
+
+  FILEUPLOAD: (path, params) => doFileUpload(path, params),
+
+  FILEDOWNLOAD: (path, body, httpParams = {}, disableLoader = false) =>
+    doFileDownload(path, httpParams, body, disableLoader),
 };

@@ -5,10 +5,18 @@ import { useProject } from "../../../hooks/Ceo/useCeoProject";
 import { useParams } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { profile } from "../../../assets/images";
+import { profile, crossMarkRed, trashFull } from "../../../assets/images";
 import { useDispatch } from "react-redux";
 import { getProjectDetailsAction } from "../../../store/actions/Ceo/ceoprojectAction";
 import { CiCalendar } from "react-icons/ci";
+import {
+  useMilestoneMaster,
+  useProjectStatusMaster,
+} from "../../../hooks/useMaster";
+import PopupModal from "../../../components/common/PopupModal";
+import { showToast } from "../../../store/slice/toast";
+import { faL, faSlash } from "@fortawesome/free-solid-svg-icons";
+import { useLocation } from "react-router-dom";
 
 const TimelineMilestonePlanning = ({
   formData,
@@ -17,18 +25,53 @@ const TimelineMilestonePlanning = ({
   onNextStep,
   setFormData,
   createTicket,
-  createNotify
+  createNotify,
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState([]);
+  const [selectedMilestones, setSelectedMilestones] = useState([]);
+  const [addNewMilestone, setAddNewMilestone] = useState(null);
   const [hasInitialized, setHasInitialized] = useState(false);
   const [nextTempId, setNextTempId] = useState(1);
-
+  const location = useLocation();
+  const [
+    { milestoneDataList },
+    { getMilestoneList, addMilestoneData, deleteMilestoneData },
+  ] = useMilestoneMaster();
+  const [{ projectStatusDataList }, { getProjectStatusList }] =
+    useProjectStatusMaster();
   const { createProjectMilestone, loading, currentProject } = useProject();
   const [localProjectId, setLocalProjectId] = useState(null);
-
+  const [addNewMilestoneShow, setAddNewMilestoneShow] = useState(false);
+  const [apiLoading, setApiLoading] = useState(false);
   const dispatch = useDispatch();
+  const addDefaultFields = (data) => {
+    return data.map((item) => ({
+      ...item,
+      milestone_name: item.name,
+      milestone_id: item.id,
+      milestone_description: "",
+      milestone_start_date: "",
+      milestone_end_date: "",
+      milestone_status: projectStatusDataList?.data[0]?.id,
+      remarks: "",
+      order: item.id,
+      disabled: false,
+    }));
+  };
 
+  useEffect(() => {
+    setAddNewMilestone({
+      id: 0,
+      name: "",
+      description: "",
+      startDate: "",
+      endDate: "",
+      status: projectStatusDataList?.data[0]?.id,
+      remarks: "",
+      disabled: false,
+    });
+  }, [milestoneDataList]);
   // Default construction milestones with unique temporary IDs and order
   const getDefaultMilestones = () => [
     {
@@ -39,7 +82,7 @@ const TimelineMilestonePlanning = ({
       endDate: "",
       status: "Planned",
       remarks: "",
-      order: 1
+      order: 1,
     },
     {
       id: `temp_${Date.now()}_2`,
@@ -49,7 +92,7 @@ const TimelineMilestonePlanning = ({
       endDate: "",
       status: "Planned",
       remarks: "",
-      order: 2
+      order: 2,
     },
     {
       id: `temp_${Date.now()}_3`,
@@ -59,7 +102,7 @@ const TimelineMilestonePlanning = ({
       endDate: "",
       status: "Planned",
       remarks: "",
-      order: 3
+      order: 3,
     },
     {
       id: `temp_${Date.now()}_4`,
@@ -69,7 +112,7 @@ const TimelineMilestonePlanning = ({
       endDate: "",
       status: "Planned",
       remarks: "",
-      order: 4
+      order: 4,
     },
     {
       id: `temp_${Date.now()}_5`,
@@ -79,7 +122,7 @@ const TimelineMilestonePlanning = ({
       endDate: "",
       status: "Planned",
       remarks: "",
-      order: 5
+      order: 5,
     },
     {
       id: `temp_${Date.now()}_6`,
@@ -89,7 +132,7 @@ const TimelineMilestonePlanning = ({
       endDate: "",
       status: "Planned",
       remarks: "",
-      order: 6
+      order: 6,
     },
     {
       id: `temp_${Date.now()}_7`,
@@ -99,8 +142,8 @@ const TimelineMilestonePlanning = ({
       endDate: "",
       status: "Planned",
       remarks: "",
-      order: 7
-    }
+      order: 7,
+    },
   ];
 
   const handleCheckboxChange = (userId) => {
@@ -110,20 +153,25 @@ const TimelineMilestonePlanning = ({
         : [...prevSelected, userId]
     );
   };
-  
+
   const projectId = localStorage.getItem("projectId");
-  console.log("projecttt    Id =>", projectId)
 
   useEffect(() => {
     if (projectId) {
       getProjectsData(projectId);
     }
-  }, [projectId]);
-
+  }, [projectId, milestoneDataList]);
   const getProjectsData = async (projectId) => {
     try {
       const result = await dispatch(getProjectDetailsAction(projectId));
       const milestoneDetails = result?.payload?.value?.milestone_details;
+      setSelectedMilestones(
+        location?.state?.isEdit && milestoneDetails !== null
+          ? milestoneDetails?.map((data) => {
+              return { ...data, disabled: false };
+            })
+          : addDefaultFields(milestoneDataList.data)
+      );
       if (Array.isArray(milestoneDetails) && milestoneDetails.length > 0) {
         const milestones = milestoneDetails.map((item, index) => ({
           id: item.milestone_id || 0,
@@ -133,10 +181,9 @@ const TimelineMilestonePlanning = ({
           endDate: item.milestone_end_date,
           status: item.milestone_status,
           remarks: item.remarks || "", // Handle both remark and remarks
-          order: index + 1
+          order: item.milestone_id || index + 1,
+          disabled: false,
         }));
-        console.log("Processed milestones =>", milestones);
-
         setFormData((prev) => ({
           ...prev,
           milestones,
@@ -145,7 +192,9 @@ const TimelineMilestonePlanning = ({
         // Set nextTempId to continue from existing milestones
         setNextTempId(milestones.length + 1);
       } else {
-        console.warn("No valid milestone details found, initializing with default milestones.");
+        console.warn(
+          "No valid milestone details found, initializing with default milestones."
+        );
         const defaultMilestones = getDefaultMilestones();
         setFormData((prev) => ({
           ...prev,
@@ -185,7 +234,10 @@ const TimelineMilestonePlanning = ({
   }, [projectId, currentProject]);
 
   useEffect(() => {
-    if (!hasInitialized && (!formData.milestones || formData.milestones.length === 0)) {
+    if (
+      !hasInitialized &&
+      (!formData.milestones || formData.milestones.length === 0)
+    ) {
       const defaultMilestones = getDefaultMilestones();
       setFormData((prev) => ({
         ...prev,
@@ -198,31 +250,17 @@ const TimelineMilestonePlanning = ({
 
   // Modified function to add a new milestone row at the end
   const handleAddMilestone = () => {
-    const currentMilestones = formData.milestones || [];
-    const maxOrder = currentMilestones.length > 0 
-      ? Math.max(...currentMilestones.map(m => m.order || 0)) 
-      : 0;
-
-    const newMilestone = {
-      id: `temp_${Date.now()}_${nextTempId}`,
-      name: "",
-      description: "",
-      startDate: "",
-      endDate: "",
-      status: "Planned",
-      remarks: "", // Added remarks field
-      order: maxOrder + 1
-    };
-
+    setAddNewMilestoneShow(true);
+    // addMilestoneData();
     // Ensure we're adding to the end by creating a new array with spread operator
-    const updatedMilestones = [...currentMilestones, newMilestone];
+    // const updatedMilestones = [...currentMilestones, addNewMilestone];
 
-    setFormData((prev) => ({
-      ...prev,
-      milestones: updatedMilestones
-    }));
+    // setFormData((prev) => ({
+    //   ...prev,
+    //   milestones: updatedMilestones,
+    // }));
 
-    setNextTempId(prev => prev + 1);
+    // setNextTempId((prev) => prev + 1);
   };
 
   const inputStyle = {
@@ -238,14 +276,18 @@ const TimelineMilestonePlanning = ({
   };
 
   const handleInternalMilestoneChange = (id, field, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      milestones: prev.milestones.map((milestone) =>
-        milestone.id === id
-          ? { ...milestone, [field]: value }
-          : milestone
-      ),
-    }));
+    const updatedValue = selectedMilestones.map((item) => {
+      return item.milestone_id === id
+        ? { ...item, [field]: field === "milestone_status" ? value : value }
+        : item;
+    });
+    setSelectedMilestones(updatedValue);
+    // setFormData((prev) => ({
+    //   ...prev,
+    //   milestones: prev.milestones.map((milestone) =>
+    //     milestone.id === id ? { ...milestone, [field]: value } : milestone
+    //   ),
+    // }));
   };
 
   const handleDateChange = (id, field, date) => {
@@ -286,18 +328,18 @@ const TimelineMilestonePlanning = ({
       return;
     }
 
-    const milestonesToSubmit = formData.milestones.filter(
-      milestone => 
-        (typeof milestone.id === 'number' && milestone.id > 0) ||
-        milestone.name.trim() !== "" || 
-        milestone.description.trim() !== "" || 
-        milestone.startDate || 
-        milestone.endDate
+    const milestonesToSubmit = selectedMilestones.filter(
+      (milestone) =>
+        (typeof milestone.id === "number" && milestone.id > 0) ||
+        milestone?.milestone_name?.trim() !== "" ||
+        milestone?.milestone_description?.trim() !== "" ||
+        milestone?.milestone_start_date ||
+        milestone?.milestone_end_date
     );
 
     if (milestonesToSubmit.length > 0) {
-      const invalidMilestones = milestonesToSubmit.filter(
-        milestone => !milestone.name.trim()
+      const invalidMilestones = milestonesToSubmit?.filter(
+        (milestone) => !milestone?.milestone_name?.trim()
       );
 
       if (invalidMilestones.length > 0) {
@@ -312,7 +354,7 @@ const TimelineMilestonePlanning = ({
 
     const projectId = localStorage.getItem("projectId");
 
-    const invalidDateRanges = milestonesToSubmit.filter(
+    const invalidDateRanges = selectedMilestones.filter(
       (m) =>
         m.startDate && m.endDate && new Date(m.endDate) < new Date(m.startDate)
     );
@@ -327,23 +369,22 @@ const TimelineMilestonePlanning = ({
     }
 
     // FIXED: Include remarks in the payload
-    const milestoneList = milestonesToSubmit.map((milestone) => ({
-      milestoneId: (typeof milestone.id === 'number' && milestone.id > 0) ? milestone.id : 0,
-      milestoneName: milestone.name.trim(),
-      milestoneDescription: milestone.description.trim(),
-      milestoneStartDate: milestone.startDate || null,
-      milestoneEndDate: milestone.endDate || null,
-      remarks: milestone.remarks ? milestone.remarks.trim() : "", // Added this line
-      Status: milestone.status || "Planned",
-    }));
+    const milestoneList = selectedMilestones
+      .filter((data) => !data.disabled)
+      .map((milestone) => ({
+        milestoneId: location.state ? milestone?.milestone_id : 0,
+        milestoneName: milestone?.milestone_name?.trim(),
+        milestoneDescription: milestone?.milestone_description.trim(),
+        milestoneStartDate: milestone?.milestone_start_date || null,
+        milestoneEndDate: milestone?.milestone_end_date || null,
+        remarks: milestone?.remarks ? milestone.remarks.trim() : "", // Added this line
+        status: milestone?.milestone_status || [2],
+      }));
 
     const payload = {
-      projectId: parseInt(formData.projectId, 10),
+      projectId: parseInt(projectId, 10),
       milestoneList: milestoneList,
     };
-
-    console.log("Payload being sent to API:", payload);
-
     try {
       const response = await createProjectMilestone(payload);
 
@@ -375,7 +416,10 @@ const TimelineMilestonePlanning = ({
   };
 
   const handleTicketSubmission = async () => {
-    const projectId = formData.projectId || localProjectId || parseInt(localStorage.getItem("projectId"));
+    const projectId =
+      formData.projectId ||
+      localProjectId ||
+      parseInt(localStorage.getItem("projectId"));
     const createdBy = parseInt(localStorage.getItem("userRoleId"));
 
     if (selectedUsers.length === 0) {
@@ -411,8 +455,6 @@ const TimelineMilestonePlanning = ({
       };
 
       await createNotify(notificationPayload);
-      console.log("🔔 Notification created");
-
       Swal.fire({
         icon: "success",
         title: "Tickets and Notifications Created",
@@ -427,10 +469,94 @@ const TimelineMilestonePlanning = ({
     }
   };
 
-  // Sort milestones by order to ensure proper rendering
-  const sortedMilestones = formData.milestones 
-    ? [...formData.milestones].sort((a, b) => (a.order || 0) - (b.order || 0))
-    : [];
+  const closeModal = () => {
+    setAddNewMilestoneShow(false);
+    setMilstoneDeleteMessage(false);
+    setApiLoading(false);
+    setNewMilstoneText("");
+  };
+  const [newMilstoneText, setNewMilstoneText] = useState("");
+  const [milstoneDeleteMessage, setMilstoneDeleteMessage] = useState(false);
+  const [milstoneDeleteId, setMilstoneDeleteId] = useState(null);
+  const hanleNewMilstoneText = (e) => {
+    const getValue = e.target.value;
+    setNewMilstoneText(getValue);
+  };
+
+  const handleAddNewMilestoneSubmit = async () => {
+    setApiLoading(true);
+    try {
+      const response = await addMilestoneData({
+        id: 0,
+        name: newMilstoneText,
+        code: newMilstoneText.toUpperCase(),
+      });
+      getMilestoneList();
+      if (response.payload) {
+        // Close modal only if API success
+        setNewMilstoneText("");
+        setApiLoading(false);
+        setAddNewMilestoneShow(false);
+        dispatch(
+          showToast({
+            message: "Milestone Added Successfully",
+            variant: "success",
+          })
+        );
+      }
+    } catch (error) {
+      console.error("API call failed:", error);
+      setApiLoading(false);
+      dispatch(
+        showToast({
+          message: error?.message || "Something went wrong",
+          variant: "danger",
+        })
+      );
+      return false;
+    }
+  };
+
+  const handleRemoveMilestone = (milestoneId) => {
+    const removedMilestone = selectedMilestones.map((data) => {
+      return data.milestone_id === milestoneId
+        ? { ...data, disabled: true }
+        : data;
+    });
+    setSelectedMilestones(removedMilestone);
+  };
+  const handleDeleteMilestone = async () => {
+    try {
+      const response = await deleteMilestoneData(milstoneDeleteId);
+      getMilestoneList();
+      setAddNewMilestoneShow(false);
+      if (response.payload) {
+        // Close modal only if API success
+        setAddNewMilestoneShow(false);
+        setMilstoneDeleteMessage(false);
+        dispatch(
+          showToast({
+            message: "Milestone Dlete Successfully",
+            variant: "danger",
+          })
+        );
+      }
+    } catch (error) {
+      console.error("API call failed:", error);
+      dispatch(
+        showToast({
+          message: error?.message || "Something went wrong",
+          variant: "danger",
+        })
+      );
+      return false;
+    }
+  };
+  const handleCheckDeleteMessage = (id) => {
+    setMilstoneDeleteId(id);
+    setMilstoneDeleteMessage(true);
+    setAddNewMilestoneShow(true);
+  };
 
   return (
     <div className="timeline-milestone-page">
@@ -443,133 +569,182 @@ const TimelineMilestonePlanning = ({
           </div>
         </div>
 
-        {sortedMilestones.length > 0 && (
+        {selectedMilestones?.length > 0 && (
           <div className="form-section">
             <div className="">
               <table className="tbl mt-4 table table-bordered w-100">
                 <thead>
                   <tr>
-                    <th className="text-center text-dark fs-18-500 w48">S.No</th>
+                    <th className="text-center text-dark fs-18-500 w48">
+                      S.No
+                    </th>
                     <th className="text-center text-dark fs-18-500">
                       Milestone Name
                     </th>
-                    <th className="text-center text-dark fs-18-500">Description</th>
-                    <th className="text-center text-dark fs-18-500 w140">Start Date</th>
-                    <th className="text-center text-dark fs-18-500 w140">End Date</th>
+                    <th className="text-center text-dark fs-18-500">
+                      Description
+                    </th>
+                    <th className="text-center text-dark fs-18-500 w140">
+                      Start Date
+                    </th>
+                    <th className="text-center text-dark fs-18-500 w140">
+                      End Date
+                    </th>
                     <th className="text-center text-dark fs-18-500">Status</th>
                     <th className="text-center text-dark fs-18-500">Remarks</th>
+                    <th className="text-center text-dark fs-18-500">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {sortedMilestones.map((item, index) => (
-                    <tr key={item.id}>
-                      <td className="text-center text-dark-gray fs-16-500 w48">
-                        {index + 1}
-                      </td>
-                      <td className="text-center text-dark-gray fs-16-500">
-                        <Form.Control
-                          type="text"
-                          className="border-1 shadow-none bg-transparent"
-                          value={item.name}
-                          onChange={(e) =>
-                            handleInternalMilestoneChange(
-                              item.id,
-                              "name",
-                              e.target.value
-                            )
-                          }
-                          placeholder="Enter milestone name"
-                        />
-                      </td>
-                      <td className="text-center text-dark-gray fs-16-500">
-                        <Form.Control
-                          type="text"
-                          className="border-1 shadow-none bg-transparent"
-                          value={item.description}
-                          onChange={(e) =>
-                            handleInternalMilestoneChange(
-                              item.id,
-                              "description",
-                              e.target.value
-                            )
-                          }
-                          placeholder="Enter description"
-                        />
-                      </td>
-                      <td className="text-center text-dark-gray fs-16-500 w140">
-                        <div style={{ position: "relative" }}>
-                          <DatePicker
-                            selected={parseDate(item.startDate)}
-                            onChange={(date) => handleDateChange(item.id, "startDate", date)}
-                            className="form-control pe-3 text-light-gray-1 border-1 shadow-none bg-transparent"
-                            dateFormat="d MMMM yyyy"
-                            placeholderText="DD/MM/YYYY"
-                            isClearable
-                            showYearDropdown
-                            showMonthDropdown
-                            dropdownMode="select"
+                  {selectedMilestones.map((item, index) => {
+                    if (item.disabled) return null;
+                    return (
+                      <tr key={item.milestone_id}>
+                        <td className="text-center text-dark-gray fs-16-500 w48">
+                          {index + 1}
+                        </td>
+                        <td className="text-center text-dark-gray fs-16-500">
+                          <Form.Control
+                            type="text"
+                            className="border-1 shadow-none bg-transparent"
+                            value={item.milestone_name}
+                            readOnly
                           />
-                        </div>
-                      </td>
-                      <td className="text-center text-dark-gray fs-16-500 w140">
-                        <div style={{ position: "relative" }}>
-                          <DatePicker
-                            selected={parseDate(item.endDate)}
-                            onChange={(date) => handleDateChange(item.id, "endDate", date)}
-                            className="form-control pe-3 text-light-gray-1 border-1 shadow-none bg-transparent"
-                            dateFormat="d MMMM yyyy"
-                            placeholderText="DD/MM/YYYY"
-                            minDate={parseDate(item.startDate)}
-                            isClearable
-                            showYearDropdown
-                            showMonthDropdown
-                            dropdownMode="select"
+                        </td>
+                        <td className="text-center text-dark-gray fs-16-500">
+                          <Form.Control
+                            type="text"
+                            className="border-1 shadow-none bg-transparent"
+                            value={item.milestone_description}
+                            onChange={(e) =>
+                              handleInternalMilestoneChange(
+                                item.milestone_id,
+                                "milestone_description",
+                                e.target.value
+                              )
+                            }
+                            placeholder="Enter description"
                           />
-                        </div>
-                      </td>
-                      <td className="text-center text-dark-gray fs-16-500">
-                        <Form.Select
-                          style={inputStyle}
-                          className="form-control border-1 shadow-none bg-transparent text-dark"
-                          value={item.status}
-                          onChange={(e) =>
-                            handleInternalMilestoneChange(
-                              item.id,
-                              "status",
-                              e.target.value
-                            )
-                          }
-                        >
-                          <option value="Completed">✅ Completed</option>                          
+                        </td>
+                        <td className="text-center text-dark-gray fs-16-500 w140">
+                          <div style={{ position: "relative" }}>
+                            <DatePicker
+                              selected={parseDate(item.milestone_start_date)}
+                              onChange={(date) =>
+                                handleDateChange(
+                                  item.milestone_id,
+                                  "milestone_start_date",
+                                  date
+                                )
+                              }
+                              className="form-control pe-3 text-light-gray-1 border-1 shadow-none bg-transparent"
+                              dateFormat="d MMMM yyyy"
+                              placeholderText="DD/MM/YYYY"
+                              isClearable
+                              showYearDropdown
+                              showMonthDropdown
+                              dropdownMode="select"
+                            />
+                          </div>
+                        </td>
+                        <td className="text-center text-dark-gray fs-16-500 w140">
+                          <div style={{ position: "relative" }}>
+                            <DatePicker
+                              selected={parseDate(item.milestone_end_date)}
+                              onChange={(date) =>
+                                handleDateChange(
+                                  item.milestone_id,
+                                  "milestone_end_date",
+                                  date
+                                )
+                              }
+                              className="form-control pe-3 text-light-gray-1 border-1 shadow-none bg-transparent"
+                              dateFormat="d MMMM yyyy"
+                              placeholderText="DD/MM/YYYY"
+                              minDate={parseDate(item.milestone_start_date)}
+                              isClearable
+                              showYearDropdown
+                              showMonthDropdown
+                              dropdownMode="select"
+                            />
+                          </div>
+                        </td>
+                        <td className="text-center text-dark-gray fs-16-500">
+                          <Form.Select
+                            style={inputStyle}
+                            className="form-control border-1 shadow-none bg-transparent text-dark"
+                            value={item.milestone_status}
+                            onChange={(e) =>
+                              handleInternalMilestoneChange(
+                                item.milestone_id,
+                                "milestone_status",
+                                e.target.value
+                              )
+                            }
+                          >
+                            {projectStatusDataList?.data.map((status) => (
+                              <option value={status.id}>{status.name}</option>
+                            ))}
+                            {/* <option value="Completed">✅ Completed</option>
                           <option value="In Progress">In Progress</option>
                           <option value="Planned">Planned</option>
-                          <option value="Delayed">Delayed</option>
-                        </Form.Select>
-                      </td>
-                      {/* FIXED: Added onChange handler for remarks */}
-                      <td className="text-center text-dark-gray fs-16-500">
-                        <Form.Control
-                          type="text"
-                          className="border-1 shadow-none bg-transparent"
-                          value={item.remarks}
-                          onChange={(e) =>
-                            handleInternalMilestoneChange(
-                              item.id,
-                              "remarks",
-                              e.target.value
-                            )
-                          }
-                          placeholder="Enter remarks"
-                        />
-                      </td>
-                    </tr>
-                  ))}
+                          <option value="Delayed">Delayed</option> */}
+                          </Form.Select>
+                        </td>
+                        {/* FIXED: Added onChange handler for remarks */}
+                        <td className="text-center text-dark-gray fs-16-500">
+                          <Form.Control
+                            type="text"
+                            className="border-1 shadow-none bg-transparent"
+                            value={item.remarks}
+                            onChange={(e) =>
+                              handleInternalMilestoneChange(
+                                item.milestone_id,
+                                "remarks",
+                                e.target.value
+                              )
+                            }
+                            placeholder="Enter remarks"
+                          />
+                        </td>
+                        <td className="text-center text-dark-gray fs-16-500">
+                          <button
+                            onClick={() => {
+                              handleRemoveMilestone(item.milestone_id);
+                            }}
+                            className="fs-14-600 bg-transparent text-primary border-0 border-radius-2"
+                            title="Remove"
+                          >
+                            <img
+                              src={crossMarkRed}
+                              alt="crossMarkRed"
+                              width={16}
+                            />
+                          </button>
+                          &#160;
+                          <button
+                            onClick={() =>
+                              handleCheckDeleteMessage(item.milestone_id)
+                            }
+                            className="fs-14-600 bg-transparent text-primary border-0 border-radius-2"
+                            title="Delete"
+                          >
+                            <img
+                              src={trashFull}
+                              alt="crossMarkRed"
+                              width={18}
+                            />
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
           </div>
         )}
-        
+
         <div className="text-end mt-3">
           <Button
             className="text-primary bg-transparent border-0 fs-16-500 me-0 ms-auto"
@@ -578,7 +753,7 @@ const TimelineMilestonePlanning = ({
             + Add Row
           </Button>
         </div>
-        
+
         <div className="d-flex justify-content-end mt-4">
           <Button
             onClick={() => setShowModal(true)}
@@ -648,6 +823,54 @@ const TimelineMilestonePlanning = ({
           </Modal.Footer>
         </Modal>
       </div>
+      {addNewMilestoneShow && (
+        <PopupModal
+          closeModal={closeModal}
+          headerText=""
+          children={
+            milstoneDeleteMessage ? (
+              <div className="newMileStone-popup">
+                <h5>
+                  Are you sure you want to delete "
+                  <strong>
+                    {
+                      selectedMilestones.filter(
+                        (data) => data.id === milstoneDeleteId
+                      )[0].name
+                    }
+                  </strong>
+                  " ?
+                </h5>
+                <Button
+                  className="btn-primary btn fs-14-600 bg-primary border-0 border-radius-2 m-auto"
+                  onClick={handleDeleteMilestone}
+                  disabled={apiLoading}
+                >
+                  {apiLoading ? "Deleting..." : "Delete"}
+                </Button>
+              </div>
+            ) : (
+              <div className="newMileStone-popup">
+                <h4>Add Milestone</h4>{" "}
+                <input
+                  className="newMilstoneText"
+                  value={newMilstoneText || ""}
+                  placeholder="Enter the Milestone"
+                  onChange={(e) => hanleNewMilstoneText(e)}
+                />
+                <Button
+                  className="btn-primary btn fs-14-600 bg-primary border-0 border-radius-2 m-auto"
+                  onClick={handleAddNewMilestoneSubmit}
+                  disabled={apiLoading}
+                >
+                  {apiLoading ? "Saving..." : "Save"}
+                </Button>
+              </div>
+            )
+          }
+          customClass="contact-us-form"
+        />
+      )}
     </div>
   );
 };

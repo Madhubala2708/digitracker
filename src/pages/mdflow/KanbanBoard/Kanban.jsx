@@ -130,18 +130,21 @@ const KanbanBoard = () => {
   };
 
   const handleTaskClick = async (task) => {
-    try {
-      const ticketDetails = await dispatch(getticketbyidAction(task.id)).unwrap();
-      navigate(`/ticket/${task.id}`, { 
-        state: { 
-          ticket: ticketDetails,
-          from: 'kanban' 
-        } 
-      });
-    } catch (error) {
-      console.error("Failed to fetch ticket details:", error);
-    }
-  };
+  if (!task?.id) return;
+
+  try {
+    const ticketDetails = await dispatch(
+      getticketbyidAction(task.id)
+    ).unwrap();
+
+    navigate("/approvals", {
+      state: { ticket: ticketDetails }
+    });
+  } catch (err) {
+    console.error("Ticket fetch failed", err);
+  }
+};
+
 
   const handleMenuClick = (columnIndex) => {
     setMenuOpen({

@@ -136,12 +136,15 @@ const ceoProjectSlice = createSlice({
         state.error = null;
         state.success = false;
       })
-      .addCase(createProjectFinanceApprovedAction.fulfilled, (state, action) => {
-        state.loading = false;
-        state.success = true;
-        console.log("✅ Project Finance Approved:", action.payload);
-        // ❌ Again do not touch projectId or localStorage
-      })
+      .addCase(
+        createProjectFinanceApprovedAction.fulfilled,
+        (state, action) => {
+          state.loading = false;
+          state.success = true;
+          console.log("✅ Project Finance Approved:", action.payload);
+          // ❌ Again do not touch projectId or localStorage
+        }
+      )
       .addCase(createProjectFinanceApprovedAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
@@ -162,7 +165,7 @@ const ceoProjectSlice = createSlice({
         state.error = action.payload?.message || action.error.message;
         state.success = false;
       });
-      /** PROJECT DETAILS */
+    /** PROJECT DETAILS */
     builder.addCase(getProjectDetailsAction.pending, (state, action) => {
       state.getProjectDetails.loading = true;
     });
@@ -172,23 +175,25 @@ const ceoProjectSlice = createSlice({
       console.log("Project Details:", data);
       state.getProjectDetails.loading = false;
     });
-    builder.addCase(getProjectDetailsAction.rejected, (state, action) => {
-      state.fetchError = action.error;
-      state.getProjectDetails.loading = false;
-    })
+    builder
+      .addCase(getProjectDetailsAction.rejected, (state, action) => {
+        state.fetchError = action.error;
+        state.getProjectDetails.loading = false;
+      })
 
-.addCase ( getAllProjectByFilterAction.pending, (state) => {
-  state.loading = true;
-  state.error = null;
-})
-.addCase ( getAllProjectByFilterAction.fulfilled, (state,action) => {
-  state.loading = false;
-  state.error = action.payload;
-}) .addCase ( getAllProjectByFilterAction.rejected, (state,action) => {
-  state.loading = false;
-  state.error = action.error.message;
-})
- .addCase(fetchProjects.pending, (state) => {
+      .addCase(getAllProjectByFilterAction.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getAllProjectByFilterAction.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(getAllProjectByFilterAction.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(fetchProjects.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
@@ -203,5 +208,6 @@ const ceoProjectSlice = createSlice({
   },
 });
 
-export const { resetProjectState, setCurrentProject, logoutClearProjectState } = ceoProjectSlice.actions;
+export const { resetProjectState, setCurrentProject, logoutClearProjectState } =
+  ceoProjectSlice.actions;
 export default ceoProjectSlice.reducer;

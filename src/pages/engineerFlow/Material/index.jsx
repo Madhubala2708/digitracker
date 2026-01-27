@@ -147,12 +147,12 @@ const Material = () => {
                             <a
                               href="#"
                               style={{ color: "#0456D0" }}
-                              onClick={(e) => {
-                                e.preventDefault();
-                                navigate(`/admin/materialview/${m.boqId}`, {
-                                  state: { material: m },
-                                });
-                              }}
+                              // onClick={(e) => {
+                              //   e.preventDefault();
+                              //   navigate(`/admin/materialview/${m.boqId}`, {
+                              //     state: { material: m },
+                              //   });
+                              // }}
                             >
                               View
                             </a>

@@ -1,37 +1,36 @@
-import React, { Fragment, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import ProjectMilestoneTable from "./ProjectMilestoneTable";
 import ProjectEmployeesList from "../../../components/common/ProjectEmployeesList";
 import ProjectProgressBar from "./ProjectProgressBar";
 import { useProject } from "../../../hooks/Ceo/useCeoProject";
 
-export const roleCheck = { role: "admin" };
+// Helper function to get the projectId from local storage
+const getProjectIdFromLocalStorage = () => {
+  const storedData = localStorage.getItem("userData"); // Assuming key is 'userDetails'
 
-const EngineerProject = () => {
-  const getProjectIdFromLocalStorage = () => {
-    const storedData = localStorage.getItem("userData"); // Assuming key is 'userDetails'
+  if (storedData) {
+    try {
+      const parsedData = JSON.parse(storedData);
 
-    if (storedData) {
-      try {
-        const parsedData = JSON.parse(storedData);
-
-        // Ensure projects array exists
-        if (parsedData.projects && Array.isArray(parsedData.projects)) {
-          return parsedData.projects[0]?.projectId || null; // Get projectId of the first project
-        } else {
-          console.error("No projects found in local storage");
-          return null;
-        }
-      } catch (error) {
-        console.error("Error parsing local storage data:", error);
+      // Ensure projects array exists
+      if (parsedData.projects && Array.isArray(parsedData.projects)) {
+        return parsedData.projects[0]?.projectId || null; // Get projectId of the first project
+      } else {
+        console.error("No projects found in local storage");
         return null;
       }
-    } else {
-      console.error("No data found in local storage for key 'userDetails'");
+    } catch (error) {
+      console.error("Error parsing local storage data:", error);
       return null;
     }
-  };
+  } else {
+    console.error("No data found in local storage for key 'userDetails'");
+    return null;
+  }
+};
 
+const ProjectDetails = () => {
+  // Custom hook
   const { fetchProjectDetails } = useProject();
 
   // Local state to hold project details
@@ -110,12 +109,12 @@ const EngineerProject = () => {
 
       {/* Project Employees (Finance Approvals) */}
       <div className="right-container">
-        <ProjectEmployeesList
-          employeesList={projectDetails?.value?.team_details || []}
-          projectId={projectDetails?.value?.project?.project_id}
-        />
-      </div>
+          <ProjectEmployeesList 
+          employeesList ={projectDetails?.value?.team_details || []}
+          projectId={projectDetails?.value?.project?.project_id}/>
+        </div>
     </main>
   );
 };
-export default EngineerProject;
+
+export default ProjectDetails;

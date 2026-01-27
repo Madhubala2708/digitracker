@@ -5,7 +5,10 @@ import {
   updateToolsAction,
   editorViewToolAction,
   toolsListAction,
-  deleteToolAction
+  deleteToolAction,
+  deleteMileStoneTaskAction,
+  createMileStoneTaskAction,
+  updateMileStoneTaskAction,
 } from "../actions/productsAction";
 
 const initialState = {
@@ -34,7 +37,7 @@ const initialState = {
       data: {},
       filterParam: {},
       showFilter: false,
-    }
+    },
   },
 };
 
@@ -44,26 +47,25 @@ const productsSlice = createSlice({
   reducers: {
     filterData: (state, action) => {
       state.tools.toolsFilter.data = action.payload.data;
-      state.tools.toolsFilter.filterParam = action.payload.filterParam;     
+      state.tools.toolsFilter.filterParam = action.payload.filterParam;
       state.tools.toolsFilter.showFilter = true;
     },
     resetFilter: (state) => {
-      state.tools.toolsFilter.data = {};   
-      state.tools.toolsFilter.filterParam = {};  
+      state.tools.toolsFilter.data = {};
+      state.tools.toolsFilter.filterParam = {};
       state.tools.toolsFilter.showFilter = false;
     },
   },
   extraReducers: (builder) => {
-
     /** PRODUCT & TOOLS */
     builder.addCase(toolsListAction.pending, (state, action) => {
       state.tools.loading = true;
     });
     builder.addCase(toolsListAction.fulfilled, (state, action) => {
       const data = action.payload;
-      if(action.meta.arg.offsetno == 0){
+      if (action.meta.arg.offsetno == 0) {
         state.tools.data = data;
-      }else{
+      } else {
         state.tools.data = [...state.tools.data, ...data];
       }
 
@@ -118,7 +120,6 @@ const productsSlice = createSlice({
       state.tools.loading = true;
     });
     builder.addCase(deleteToolAction.fulfilled, (state, action) => {
-
       if (action.payload.status === true) {
         const index = state.tools.data.findIndex(
           (item) => item.toolid === action.meta.arg
@@ -137,7 +138,6 @@ const productsSlice = createSlice({
       state.tools.error = action.error;
       state.tools.loading = false;
     });
-
   },
 });
 

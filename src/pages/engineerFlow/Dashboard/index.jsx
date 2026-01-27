@@ -355,7 +355,8 @@ const EngineerDashboard = ({ progress = 50, maxValue = 100 }) => {
                   {pendingApprovals.map((approval) => (
                     <Link
                       key={approval.id}
-                      className="card-pending-approvel text-decoration-none text-dark">
+                      className="card-pending-approvel text-decoration-none text-dark"
+                    >
                       <div className="card-pending-approvel-header d-flex justify-content-between align-items-start">
                         <div className="card-pending-approvel-project-title">
                           <h4 className="fs-18-500">{approval.site}</h4>

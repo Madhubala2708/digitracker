@@ -70,8 +70,6 @@ const EngineerTicketDetails = () => {
     fetchEmployeesByDepartment,
   } = useDepartments();
 
-  
-
   const [comments, setComments] = useState([
     {
       id: 1,
@@ -147,50 +145,6 @@ const EngineerTicketDetails = () => {
       ],
     },
   ]);
-
-  // 🔄 Auto refresh ticket details on page load
-useEffect(() => {
-  const ticketId =
-    location?.state?.ticket?.ticket_id ||
-    location?.state?.ticket_id ||
-    ticketDetails?.ticket_id;
-
-  if (ticketId) {
-    dispatch(getticketbyidAction(ticketId))
-      .unwrap()
-      .then((data) => {
-        setTicketDetails(data);
-      })
-      .catch((err) => {
-        console.error("Auto-refresh failed:", err);
-      });
-  }
-}, []); // <-- run ONCE on page load
-
-
-useEffect(() => {
-  const ticketId =
-    location?.state?.ticket?.ticket_id ||
-    location?.state?.ticket_id ||
-    ticket?.ticket_id;
-
-  if (!ticketId) return;
-
-  setIsLoading(true);
-
-  dispatch(getticketbyidAction(ticketId))
-    .unwrap()
-    .then((latest) => {
-      setTicketDetails(latest);
-    })
-    .catch((err) => {
-      console.error("Auto-refresh failed:", err);
-    })
-    .finally(() => {
-      setIsLoading(false);
-    });
-}, []);
-
 
   // Date state management
   const [orderDate, setOrderDate] = useState(
@@ -352,10 +306,6 @@ useEffect(() => {
 
     fetchTicketDetails();
   }, [dispatch, ticketDetails, ticket]);
-  const handleQueryAccept = () => {
-    showToastNotification("Query accepted");
-  };
-
 
   const handleApproval = (status) => {
     setApprovalStatus(status);
@@ -567,8 +517,6 @@ useEffect(() => {
     showToastNotification("Due Date saved");
   };
 
-
-
   // Toggle tab selection
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -647,7 +595,7 @@ useEffect(() => {
       console.error("Invalid ticket object:", ticket);
       return;
     }
-
+  
     navigate(`../engineermaterialview/${ticket.transaction_id}`);
   };
   return (
@@ -723,16 +671,16 @@ useEffect(() => {
                 {getInitials(ticketDetails?.ticket_owner_name)}
               </div>
               <div className="flex-grow-1">
-                <div className="position-relative">
-                  <textarea
+                <Form className="position-relative">
+                  <Form.Control
+                    as="textarea"
                     rows={5}
                     placeholder="Ask Updates"
-                    className="form-control mb-2 pe-5"
+                    className="mb-2 pe-5"
                     value={commentText}
                     onChange={(e) => setCommentText(e.target.value)}
                     style={{ paddingRight: "50px" }}
-                  ></textarea>
-
+                  />
 
                   {/* Display attached files */}
                   {uploadedFiles.length > 0 && (
@@ -808,7 +756,7 @@ useEffect(() => {
                       <Button
                         variant="link"
                         className="text-muted p-1"
-                        onClick={() => { }}
+                        onClick={() => {}}
                       >
                         <BsLink />
                       </Button>
@@ -851,7 +799,7 @@ useEffect(() => {
                       Send
                     </Button>
                   </div>
-                </div>
+                </Form>
               </div>
             </div>
 
@@ -875,8 +823,9 @@ useEffect(() => {
               >
                 <Nav.Item>
                   <Nav.Link
-                    className={`px-3 py-2 ${activeTab === "all" ? "text-white" : "text-dark"
-                      }`}
+                    className={`px-3 py-2 ${
+                      activeTab === "all" ? "text-white" : "text-dark"
+                    }`}
                     onClick={() => handleTabChange("all")}
                     style={{
                       borderRadius: "4px 4px 0 0",
@@ -889,10 +838,11 @@ useEffect(() => {
                 </Nav.Item>
                 <Nav.Item>
                   <Nav.Link
-                    className={`px-3 py-2 ${activeTab === "approvalstatus"
-                      ? "text-white"
-                      : "text-dark"
-                      }`}
+                    className={`px-3 py-2 ${
+                      activeTab === "approvalstatus"
+                        ? "text-white"
+                        : "text-dark"
+                    }`}
                     onClick={() => handleTabChange("approvalstatus")}
                     style={{
                       borderRadius: "4px 4px 0 0",
@@ -908,8 +858,9 @@ useEffect(() => {
                 </Nav.Item>
                 <Nav.Item>
                   <Nav.Link
-                    className={`px-3 py-2 ${activeTab === "comments" ? "text-white" : "text-dark"
-                      }`}
+                    className={`px-3 py-2 ${
+                      activeTab === "comments" ? "text-white" : "text-dark"
+                    }`}
                     onClick={() => handleTabChange("comments")}
                     style={{
                       borderRadius: "4px 4px 0 0",
@@ -922,8 +873,9 @@ useEffect(() => {
                 </Nav.Item>
                 <Nav.Item>
                   <Nav.Link
-                    className={`px-3 py-2 ${activeTab === "files" ? "text-white" : "text-dark"
-                      }`}
+                    className={`px-3 py-2 ${
+                      activeTab === "files" ? "text-white" : "text-dark"
+                    }`}
                     onClick={() => handleTabChange("files")}
                     style={{
                       borderRadius: "4px 4px 0 0",
@@ -936,8 +888,9 @@ useEffect(() => {
                 </Nav.Item>
                 <Nav.Item>
                   <Nav.Link
-                    className={`px-3 py-2 ${activeTab === "history" ? "text-white" : "text-dark"
-                      }`}
+                    className={`px-3 py-2 ${
+                      activeTab === "history" ? "text-white" : "text-dark"
+                    }`}
                     onClick={() => handleTabChange("history")}
                     style={{
                       borderRadius: "4px 4px 0 0",
@@ -1116,19 +1069,19 @@ useEffect(() => {
 
                 {comments.flatMap((comment) => comment.files || []).length ===
                   0 && (
-                    <div className="text-center py-5 text-muted">
-                      <BsPaperclip size={32} />
-                      <p className="mt-2">No files attached yet</p>
-                      <Button
-                        variant="outline-warning"
-                        style={{ backgroundColor: "#FF6F00", color: "white" }}
-                        size="sm"
-                        onClick={() => fileInputRef.current.click()}
-                      >
-                        Upload File
-                      </Button>
-                    </div>
-                  )}
+                  <div className="text-center py-5 text-muted">
+                    <BsPaperclip size={32} />
+                    <p className="mt-2">No files attached yet</p>
+                    <Button
+                      variant="outline-warning"
+                      style={{ backgroundColor: "#FF6F00", color: "white" }}
+                      size="sm"
+                      onClick={() => fileInputRef.current.click()}
+                    >
+                      Upload File
+                    </Button>
+                  </div>
+                )}
 
                 <div className="row">
                   {comments
@@ -1165,19 +1118,19 @@ useEffect(() => {
 
                 {comments.flatMap((comment) => comment.images || []).length ===
                   0 && (
-                    <div className="text-center py-5 text-muted">
-                      <BsImage size={32} />
-                      <p className="mt-2">No images attached yet</p>
-                      <Button
-                        variant="outline-warning"
-                        style={{ backgroundColor: "#FF6F00", color: "white" }}
-                        size="sm"
-                        onClick={() => imageInputRef.current.click()}
-                      >
-                        Upload Image
-                      </Button>
-                    </div>
-                  )}
+                  <div className="text-center py-5 text-muted">
+                    <BsImage size={32} />
+                    <p className="mt-2">No images attached yet</p>
+                    <Button
+                      variant="outline-warning"
+                      style={{ backgroundColor: "#FF6F00", color: "white" }}
+                      size="sm"
+                      onClick={() => imageInputRef.current.click()}
+                    >
+                      Upload Image
+                    </Button>
+                  </div>
+                )}
 
                 <div className="row">
                   {comments
@@ -1299,7 +1252,7 @@ useEffect(() => {
             overflowY: "auto",
             position: "sticky",
             top: "0",
-            marginTop: "0px",
+            marginTop: "-100px",
           }}
         >
           <div
@@ -1447,27 +1400,21 @@ useEffect(() => {
             <div className="mb-3 d-flex justify-content-between align-items-center border-bottom pb-3">
               <span className="text-muted">Query</span>
               <div className="d-flex align-items-center">
-
-                {/* Cancel */}
                 <button
-                  type="button"   // ✅ PREVENTS FORM SUBMIT
                   className="text-dark-gray px-2 py-1 rounded"
                   style={{ width: "80px", border: "none", marginRight: "5px" }}
                   onClick={() => navigate("/approvals")}
                 >
                   Cancel
                 </button>
-
-                {/* Accept */}
                 <button
-                  type="button"   // ✅ THIS FIXES YOUR ISSUE
                   className="text-white px-2 py-1 rounded"
                   style={{
                     backgroundColor: "#30A335",
                     width: "90px",
                     border: "none",
                   }}
-                  onClick={handleQueryAccept}
+                  onClick={handleSave}
                 >
                   Accept
                 </button>
@@ -1593,8 +1540,8 @@ useEffect(() => {
                     {currentEmployee
                       ? currentEmployee.employeeName
                       : currentDepartment
-                        ? currentDepartment.deptName
-                        : "Select Move To"}
+                      ? currentDepartment.deptName
+                      : "Select Move To"}
                   </p>
                 </div>
               ) : null}
@@ -1605,20 +1552,22 @@ useEffect(() => {
               <span className="text-muted">Action</span>
               <div className="d-flex align-items-center">
                 <button
-                  className={`btn me-2 ${approvalStatus === "Rejected"
-                    ? "btn-danger"
-                    : "btn-outline-danger"
-                    }`}
+                  className={`btn me-2 ${
+                    approvalStatus === "Rejected"
+                      ? "btn-danger"
+                      : "btn-outline-danger"
+                  }`}
                   onClick={() => handleApproval("Rejected")}
                   disabled={isLoading}
                 >
                   Reject
                 </button>
                 <button
-                  className={`btn ${approvalStatus === "Approved"
-                    ? "btn-success"
-                    : "btn-outline-success"
-                    }`}
+                  className={`btn ${
+                    approvalStatus === "Approved"
+                      ? "btn-success"
+                      : "btn-outline-success"
+                  }`}
                   onClick={() => handleApproval("Approved")}
                   disabled={isLoading}
                 >

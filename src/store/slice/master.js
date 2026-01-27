@@ -32,22 +32,18 @@ import {
   getStatusCodeMasterAction,
   getFontFamilyAction,
   getLabelsAction,
-  getCustomerLanguageAction,
-  getPrimaryMarketAction,
-  getPeriodicToolsAction,
-  getPeriodicDetailsAction,
   getAllAgencyAction,
-  getAllCountryDetailAction,
-getUpdatesMarketRegionsAction,
-getAllTimeZoneDetailAction,
-getTicketsbyboardParticipantsAction,
-addBoardAction,
-getBoardAction,
-editBoardAction,
-createTicketDetailsAction,
-getPurchaseOrderDetailsAction,
-getBoqItemsAction,
-createReportAttachmentAction
+  getTicketsbyboardParticipantsAction,
+  addBoardAction,
+  getBoardAction,
+  editBoardAction,
+  createTicketDetailsAction,
+  getPurchaseOrderDetailsAction,
+  getBoqItemsAction,
+  createReportAttachmentAction,
+  getMilestoneMasterAction,
+  getProjectStatusMasterAction,
+  getTaskStatusMasterAction,
 } from "../actions/masterAction";
 import { getLoginBoardDetailsdAction } from "../actions/kanbanAction";
 
@@ -72,8 +68,8 @@ const initialState = {
     loading: false,
     error: null,
   },
-  board:{
-    data:[],
+  board: {
+    data: [],
     loading: false,
     error: null,
   },
@@ -202,7 +198,7 @@ const initialState = {
     loading: false,
     error: null,
   },
-  primaryMarket : {
+  primaryMarket: {
     data: [],
     loading: false,
     error: null,
@@ -247,6 +243,7 @@ const initialState = {
     loading: false,
     error: null,
   },
+
   loginBoardDetails: {
     data: [],
     loading: false,
@@ -263,14 +260,28 @@ const initialState = {
     data: [],
     loading: false,
     error: null,
-    message:"",
-},
-ReportAttachments: {
+    message: "",
+  },
+  ReportAttachments: {
     data: [],
     loading: false,
     error: null,
-  }
-
+  },
+  getMilestone: {
+    data: [],
+    loading: false,
+    error: null,
+  },
+  getProjectStatus: {
+    data: [],
+    loading: false,
+    error: null,
+  },
+  getTaskStatus: {
+    data: [],
+    loading: false,
+    error: null,
+  },
 };
 
 const masterSlice = createSlice({
@@ -320,8 +331,8 @@ const masterSlice = createSlice({
       state.userDepartment.loading = false;
     });
 
-     /** DEPARTMENT */
-     builder.addCase(getDepartmentAction.pending, (state, action) => {
+    /** DEPARTMENT */
+    builder.addCase(getDepartmentAction.pending, (state, action) => {
       state.department.loading = true;
     });
     builder.addCase(getDepartmentAction.fulfilled, (state, action) => {
@@ -333,7 +344,6 @@ const masterSlice = createSlice({
       state.fetchError = action.error;
       state.department.loading = false;
     });
-
 
     /** ADD NEW DEPARTMENT */
     builder.addCase(addDepartmentAction.pending, (state, action) => {
@@ -351,7 +361,6 @@ const masterSlice = createSlice({
       state.department.loading = false;
     });
 
-    
     /** ADD NEW Board */
     builder.addCase(getBoardAction.pending, (state, action) => {
       state.board.loading = true;
@@ -391,11 +400,11 @@ const masterSlice = createSlice({
         (item) => item.boardId === updatedBoard.boardId
       );
       if (index !== -1) {
-        state.board.data[index] = updatedBoard; 
+        state.board.data[index] = updatedBoard;
       }
       state.board.loading = false;
     });
-    
+
     builder.addCase(editBoardAction.rejected, (state, action) => {
       state.fetchError = action.error;
       state.board.loading = false;
@@ -777,64 +786,8 @@ const masterSlice = createSlice({
       state.labels.loading = false;
     });
 
-    /** CUSTOMER LANGUAGE */
-    builder.addCase(getCustomerLanguageAction.pending, (state, action) => {
-      state.customerLanguage.loading = true;
-    });
-    builder.addCase(getCustomerLanguageAction.fulfilled, (state, action) => {
-      const data = action.payload;
-      state.customerLanguage.data = data;
-      state.customerLanguage.loading = false;
-    });
-    builder.addCase(getCustomerLanguageAction.rejected, (state, action) => {
-      state.fetchError = action.error;
-      state.customerLanguage.loading = false;
-    });
-    
-    /** PRIMARY MARKET LIST */
-    builder.addCase(getPrimaryMarketAction.pending, (state, action) => {
-      state.primaryMarket.loading = true;
-    });
-    builder.addCase(getPrimaryMarketAction.fulfilled, (state, action) => {
-      const data = action.payload;
-      state.primaryMarket.data = data;
-      state.primaryMarket.loading = false;
-    });
-    builder.addCase(getPrimaryMarketAction.rejected, (state, action) => {
-      state.fetchError = action.error;
-      state.primaryMarket.loading = false;
-    });
-
-    /** PERIODIC_TOOLS_MASTER */
-    builder.addCase(getPeriodicToolsAction.pending, (state, action) => {
-      state.periodicTools.loading = true;
-    });
-    builder.addCase(getPeriodicToolsAction.fulfilled, (state, action) => {
-      const data = action.payload;
-      state.periodicTools.data = data;
-      state.periodicTools.loading = false;
-    });
-    builder.addCase(getPeriodicToolsAction.rejected, (state, action) => {
-      state.fetchError = action.error;
-      state.periodicTools.loading = false;
-    });
-
-    /** PERIODIC_DETAILS_MASTER */
-    builder.addCase(getPeriodicDetailsAction.pending, (state, action) => {
-      state.periodicDetails.loading = true;
-    });
-    builder.addCase(getPeriodicDetailsAction.fulfilled, (state, action) => {
-      const data = action.payload;
-      state.periodicDetails.data = data;
-      state.periodicDetails.loading = false;
-    });
-    builder.addCase(getPeriodicDetailsAction.rejected, (state, action) => {
-      state.fetchError = action.error;
-      state.periodicDetails.loading = false;
-    });
-
-     /** AGENCY LIST */
-     builder.addCase(getAllAgencyAction.pending, (state, action) => {
+    /** AGENCY LIST */
+    builder.addCase(getAllAgencyAction.pending, (state, action) => {
       state.agency.loading = true;
     });
     builder.addCase(getAllAgencyAction.fulfilled, (state, action) => {
@@ -847,62 +800,29 @@ const masterSlice = createSlice({
       state.agency.loading = false;
     });
 
-    /** ALL COUNTRY DETAIL */
-    builder.addCase(getAllCountryDetailAction.pending, (state, action) => {
-      state.allCountryDetail.loading = true;
-    });
-    builder.addCase(getAllCountryDetailAction.fulfilled, (state, action) => {
-      const data = action.payload;
-      state.allCountryDetail.data = data;
-      state.allCountryDetail.loading = false;
-    });
-    builder.addCase(getAllCountryDetailAction.rejected, (state, action) => {
-      state.fetchError = action.error;
-      state.allCountryDetail.loading = false;
-    });
+    /** GET PARTICIPANTS UPDATES - KANBAN BOARD **/
+    builder.addCase(
+      getTicketsbyboardParticipantsAction.pending,
+      (state, action) => {
+        state.getTicketsbyboardParticipants.loading = true;
+      }
+    );
+    builder.addCase(
+      getTicketsbyboardParticipantsAction.fulfilled,
+      (state, action) => {
+        const data = action.payload;
 
-    /** GET PERIODIC UPDATES MARKET REGIONS **/
-    builder.addCase(getUpdatesMarketRegionsAction.pending, (state, action) => {
-      state.updatesMarketRegions.loading = true;
-    });
-    builder.addCase(getUpdatesMarketRegionsAction.fulfilled, (state, action) => {
-      const data = action.payload;
-      state.updatesMarketRegions.data = data;
-      state.updatesMarketRegions.loading = false;
-    });
-    builder.addCase(getUpdatesMarketRegionsAction.rejected, (state, action) => {
-      state.fetchError = action.error;
-      state.updatesMarketRegions.loading = false;
-    });
-
-    /** GET TIME ZONE DETAIL **/
-    builder.addCase(getAllTimeZoneDetailAction.pending, (state, action) => {
-      state.getAllTimeZoneDetail.loading = true;
-    });
-    builder.addCase(getAllTimeZoneDetailAction.fulfilled, (state, action) => {
-      const data = action.payload;
-      state.getAllTimeZoneDetail.data = data;
-      state.getAllTimeZoneDetail.loading = false;
-    });
-    builder.addCase(getAllTimeZoneDetailAction.rejected, (state, action) => {
-      state.fetchError = action.error;
-      state.getAllTimeZoneDetail.loading = false;
-    });
-
-     /** GET PARTICIPANTS UPDATES - KANBAN BOARD **/
-     builder.addCase(getTicketsbyboardParticipantsAction.pending, (state, action) => {
-      state.getTicketsbyboardParticipants.loading = true;
-    });
-    builder.addCase(getTicketsbyboardParticipantsAction.fulfilled, (state, action) => {
-      const data = action.payload;
-      
-      state.getTicketsbyboardParticipants.data = data;
-      state.getTicketsbyboardParticipants.loading = false;
-    });
-    builder.addCase(getTicketsbyboardParticipantsAction.rejected, (state, action) => {
-      state.fetchError = action.error;
-      state.getTicketsbyboardParticipants.loading = false;
-    });
+        state.getTicketsbyboardParticipants.data = data;
+        state.getTicketsbyboardParticipants.loading = false;
+      }
+    );
+    builder.addCase(
+      getTicketsbyboardParticipantsAction.rejected,
+      (state, action) => {
+        state.fetchError = action.error;
+        state.getTicketsbyboardParticipants.loading = false;
+      }
+    );
 
     /** create ticket commmet */
     builder.addCase(createTicketDetailsAction.pending, (state, action) => {
@@ -930,35 +850,37 @@ const masterSlice = createSlice({
       state.fetchError = action.error;
       state.loginBoardDetails.loading = false;
     });
-    
-  
-   /** USED TO GET PURCHASE ORDER DETAILS */
-      builder.addCase(getPurchaseOrderDetailsAction.pending, (state, action) => {
-        state.purchaseOrderDetails.loading = true;
-      });
-      builder.addCase(getPurchaseOrderDetailsAction.fulfilled, (state, action) => {
+
+    /** USED TO GET PURCHASE ORDER DETAILS */
+    builder.addCase(getPurchaseOrderDetailsAction.pending, (state, action) => {
+      state.purchaseOrderDetails.loading = true;
+    });
+    builder.addCase(
+      getPurchaseOrderDetailsAction.fulfilled,
+      (state, action) => {
         const data = action.payload;
         state.purchaseOrderDetails.data = data;
         state.purchaseOrderDetails.loading = false;
-      });
-      builder.addCase(getPurchaseOrderDetailsAction.rejected, (state, action) => {
-        state.fetchError = action.error;
-        state.purchaseOrderDetails.loading = false;
-      });
-        /** USED TO GET BOQ ITEMS BY ID */
-      builder.addCase(getBoqItemsAction.pending, (state, action) => {
-        state.boqItems.loading = true;
-      });
-      builder.addCase(getBoqItemsAction.fulfilled, (state, action) => {
-        const data = action.payload;
-        state.boqItems.data = data;
-        state.boqItems.loading = false;
-      });
-      builder.addCase(getBoqItemsAction.rejected, (state, action) => {
-        state.fetchError = action.error;
-        state.boqItems.loading = false;
-      });
-/** CREATE REPORT ATTACHMENTS */
+      }
+    );
+    builder.addCase(getPurchaseOrderDetailsAction.rejected, (state, action) => {
+      state.fetchError = action.error;
+      state.purchaseOrderDetails.loading = false;
+    });
+    /** USED TO GET BOQ ITEMS BY ID */
+    builder.addCase(getBoqItemsAction.pending, (state, action) => {
+      state.boqItems.loading = true;
+    });
+    builder.addCase(getBoqItemsAction.fulfilled, (state, action) => {
+      const data = action.payload;
+      state.boqItems.data = data;
+      state.boqItems.loading = false;
+    });
+    builder.addCase(getBoqItemsAction.rejected, (state, action) => {
+      state.fetchError = action.error;
+      state.boqItems.loading = false;
+    });
+    /** CREATE REPORT ATTACHMENTS */
     builder.addCase(createReportAttachmentAction.pending, (state, action) => {
       state.ReportAttachments.loading = true;
     });
@@ -971,7 +893,47 @@ const masterSlice = createSlice({
       state.fetchError = action.error;
       state.ReportAttachments.loading = false;
     });
-  
+    /** GET Milestone Master LIST */
+    builder.addCase(getMilestoneMasterAction.pending, (state, action) => {
+      state.getMilestone.loading = true;
+    });
+    builder.addCase(getMilestoneMasterAction.fulfilled, (state, action) => {
+      const data = action.payload;
+      state.getMilestone.data = data;
+      state.getMilestone.loading = false;
+    });
+    builder.addCase(getMilestoneMasterAction.rejected, (state, action) => {
+      state.fetchError = action.error;
+      state.getMilestone.loading = false;
+    });
+
+    /** GET Project Status Master LIST */
+    builder.addCase(getProjectStatusMasterAction.pending, (state, action) => {
+      state.getProjectStatus.loading = true;
+    });
+    builder.addCase(getProjectStatusMasterAction.fulfilled, (state, action) => {
+      const data = action.payload;
+      state.getProjectStatus.data = data;
+      state.getProjectStatus.loading = false;
+    });
+    builder.addCase(getProjectStatusMasterAction.rejected, (state, action) => {
+      state.fetchError = action.error;
+      state.getProjectStatus.loading = false;
+    });
+
+    /** GET TASK Master LIST */
+    builder.addCase(getTaskStatusMasterAction.pending, (state, action) => {
+      state.getTaskStatus.loading = true;
+    });
+    builder.addCase(getTaskStatusMasterAction.fulfilled, (state, action) => {
+      const data = action.payload;
+      state.getTaskStatus.data = data;
+      state.getTaskStatus.loading = false;
+    });
+    builder.addCase(getTaskStatusMasterAction.rejected, (state, action) => {
+      state.fetchError = action.error;
+      state.getTaskStatus.loading = false;
+    });
   },
 });
 

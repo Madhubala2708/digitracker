@@ -81,7 +81,7 @@ const CeoProjects = () => {
   const handleEdit = (projectId) => {
     console.log("Edit clicked for project =>", projectId);
     localStorage.setItem("projectId", projectId);
-    navigate(`/ceo/createproject/${projectId}`);
+    navigate(`/ceo/createproject/${projectId}`, { state: { isEdit: true } });
   };
 
   const handleDelete = (projectId) => {

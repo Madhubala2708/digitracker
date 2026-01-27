@@ -590,3 +590,43 @@ export const createReportAttachmentSelector = createSelector(
     error,
   })
 );
+
+
+/** MILESTONE */
+export const milestoneMasterSelector = createSelector(
+  [
+    state => state.master.getMilestone.data,
+    state => state.master.getMilestone.loading,
+    state => state.master.getMilestone.error,
+  ],
+  (data, loading, error) => ({
+    data,
+    loading,
+    error,
+  })
+);
+export const projectStatusSelector = createSelector(
+  [
+    state => state.master.getProjectStatus.data,
+    state => state.master.getProjectStatus.loading,
+    state => state.master.getProjectStatus.error,
+  ],
+  (data, loading, error) => ({
+    data,
+    loading,
+    error,
+  })
+);
+
+export const taskStatusSelector = createSelector(
+  [
+    state => state.master.getTaskStatus.data,
+    state => state.master.getTaskStatus.loading,
+    state => state.master.getTaskStatus.error,
+  ],
+  (data, loading, error) => ({
+    data,
+    loading,
+    error,
+  })
+);

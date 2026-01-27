@@ -70,18 +70,6 @@ const EngineerTicketDetails = () => {
     fetchEmployeesByDepartment,
   } = useDepartments();
 
-  // Auto refresh ticket details when coming back from approval
-useEffect(() => {
-  if (location.state?.refreshBoard) {
-    dispatch(getticketbyidAction(ticketDetails?.ticket_id))
-      .unwrap()
-      .then((updated) => {
-        setTicketDetails(updated);
-      });
-  }
-}, [location.state]);
-
-
   const [comments, setComments] = useState([
     {
       id: 1,
@@ -263,8 +251,6 @@ useEffect(() => {
     loadDepartments();
   }, []);
 
-  
-
   // Handle department selection
   const handleDepartmentChange = async (dept) => {
     setCurrentDepartment(dept);
@@ -368,20 +354,9 @@ useEffect(() => {
       ).unwrap();
 
       if (result.success) {
-        showToastNotification("Ticket approved");
-        navigate("/approvals", { state: { refreshBoard: true } });
+        showToastNotification("Ticket updated successfully");
 
-        await dispatch(getticketbyidAction(payload.ticketId))
-  .unwrap()
-  .then((updated) => {
-    setTicketDetails(updated); // this updates UI immediately
-  });
-
-
-
-
-
-        // Refetch the updated ticket
+        // ✅ Refetch the updated ticket
         const updatedData = await dispatch(
           getticketbyidAction(payload.ticketId)
         ).unwrap();
@@ -435,7 +410,8 @@ useEffect(() => {
     // Append each file as fileUpload
     [...uploadedFiles, ...uploadedImages].forEach((fileObj) => {
       if (fileObj?.file instanceof File) {
-        formData.append("File", fileObj.file);
+        formData.append("File", fileObj.file); // ✅ correct name
+
         console.log(fileObj.file instanceof File, fileObj.file);
       }
     });
@@ -476,7 +452,7 @@ useEffect(() => {
 
     const newFiles = files.map((file) => ({
       id: Date.now() + Math.random(),
-      file,
+      file, // ✅ include the File object
       name: file.name,
       size: file.size,
       type: file.type,
@@ -498,7 +474,7 @@ useEffect(() => {
     if (imageFiles.length > 0) {
       const newImages = imageFiles.map((file) => ({
         id: Date.now() + Math.random(),
-        file,
+        file, // ✅ include the File object
         name: file.name,
         size: file.size,
         type: file.type,
@@ -619,10 +595,7 @@ useEffect(() => {
       getticketbyidAction(ticket?.ticket_id)
     ).unwrap();
 
-    navigate(
-      `../engineermaterialview/${location?.state?.boqId || ticketId?.transaction_id
-      }`
-    );
+    navigate(`../engineermaterialview/${location?.state?.boqId || ticketId?.transaction_id}`);
   };
 
   return (
@@ -783,7 +756,7 @@ useEffect(() => {
                       <Button
                         variant="link"
                         className="text-muted p-1"
-                        onClick={() => { }}
+                        onClick={() => {}}
                       >
                         <BsLink />
                       </Button>
@@ -850,8 +823,9 @@ useEffect(() => {
               >
                 <Nav.Item>
                   <Nav.Link
-                    className={`px-3 py-2 ${activeTab === "all" ? "text-white" : "text-dark"
-                      }`}
+                    className={`px-3 py-2 ${
+                      activeTab === "all" ? "text-white" : "text-dark"
+                    }`}
                     onClick={() => handleTabChange("all")}
                     style={{
                       borderRadius: "4px 4px 0 0",
@@ -864,10 +838,11 @@ useEffect(() => {
                 </Nav.Item>
                 <Nav.Item>
                   <Nav.Link
-                    className={`px-3 py-2 ${activeTab === "approvalstatus"
-                      ? "text-white"
-                      : "text-dark"
-                      }`}
+                    className={`px-3 py-2 ${
+                      activeTab === "approvalstatus"
+                        ? "text-white"
+                        : "text-dark"
+                    }`}
                     onClick={() => handleTabChange("approvalstatus")}
                     style={{
                       borderRadius: "4px 4px 0 0",
@@ -883,8 +858,9 @@ useEffect(() => {
                 </Nav.Item>
                 <Nav.Item>
                   <Nav.Link
-                    className={`px-3 py-2 ${activeTab === "comments" ? "text-white" : "text-dark"
-                      }`}
+                    className={`px-3 py-2 ${
+                      activeTab === "comments" ? "text-white" : "text-dark"
+                    }`}
                     onClick={() => handleTabChange("comments")}
                     style={{
                       borderRadius: "4px 4px 0 0",
@@ -897,8 +873,9 @@ useEffect(() => {
                 </Nav.Item>
                 <Nav.Item>
                   <Nav.Link
-                    className={`px-3 py-2 ${activeTab === "files" ? "text-white" : "text-dark"
-                      }`}
+                    className={`px-3 py-2 ${
+                      activeTab === "files" ? "text-white" : "text-dark"
+                    }`}
                     onClick={() => handleTabChange("files")}
                     style={{
                       borderRadius: "4px 4px 0 0",
@@ -911,8 +888,9 @@ useEffect(() => {
                 </Nav.Item>
                 <Nav.Item>
                   <Nav.Link
-                    className={`px-3 py-2 ${activeTab === "history" ? "text-white" : "text-dark"
-                      }`}
+                    className={`px-3 py-2 ${
+                      activeTab === "history" ? "text-white" : "text-dark"
+                    }`}
                     onClick={() => handleTabChange("history")}
                     style={{
                       borderRadius: "4px 4px 0 0",
@@ -1091,19 +1069,19 @@ useEffect(() => {
 
                 {comments.flatMap((comment) => comment.files || []).length ===
                   0 && (
-                    <div className="text-center py-5 text-muted">
-                      <BsPaperclip size={32} />
-                      <p className="mt-2">No files attached yet</p>
-                      <Button
-                        variant="outline-warning"
-                        style={{ backgroundColor: "#FF6F00", color: "white" }}
-                        size="sm"
-                        onClick={() => fileInputRef.current.click()}
-                      >
-                        Upload File
-                      </Button>
-                    </div>
-                  )}
+                  <div className="text-center py-5 text-muted">
+                    <BsPaperclip size={32} />
+                    <p className="mt-2">No files attached yet</p>
+                    <Button
+                      variant="outline-warning"
+                      style={{ backgroundColor: "#FF6F00", color: "white" }}
+                      size="sm"
+                      onClick={() => fileInputRef.current.click()}
+                    >
+                      Upload File
+                    </Button>
+                  </div>
+                )}
 
                 <div className="row">
                   {comments
@@ -1140,19 +1118,19 @@ useEffect(() => {
 
                 {comments.flatMap((comment) => comment.images || []).length ===
                   0 && (
-                    <div className="text-center py-5 text-muted">
-                      <BsImage size={32} />
-                      <p className="mt-2">No images attached yet</p>
-                      <Button
-                        variant="outline-warning"
-                        style={{ backgroundColor: "#FF6F00", color: "white" }}
-                        size="sm"
-                        onClick={() => imageInputRef.current.click()}
-                      >
-                        Upload Image
-                      </Button>
-                    </div>
-                  )}
+                  <div className="text-center py-5 text-muted">
+                    <BsImage size={32} />
+                    <p className="mt-2">No images attached yet</p>
+                    <Button
+                      variant="outline-warning"
+                      style={{ backgroundColor: "#FF6F00", color: "white" }}
+                      size="sm"
+                      onClick={() => imageInputRef.current.click()}
+                    >
+                      Upload Image
+                    </Button>
+                  </div>
+                )}
 
                 <div className="row">
                   {comments
@@ -1562,8 +1540,8 @@ useEffect(() => {
                     {currentEmployee
                       ? currentEmployee.employeeName
                       : currentDepartment
-                        ? currentDepartment.deptName
-                        : "Select Move To"}
+                      ? currentDepartment.deptName
+                      : "Select Move To"}
                   </p>
                 </div>
               ) : null}
@@ -1574,20 +1552,22 @@ useEffect(() => {
               <span className="text-muted">Action</span>
               <div className="d-flex align-items-center">
                 <button
-                  className={`btn me-2 ${approvalStatus === "Rejected"
-                    ? "btn-danger"
-                    : "btn-outline-danger"
-                    }`}
+                  className={`btn me-2 ${
+                    approvalStatus === "Rejected"
+                      ? "btn-danger"
+                      : "btn-outline-danger"
+                  }`}
                   onClick={() => handleApproval("Rejected")}
                   disabled={isLoading}
                 >
                   Reject
                 </button>
                 <button
-                  className={`btn ${approvalStatus === "Approved"
-                    ? "btn-success"
-                    : "btn-outline-success"
-                    }`}
+                  className={`btn ${
+                    approvalStatus === "Approved"
+                      ? "btn-success"
+                      : "btn-outline-success"
+                  }`}
                   onClick={() => handleApproval("Approved")}
                   disabled={isLoading}
                 >

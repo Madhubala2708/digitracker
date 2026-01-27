@@ -19,7 +19,7 @@ export function getHttpHeader() {
     "Access-Control-Allow-Origin": "*",
     Timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
   };
-
+  
   return headers;
 }
 
@@ -133,7 +133,9 @@ export const request = async (
  * Process the response data
  */
 export const processResponseData = (type, path, data, failureMsg) => {
+  // If success and data is object
   if (type === "success") {
+    // data = convertNulltoEmpty(data);
     if (Config.trackHttpResponseInConsole) {
       loggerService.showLog("Response Success");
       loggerService.showLog(["Request Url", Config.updatesBaseUrl + "" + path]);
@@ -146,6 +148,14 @@ export const processResponseData = (type, path, data, failureMsg) => {
       loggerService.showLog(["Url", Config.updatesBaseUrl + "" + path]);
       loggerService.showLog(["Body", data]);
     }
+
+    /**
+     * Show error msg if
+     * 1. Message available in service
+     * 2. Otherwise show custom error from each service request
+     * 3. Otherwise, show default message 'Service Failure'
+     */
+    // Need to Confirm params
     console.log(failureMsg);
   }
 };
@@ -199,11 +209,17 @@ export const doFileUpload = async (url, params) => {
       formData.append("comment_id", params[0].body?.comment_id);
       formData.append("content", params[0].body?.content);
       formData.append("mentions", params[0].body?.mentions);
-      const deletedAttachmentIds =
-        params[0].body?.deleted_attachments.join(",");
+      // formData.append("activeWorkSpace", params[0].body?.activeWorkSpace);
+      // formData.append('deleted_attachments', params[0].body?.deleted_attachments );
+      const deletedAttachmentIds = params[0].body?.deleted_attachments.join(
+        ","
+      );
       formData.append("deleted_attachments", deletedAttachmentIds);
     }
 
+    // if (params[0]) {
+    //   formData.append('data', JSON.stringify(params[0]));
+    // }
     const createXHR = () => new XMLHttpRequest();
     const response = await axios.post(url, formData, {
       baseURL: Config.updatesBaseUrl,
@@ -220,6 +236,7 @@ export const doFileUpload = async (url, params) => {
     return processedData;
   } catch (error) {
     console.error("Error during file upload:", error);
+    // processResponseData('failure', url, error.response.data, failureMsg);
     throw error;
   }
 };
@@ -233,6 +250,7 @@ export const doFileDownload = async (
   body,
   disableLoader = false
 ) => {
+  // Console request time
   consoleRequestResponseTime("request", Config.updatesBaseUrl + "" + path);
 
   try {
@@ -245,7 +263,9 @@ export const doFileDownload = async (
           var a = document.createElement("a");
           a.href = blobUrl;
           a.download = body.file_name;
-          a.click();
+          a.click(); //Downloaded file
+
+          // Revoke the Blob URL to free up memory
           URL.revokeObjectURL(blobUrl);
         }
       })
@@ -257,6 +277,7 @@ export const doFileDownload = async (
       .finally(function () {});
   } catch (error) {
     console.error("Error during file upload:", error);
+    // processResponseData('failure', url, error.response.data, failureMsg);
     throw error;
   }
 };

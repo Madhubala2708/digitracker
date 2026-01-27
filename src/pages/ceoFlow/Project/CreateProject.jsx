@@ -80,7 +80,6 @@ const CeoCreateProject = () => {
     vendors: [],
     subcontractors: [],
   });
-
   useEffect(() => {
     if (route?.projectId) {
       getProjectsData(route?.projectId);
@@ -90,8 +89,9 @@ const CeoCreateProject = () => {
   const getProjectsData = async () => {
     const result = await dispatch(getProjectDetailsAction(route?.projectId));
     if (result?.payload) {
+
       let step1 = result?.payload?.value?.project;
-      console.log("GetProjectsData=>", result?.payload?.value);
+      
       setFormData((prevState) => ({
         ...prevState,
         projectId: step1?.project_id,

@@ -8,6 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { profile, crossMarkRed, trashFull } from "../../../assets/images";
 import { useDispatch } from "react-redux";
 import { getProjectDetailsAction } from "../../../store/actions/Ceo/ceoprojectAction";
+import { getLoginBoardDetailsdAction } from "../../../store/actions/kanbanAction";
 import { CiCalendar } from "react-icons/ci";
 import {
   useMilestoneMaster,
@@ -420,7 +421,13 @@ const TimelineMilestonePlanning = ({
       formData.projectId ||
       localProjectId ||
       parseInt(localStorage.getItem("projectId"));
-    const createdBy = parseInt(localStorage.getItem("userRoleId"));
+    const userData = JSON.parse(localStorage.getItem("userData") || "{}");
+    const createdBy = Number(userData?.empId || userData?.vendorId || 0);
+
+    if (!createdBy) {
+      Swal.fire({ icon: "error", title: "User not identified", text: "Could not determine ticket creator. Please log in again." });
+      return;
+    }
 
     if (selectedUsers.length === 0) {
       Swal.fire({
@@ -439,12 +446,21 @@ const TimelineMilestonePlanning = ({
     };
 
     try {
+      console.log("Creating milestone ticket with payload:", ticketPayload)
       const ticketResponse = await createTicket(ticketPayload);
-      const ticketId = ticketResponse?.data?.data?.ticketId;
-      const projectName = ticketResponse?.data?.data?.projectName;
+      console.log("createTicket response:", ticketResponse)
+
+      if (!ticketResponse || ticketResponse?.success === false) {
+        const errMsg = ticketResponse?.error?.message || JSON.stringify(ticketResponse)
+        throw new Error(`Ticket creation failed: ${errMsg}`)
+      }
+
+      const ticketData = ticketResponse.data?.data || ticketResponse.data || ticketResponse
+      const ticketId = ticketData?.ticketId;
+      const projectName = ticketData?.projectName;
 
       if (!ticketId) {
-        throw new Error("Ticket ID not returned from createTicket");
+        throw new Error("Ticket ID not returned from createTicket: " + JSON.stringify(ticketResponse));
       }
 
       const notificationPayload = {
@@ -463,9 +479,21 @@ const TimelineMilestonePlanning = ({
         showConfirmButton: false,
       });
 
+      // Refresh Kanban board for current user
+      const currentUserData = JSON.parse(localStorage.getItem("userData")) || {};
+      const currentUserId = currentUserData?.empId || currentUserData?.vendorId;
+      if (currentUserId) {
+        dispatch(getLoginBoardDetailsdAction(currentUserId));
+      }
+
       setShowModal(false);
     } catch (err) {
       console.error("❌ Failed to create ticket or notification:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Ticket creation failed",
+        text: err?.message || "Failed to create ticket. Check console for details.",
+      });
     }
   };
 

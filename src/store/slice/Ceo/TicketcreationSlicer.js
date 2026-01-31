@@ -95,7 +95,7 @@ const ticketSlice = createSlice({
         state.loading = false;
         state.success = true;
         if (state.ticketDetails) {
-          state.ticketDetails.isapproved = action.payload.isapproved;
+          state.ticketDetails.approvalStatus = action.payload.approvalStatus;
           state.ticketDetails.approved_by = action.payload.approved_by || "Unknown";
         }
       })

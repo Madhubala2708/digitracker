@@ -31,11 +31,15 @@ export const useTicket = () => {
 
   const createTicket = async (ticketData) => {
     try {
+      console.log("createTicket payload:", ticketData);
       const result = await dispatch(createticketAction(ticketData)).unwrap();
-      return { success: true, data: result };
+      console.log("createTicket API result:", result);
+      return { success: true, data: result, raw: result };
     } catch (error) {
       console.error("Failed to create ticket:", error);
-      return { success: false, error };
+      // Normalize error object for callers
+      const normalizedError = error?.response?.data || error?.message || error;
+      return { success: false, error: normalizedError };
     }
   };
 

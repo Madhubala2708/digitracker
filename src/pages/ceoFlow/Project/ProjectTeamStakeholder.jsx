@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom"
 import { profile } from "../../../assets/images"
 import { getAllEmployeesByRolesAction } from "../../../store/actions/Ceo/RoleBasedEmpAction"
 import { getEmployees } from "../../../store/actions/hr/createemployeaction"
+import { getLoginBoardDetailsdAction } from "../../../store/actions/kanbanAction"
 
 const ProjectTeamStakeholder = ({
   formData,
@@ -386,7 +387,13 @@ const ProjectTeamStakeholder = ({
 
   const handleTicketSubmission = async () => {
     const projectId = formData.projectId || localProjectId || Number.parseInt(localStorage.getItem("projectId"))
-    const createdBy = Number.parseInt(localStorage.getItem("userRoleId"))
+    const userData = JSON.parse(localStorage.getItem("userData") || "{}");
+    const createdBy = Number(userData?.empId || userData?.vendorId || 0);
+
+    if (!createdBy) {
+      Swal.fire({ icon: "error", title: "User not identified", text: "Could not determine ticket creator. Please log in again." });
+      return;
+    }
 
     if (selectedUsers.length === 0) {
       Swal.fire({
@@ -405,12 +412,23 @@ const ProjectTeamStakeholder = ({
     }
 
     try {
+      console.log("Creating ticket with payload:", ticketPayload)
       const ticketResponse = await createTicket(ticketPayload)
-      const ticketId = ticketResponse?.data?.data?.ticketId
-      const projectName = ticketResponse?.data?.data?.projectName
+      console.log("createTicket response:", ticketResponse)
+
+      if (!ticketResponse || ticketResponse?.success === false) {
+        // ticketResponse may contain an error object when createTicket failed
+        const errMsg = ticketResponse?.error?.message || JSON.stringify(ticketResponse)
+        throw new Error(`Ticket creation failed: ${errMsg}`)
+      }
+
+      // Normalize possible response shapes
+      const ticketData = ticketResponse.data?.data || ticketResponse.data || ticketResponse
+      const ticketId = ticketData?.ticketId
+      const projectName = ticketData?.projectName
 
       if (!ticketId) {
-        throw new Error("Ticket ID not returned from createTicket")
+        throw new Error("Ticket ID not returned from createTicket - " + JSON.stringify(ticketResponse))
       }
 
       const notificationPayload = {
@@ -430,9 +448,21 @@ const ProjectTeamStakeholder = ({
         showConfirmButton: false,
       })
 
+      // Refresh Kanban board for current user
+      const currentUserData = JSON.parse(localStorage.getItem("userData")) || {};
+      const currentUserId = currentUserData?.empId || currentUserData?.vendorId;
+      if (currentUserId) {
+        dispatch(getLoginBoardDetailsdAction(currentUserId));
+      }
+
       setShowModal(false)
     } catch (err) {
       console.error("Failed to create ticket or notification:", err)
+      Swal.fire({
+        icon: "error",
+        title: "Ticket creation failed",
+        text: err?.message || "Failed to create ticket. Check console for details.",
+      })
     }
   }
 

@@ -199,11 +199,37 @@ const EngineerTicketDetails = () => {
 
   const fetchTicketDetails = async () => {
     try {
-      const data = await dispatch(getticketbyidAction(id?.ticketId)).unwrap();
+      const ticketIdToFetch = id?.ticketId || ticketData?.ticket_id || ticket?.ticket_id;
+      
+      if (!ticketIdToFetch) {
+        console.warn("No ticket ID available to fetch");
+        return;
+      }
+
+      const data = await dispatch(getticketbyidAction(ticketIdToFetch)).unwrap();
 
       console.log("Ticket Details:", data);
+      console.log("Ticket Data - approvalStatus:", data.approval_status);
+      console.log("Ticket Data - approvalStatus:", data.approvalStatus);
+      console.log("Ticket Data - approved_by:", data.approved_by);
+      console.log("Ticket Data - approvalsGrouped:", data.approvalsGrouped);
+      console.log("Ticket Data - assignedTo:", data.assignedTo);
+      console.log("Ticket Data - assignTo:", data.assignTo);
+      console.log("Ticket Data - approvalsGrouped:", data.approvalsGrouped);
+      console.log("Ticket Data - assignedTo:", data.assignedTo);
+      console.log("Ticket Data - assignTo:", data.assignTo);
 
       setTicketData(data); // ✅ store data in state
+      setTicketDetails(data); // ✅ also update ticketDetails for consistency
+      
+      // Set initial approval status from ticket data if available
+      if (data.approval_status !== undefined) {
+        const status = data.approval_status === 1 ? 'Approved' : data.approval_status === 0 ? 'Rejected' : null;
+        setApprovalStatus(status);
+      } else if (data.approvalStatus !== undefined && data.approvalStatus !== null) {
+        const status = data.approvalStatus === 1 ? 'Approved' : data.approvalStatus === 0 ? 'Rejected' : null;
+        setApprovalStatus(status);
+      }
     } catch (error) {
       console.error("Error was coming :", error);
     }
@@ -276,6 +302,20 @@ const EngineerTicketDetails = () => {
             getticketbyidAction(ticket.ticket_id)
           ).unwrap();
           setTicketDetails(data);
+          setTicketData(data); // ✅ Also update ticketData for consistency
+          
+          console.log("Ticket Data from useEffect - approvalsGrouped:", data.approvalsGrouped);
+          console.log("Ticket Data from useEffect - assignedTo:", data.assignedTo);
+          
+          // Set initial approval status from ticket data if available
+          if (data.approval_status !== undefined) {
+            const status = data.approval_status === 1 ? 'Approved' : data.approval_status === 0 ? 'Rejected' : null;
+            setApprovalStatus(status);
+          } else if (data.approvalStatus !== undefined && data.approvalStatus !== null) {
+            const status = data.approvalStatus === 1 ? 'Approved' : data.approvalStatus === 0 ? 'Rejected' : null;
+            setApprovalStatus(status);
+          }
+          
           // Set dates if available
           if (data.create_date) {
             setOrderDate(new Date(data.create_date));
@@ -314,10 +354,10 @@ const EngineerTicketDetails = () => {
   };
 
   const handleSave = async () => {
-    // if (!approvalStatus) {
-    //   showToastNotification("Please select Approve or Reject");
-    //   return;
-    // }
+    if (!approvalStatus) {
+      showToastNotification("Please select Approve or Reject");
+      return;
+    }
 
     setIsLoading(true);
 
@@ -328,6 +368,12 @@ const EngineerTicketDetails = () => {
 
       if (!userData || !token) {
         showToastNotification("User or token not found. Please login again.");
+        setIsLoading(false);
+        return;
+      }
+
+      if (!ticketData?.ticket_id) {
+        showToastNotification("Ticket ID not found. Please refresh the page.");
         setIsLoading(false);
         return;
       }
@@ -346,9 +392,9 @@ const EngineerTicketDetails = () => {
 
       // Construct the payload
       const payload = {
-        ticketId: ticketData?.ticket_id,
+        ticketId: ticketData.ticket_id,
         dueDate: dueDate ? dueDate.toISOString().split("T")[0] : null,
-        isApproved: approvalStatus === "Approved",
+        approvalStatus: approvalStatus === "Approved" ? 1 : approvalStatus === "Rejected" ? 0 : null,
         updatedBy: userData.empId,
         moveTo: moveTo.length > 0 ? moveTo : null,
         moveBy: userData.empId,
@@ -356,20 +402,35 @@ const EngineerTicketDetails = () => {
       };
 
       console.log("Payload being sent:", payload);
+      console.log("Approval Status:", approvalStatus);
+      console.log("approvalStatus value:", approvalStatus === "Approved");
 
       // Dispatch with token included
       const result = await dispatch(
         updateProjectApprovalAction({ payload, token })
       ).unwrap();
 
+      console.log("API Response:", result);
+
       if (result.success) {
         showToastNotification("Ticket updated successfully");
-        fetchTicketDetails();
-        // ✅ Refetch the updated ticket
+        
+        // ✅ Refetch the updated ticket to get latest status including approvalsGrouped
         const updatedData = await dispatch(
           getticketbyidAction(payload.ticketId)
         ).unwrap();
+        
+        console.log("Updated Ticket Data:", updatedData);
+        console.log("Updated Approvals Grouped:", updatedData?.approvalsGrouped);
+        console.log("Updated Approval Status:", updatedData?.approval_status);
+        console.log("Updated Is Approved:", updatedData?.approvalStatus);
+        
+        // Update both ticketData and ticketDetails to ensure consistency
+        setTicketData(updatedData);
         setTicketDetails(updatedData);
+
+        // Reset approval status after successful save
+        setApprovalStatus(null);
 
         // Optionally update the dates if needed
         if (updatedData.create_date) {
@@ -378,6 +439,9 @@ const EngineerTicketDetails = () => {
         if (updatedData.due_date) {
           setDueDate(new Date(updatedData.due_date));
         }
+        
+        // Force re-render of approval status tab by triggering state update
+        // The transformedData will automatically recalculate with new approvalsGrouped
       } else {
         toast.warn(result.message || "Failed to update ticket");
       }
@@ -649,21 +713,54 @@ const EngineerTicketDetails = () => {
     rejected: { color: "danger", label: "Rejected" },
   };
 
-  const transformedData = Object.entries(
-    ticketData?.approvalsGrouped || {}
-  ).map(([role, approvals]) => {
-    const approval = approvals[0]; // Assuming single approval per role
-    const statusType = approval?.approval_type || "pending";
+  // Build approval status data from approvalsGrouped
+  const buildTransformedData = () => {
+    const approvalsGrouped = ticketData?.approvalsGrouped || {};
+    
+    // If approvalsGrouped exists and has data, use it
+    if (Object.keys(approvalsGrouped).length > 0) {
+      return Object.entries(approvalsGrouped).map(([role, approvals]) => {
+        const approval = Array.isArray(approvals) ? approvals[0] : approvals;
+        const statusType = approval?.approval_type || "pending";
 
-    return {
-      role,
-      statuses: ["rejected", "pending", "approved"].map((type) => ({
-        type: roleColorMap[type].label,
-        color: roleColorMap[type].color,
-        active: type === statusType,
-      })),
-    };
-  });
+        return {
+          role,
+          statuses: ["rejected", "pending", "approved"].map((type) => ({
+            type: roleColorMap[type].label,
+            color: roleColorMap[type].color,
+            active: type === statusType,
+          })),
+        };
+      });
+    }
+
+    // Fallback: If approvalsGrouped is empty, check if we have assigned users
+    // This handles cases where ticket was just created and approvalsGrouped hasn't been populated yet
+    const assignedUsers = ticketData?.assignedTo || ticketData?.assignTo || [];
+    const assignedRoles = ticketData?.assignedRoles || [];
+    
+    if (Array.isArray(assignedUsers) && assignedUsers.length > 0) {
+      // Create pending entries for all assigned users
+      return assignedRoles.map((role) => ({
+        role: role || "Pending Assignment",
+        statuses: ["rejected", "pending", "approved"].map((type) => ({
+          type: roleColorMap[type].label,
+          color: roleColorMap[type].color,
+          active: type === "pending", // Default to pending
+        })),
+      }));
+    }
+
+    // If no data at all, return empty array
+    return [];
+  };
+
+  const transformedData = buildTransformedData();
+  
+  // Debug logging
+  console.log("Ticket Data:", ticketData);
+  console.log("Approvals Grouped:", ticketData?.approvalsGrouped);
+  console.log("Transformed Data:", transformedData);
 
   const get_boq_Ticket = (ticket) => {
     if (!ticket || !ticket.transaction_id) {
@@ -705,7 +802,7 @@ const EngineerTicketDetails = () => {
   };
   const empId = userData?.empId;
   const createdby = ticketData?.created_by;
-  const approved_status = ticketData?.isapproved;
+  const approved_status = ticketData?.approvalStatus;
   const ticket_type = ticketData?.ticket_type;
   const vendorId = ticketData?.vendorId;
   const vendorName = ticketData?.vendorName;
@@ -1298,40 +1395,54 @@ const selectedOption = selectedVendor
 
             {activeTab === "approvalstatus" && (
               <>
-                {transformedData.map((item, index) => (
-                  <Row key={index} className="mb-4 align-items-center">
-                    <Col xs={6}>
-                      <span style={{ fontSize: "14px", color: "#444" }}>
-                        {item.role}
-                      </span>
-                    </Col>
-                    <Col xs={6}>
-                      <div className="d-flex flex-wrap">
-                        {item.statuses.map((status, idx) => (
-                          <div key={idx} className="me-2 mb-2">
-                            <Badge
-                              bg={status.active ? status.color : "light"}
-                              text={status.active ? "white" : "dark"}
-                              style={{
-                                padding: "6px 12px",
-                                borderRadius: "4px",
-                                fontWeight: "400",
-                                fontSize: "12px",
-                                opacity: status.active ? 1 : 0.6,
-                                border: status.active
-                                  ? "none"
-                                  : "1px solid #dee2e6",
-                                cursor: "pointer",
-                              }}
-                            >
-                              {status.type}
-                            </Badge>
-                          </div>
-                        ))}
-                      </div>
+                <Row className="mb-3 fw-bold" style={{ fontSize: '14px', marginBottom: 5, marginTop: 30 }}>
+                  <Col xs={6} style={{ fontSize: 18 }}>List</Col>
+                  <Col xs={6} style={{ fontSize: 18 }}>Status</Col>
+                </Row>
+                
+                {transformedData.length > 0 ? (
+                  transformedData.map((item, index) => (
+                    <Row key={index} className="mb-4 align-items-center">
+                      <Col xs={6}>
+                        <span style={{ fontSize: "14px", color: "#444" }}>
+                          {item.role}
+                        </span>
+                      </Col>
+                      <Col xs={6}>
+                        <div className="d-flex flex-wrap">
+                          {item.statuses.map((status, idx) => (
+                            <div key={idx} className="me-2 mb-2">
+                              <Badge
+                                bg={status.active ? status.color : "light"}
+                                text={status.active ? "white" : "dark"}
+                                style={{
+                                  padding: "6px 12px",
+                                  borderRadius: "4px",
+                                  fontWeight: "400",
+                                  fontSize: "12px",
+                                  opacity: status.active ? 1 : 0.6,
+                                  border: status.active
+                                    ? "none"
+                                    : "1px solid #dee2e6",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                {status.type}
+                              </Badge>
+                            </div>
+                          ))}
+                        </div>
+                      </Col>
+                    </Row>
+                  ))
+                ) : (
+                  <Row>
+                    <Col xs={12} className="text-center text-muted py-5">
+                      <p>No approval data available yet.</p>
+                      <p className="small">Approval status will appear here once approvers respond.</p>
                     </Col>
                   </Row>
-                ))}
+                )}
               </>
             )}
 
@@ -1494,7 +1605,7 @@ const selectedOption = selectedVendor
                     </div>
                   </div>
 
-                  {ticketData?.isapproved !== null && (
+                  {ticketData?.approvalStatus !== null && (
                     <div className="timeline-item d-flex mb-3">
                       <div
                         className="timeline-marker bg-success rounded-circle"
@@ -1806,15 +1917,15 @@ const selectedOption = selectedVendor
 
             {/* Approval Status */}
 
-            {ticketData?.isapproved !== null &&
-              ticketData?.isapproved !== undefined && (
+            {ticketData?.approvalStatus!== null &&
+              ticketData?.approvalStatus !== undefined && (
                 <div className="mb-3 d-flex justify-content-between align-items-center border-bottom pb-3">
                   <span className="text-muted">Approval Status</span>
                   <Badge
-                    bg={getApprovalStatus(ticketData?.isapproved).color}
+                    bg={getApprovalStatus(ticketData?.approvalStatus).color}
                     className="px-2 py-1"
                   >
-                    {getApprovalStatus(ticketData?.isapproved).text}
+                    {getApprovalStatus(ticketData?.approvalStatus).text}
                   </Badge>
                 </div>
               )}

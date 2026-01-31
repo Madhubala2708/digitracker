@@ -297,7 +297,7 @@ const EngineerTicketDetails = () => {
       const payload = {
         ticketId: ticketDetails?.ticket_id,
         dueDate: dueDate ? dueDate.toISOString().split("T")[0] : null,
-        isApproved: approvalStatus === "Approved",
+        approvalStatus: approvalStatus === "Approved" ? 1 : approvalStatus === "Rejected" ? 0 : null,
         updatedBy: userData.empId,
         moveTo: moveTo.length > 0 ? moveTo : null,
         moveBy: userData.empId
@@ -971,18 +971,18 @@ const EngineerTicketDetails = () => {
                     </div>
                   </div>
 
-                  {ticketDetails?.isapproved !== null && (
+                  {ticketDetails?.approvalStatus !== null && (
                     <div className="timeline-item d-flex mb-3">
                       <div className="timeline-marker bg-success rounded-circle" style={{ width: '10px', height: '10px', marginTop: '6px', marginRight: '10px' }}></div>
                       <div>
                         <div className="d-flex align-items-center">
                           <span className="fw-bold">Approval Status</span>
                           <span className="text-muted ms-2 small">
-                            {ticketDetails?.isapproved ? 'Approved' : 'Rejected'}
+                            {ticketDetails?.approvalStatus ? 'Approved' : 'Rejected'}
                           </span>
                         </div>
                         <p className="text-muted small mb-0">
-                          Status: {ticketDetails?.isapproved ? 'Approved' : 'Rejected'}
+                          Status: {ticketDetails?.approvalStatus ? 'Approved' : 'Rejected'}
                         </p>
                       </div>
                     </div>
@@ -1246,14 +1246,14 @@ const EngineerTicketDetails = () => {
               </div>
             </div>
             {/* Approval Status */}
-            {ticketDetails?.isapproved !== null && (
+            {ticketDetails?.approvalStatus !== null && (
               <div className="mb-3 d-flex justify-content-between align-items-center border-bottom pb-3">
                 <span className="text-muted">Approval Status</span>
                 <Badge
-                  bg={ticketDetails?.isapproved ? 'success' : 'danger'}
+                  bg={ticketDetails?.approvalStatus ? 'success' : 'danger'}
                   className="px-2 py-1"
                 >
-                  {ticketDetails?.isapproved ? 'Approved' : 'Rejected'}
+                  {ticketDetails?.approvalStatus ? 'Approved' : 'Rejected'}
                 </Badge>
               </div>
             )}

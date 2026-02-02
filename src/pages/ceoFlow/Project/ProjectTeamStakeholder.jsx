@@ -404,10 +404,14 @@ const ProjectTeamStakeholder = ({
       return
     }
 
+    const normalizedAssignTo = (selectedUsers || []).map(Number).filter(x => !isNaN(x))
+
     const ticketPayload = {
       projectId,
       ticketType: "permissionFinanceApproval",
-      assignTo: selectedUsers,
+      // send both variants to be defensive against backend naming differences
+      assignTo: normalizedAssignTo,
+      assign_to: normalizedAssignTo,
       createdBy: createdBy,
     }
 
@@ -424,11 +428,22 @@ const ProjectTeamStakeholder = ({
 
       // Normalize possible response shapes
       const ticketData = ticketResponse.data?.data || ticketResponse.data || ticketResponse
-      const ticketId = ticketData?.ticketId
-      const projectName = ticketData?.projectName
+      const ticketId = ticketData?.ticketId || ticketData?.ticket_id || ticketData?.ticketId
+      const projectName = ticketData?.projectName || ticketData?.project_name
 
       if (!ticketId) {
         throw new Error("Ticket ID not returned from createTicket - " + JSON.stringify(ticketResponse))
+      }
+
+      // If backend did not persist assignments, warn and show debug info for troubleshooting
+      const hasAssignInfo = (ticketData?.assign_to && (Array.isArray(ticketData.assign_to) ? ticketData.assign_to.length > 0 : !!ticketData.assign_to)) || (ticketData?.assignTo && (Array.isArray(ticketData.assignTo) ? ticketData.assignTo.length > 0 : !!ticketData.assignTo))
+      if (!hasAssignInfo) {
+        console.warn("Created ticket missing assignment info:", ticketData)
+        Swal.fire({
+          icon: "warning",
+          title: "Assignments not saved",
+          text: "Ticket created but assignees were not saved on the server. Please contact admin or try creating the ticket again.",
+        })
       }
 
       const notificationPayload = {

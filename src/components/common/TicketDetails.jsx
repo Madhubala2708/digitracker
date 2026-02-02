@@ -199,11 +199,33 @@ const EngineerTicketDetails = () => {
 
   const fetchTicketDetails = async () => {
     try {
-      const data = await dispatch(getticketbyidAction(id?.ticketId)).unwrap();
+      const ticketIdToFetch = id?.ticketId || ticketData?.ticket_id || ticket?.ticket_id;
+      
+      if (!ticketIdToFetch) {
+        console.warn("No ticket ID available to fetch");
+        return;
+      }
+
+      const data = await dispatch(getticketbyidAction(ticketIdToFetch)).unwrap();
 
       console.log("Ticket Details:", data);
+      console.log("Ticket Data - approvalStatus:", data.approval_status);
+      console.log("Ticket Data - approvalStatus:", data.approvalStatus);
+      console.log("Ticket Data - approved_by:", data.approved_by);
+      console.log("Ticket Data - approvalsGrouped:", data.approvalsGrouped);
+      console.log("Ticket Data - assignedTo:", data.assignedTo);
+      console.log("Ticket Data - assignTo:", data.assignTo);
+      console.log("Ticket Data - approvalsGrouped:", data.approvalsGrouped);
+      console.log("Ticket Data - assignedTo:", data.assignedTo);
+      console.log("Ticket Data - assignTo:", data.assignTo);
 
       setTicketData(data); // ✅ store data in state
+      setTicketDetails(data); // ✅ also update ticketDetails for consistency
+      
+      // Set initial approval status from ticket data using deterministic derivation
+      const derived = computeDerivedApprovalNumeric(data);
+      const status = derived === 1 ? 'Approved' : derived === 0 ? 'Rejected' : derived === 2 ? 'Pending' : null;
+      setApprovalStatus(status);
     } catch (error) {
       console.error("Error was coming :", error);
     }
@@ -276,6 +298,16 @@ const EngineerTicketDetails = () => {
             getticketbyidAction(ticket.ticket_id)
           ).unwrap();
           setTicketDetails(data);
+          setTicketData(data); // ✅ Also update ticketData for consistency
+          
+          console.log("Ticket Data from useEffect - approvalsGrouped:", data.approvalsGrouped);
+          console.log("Ticket Data from useEffect - assignedTo:", data.assignedTo);
+          
+          // Set initial approval status from ticket data using deterministic derivation
+          const derived = computeDerivedApprovalNumeric(data);
+          const status = derived === 1 ? 'Approved' : derived === 0 ? 'Rejected' : derived === 2 ? 'Pending' : null;
+          setApprovalStatus(status);
+          
           // Set dates if available
           if (data.create_date) {
             setOrderDate(new Date(data.create_date));
@@ -301,6 +333,10 @@ const EngineerTicketDetails = () => {
   };
 
   const getApprovalStatus = (status) => {
+    // Handle explicit null/undefined as Pending (initial state)
+    if (status === null || status === undefined) {
+      return { text: "Pending", color: "warning" };
+    }
     const numericStatus = Number(status);
     if (numericStatus === 1) {
       return { text: "Approved", color: "success" };
@@ -313,11 +349,44 @@ const EngineerTicketDetails = () => {
     }
   };
 
+  // Deterministic derivation of approval numeric value (1=approved,0=rejected,2=pending,null=unknown)
+  const computeDerivedApprovalNumeric = (ticket) => {
+    if (!ticket) return null;
+
+    const approvalsGrouped = ticket?.approvalsGrouped;
+
+    // If multi-approver flow present, derive from approval_type values
+    if (approvalsGrouped && Object.keys(approvalsGrouped).length > 0) {
+      const allApprovals = Object.values(approvalsGrouped).flat();
+      const types = allApprovals.map((a) => (a?.approval_type || "").toLowerCase());
+
+      if (types.includes("rejected")) return 0; // any rejection => rejected
+      if (types.length > 0 && types.every((t) => t === "approved")) return 1; // all approved => approved
+      return 2; // otherwise pending
+    }
+
+    // Fallback to single approval numeric fields
+    const approvalVal = ticket?.approval_status ?? ticket?.approvalStatus;
+
+    if (approvalVal === 1) return 1;
+    if (approvalVal === 0) {
+      // If backend defaulted to 0 but no approver data exists, treat as pending
+      const hasApprovalData = !!(
+        ticket?.approved_by ||
+        ticket?.approved_by_id ||
+        (ticket?.approvals && ticket.approvals.length > 0)
+      );
+      return hasApprovalData ? 0 : 2;
+    }
+
+    return null;
+  };
+
   const handleSave = async () => {
-    // if (!approvalStatus) {
-    //   showToastNotification("Please select Approve or Reject");
-    //   return;
-    // }
+    if (!approvalStatus) {
+      showToastNotification("Please select Approve or Reject");
+      return;
+    }
 
     setIsLoading(true);
 
@@ -328,6 +397,12 @@ const EngineerTicketDetails = () => {
 
       if (!userData || !token) {
         showToastNotification("User or token not found. Please login again.");
+        setIsLoading(false);
+        return;
+      }
+
+      if (!ticketData?.ticket_id) {
+        showToastNotification("Ticket ID not found. Please refresh the page.");
         setIsLoading(false);
         return;
       }
@@ -346,9 +421,9 @@ const EngineerTicketDetails = () => {
 
       // Construct the payload
       const payload = {
-        ticketId: ticketData?.ticket_id,
+        ticketId: ticketData.ticket_id,
         dueDate: dueDate ? dueDate.toISOString().split("T")[0] : null,
-        isApproved: approvalStatus === "Approved",
+        approvalStatus: approvalStatus === "Approved" ? 1 : approvalStatus === "Rejected" ? 0 : null,
         updatedBy: userData.empId,
         moveTo: moveTo.length > 0 ? moveTo : null,
         moveBy: userData.empId,
@@ -356,20 +431,37 @@ const EngineerTicketDetails = () => {
       };
 
       console.log("Payload being sent:", payload);
+      console.log("Approval Status:", approvalStatus);
+      console.log("approvalStatus value:", approvalStatus === "Approved");
 
       // Dispatch with token included
       const result = await dispatch(
         updateProjectApprovalAction({ payload, token })
       ).unwrap();
 
+      console.log("API Response:", result);
+
       if (result.success) {
         showToastNotification("Ticket updated successfully");
-        fetchTicketDetails();
-        // ✅ Refetch the updated ticket
+        
+        // ✅ Refetch the updated ticket to get latest status including approvalsGrouped
         const updatedData = await dispatch(
           getticketbyidAction(payload.ticketId)
         ).unwrap();
+        
+        console.log("Updated Ticket Data:", updatedData);
+        console.log("Updated Approvals Grouped:", updatedData?.approvalsGrouped);
+        console.log("Updated Approval Status:", updatedData?.approval_status);
+        console.log("Updated Is Approved:", updatedData?.approvalStatus);
+        
+        // Update both ticketData and ticketDetails to ensure consistency
+        setTicketData(updatedData);
         setTicketDetails(updatedData);
+
+        // Update approvalStatus from the server response using deterministic derivation
+        const derived = computeDerivedApprovalNumeric(updatedData);
+        const newStatus = derived === 1 ? 'Approved' : derived === 0 ? 'Rejected' : derived === 2 ? 'Pending' : null;
+        setApprovalStatus(newStatus);
 
         // Optionally update the dates if needed
         if (updatedData.create_date) {
@@ -378,6 +470,9 @@ const EngineerTicketDetails = () => {
         if (updatedData.due_date) {
           setDueDate(new Date(updatedData.due_date));
         }
+        
+        // Force re-render of approval status tab by triggering state update
+        // The transformedData will automatically recalculate with new approvalsGrouped
       } else {
         toast.warn(result.message || "Failed to update ticket");
       }
@@ -488,7 +583,7 @@ const EngineerTicketDetails = () => {
     approvals.forEach((approval) => {
       const userApproved = approval?.approved_by_id === userData?.empId;
       const statusProcessed = ["approved", "rejected"].includes(
-        approval?.approval_type
+        (approval?.approval_type || "").toLowerCase()
       );
 
       if (userApproved && statusProcessed) {
@@ -649,21 +744,59 @@ const EngineerTicketDetails = () => {
     rejected: { color: "danger", label: "Rejected" },
   };
 
-  const transformedData = Object.entries(
-    ticketData?.approvalsGrouped || {}
-  ).map(([role, approvals]) => {
-    const approval = approvals[0]; // Assuming single approval per role
-    const statusType = approval?.approval_type || "pending";
+  // Build approval status data from approvalsGrouped
+  const buildTransformedData = () => {
+  const approvalsGrouped = ticketData?.approvalsGrouped;
 
-    return {
-      role,
-      statuses: ["rejected", "pending", "approved"].map((type) => ({
-        type: roleColorMap[type].label,
-        color: roleColorMap[type].color,
-        active: type === statusType,
-      })),
-    };
-  });
+  // CASE 1: approvalsGrouped exists (multi-approver flow)
+  if (approvalsGrouped && Object.keys(approvalsGrouped).length > 0) {
+    return Object.entries(approvalsGrouped).map(([role, approvals]) => {
+      const approval = approvals[0];
+      const statusType = (approval?.approval_type || "pending").toLowerCase();
+
+      return {
+        role,
+        statuses: ["rejected", "pending", "approved"].map((type) => ({
+          type: roleColorMap[type].label,
+          color: roleColorMap[type].color,
+          active: type === statusType,
+        })),
+      };
+    });
+  }
+
+  // CASE 2: Single approval (approval_status exists but approvalsGrouped missing)
+  // CASE 2: No approvals yet → ALWAYS Pending
+  if (
+    !ticketData?.approvalsGrouped ||
+    Object.keys(ticketData.approvalsGrouped).length === 0
+  ) {
+    const approvalVal = computeDerivedApprovalNumeric(ticketData);
+    const currentType = approvalVal === 1 ? "approved" : approvalVal === 0 ? "rejected" : "pending";
+
+    return [
+      {
+        role: "Approver",
+        statuses: ["rejected", "pending", "approved"].map((type) => ({
+          type: roleColorMap[type].label,
+          color: roleColorMap[type].color,
+          active: type === currentType,
+        })),
+      },
+    ];
+  }
+
+
+  return [];
+};
+
+
+  const transformedData = buildTransformedData();
+  
+  // Debug logging
+  console.log("Ticket Data:", ticketData);
+  console.log("Approvals Grouped:", ticketData?.approvalsGrouped);
+  console.log("Transformed Data:", transformedData);
 
   const get_boq_Ticket = (ticket) => {
     if (!ticket || !ticket.transaction_id) {
@@ -705,10 +838,14 @@ const EngineerTicketDetails = () => {
   };
   const empId = userData?.empId;
   const createdby = ticketData?.created_by;
-  const approved_status = ticketData?.isapproved;
+  // Use deterministic derived approval numeric value for consistency across UI
+  const ticketApprovalNumeric = computeDerivedApprovalNumeric(ticketData);
+  const approved_status = ticketApprovalNumeric;
+  // Debug: show derived approval value and approvals grouped to help trace incorrect display
+  console.log("Derived ticketApprovalNumeric:", ticketApprovalNumeric, "approvalsGrouped:", ticketData?.approvalsGrouped, "raw approval_status:", ticketData?.approval_status, "raw approvalStatus:", ticketData?.approvalStatus);
   const ticket_type = ticketData?.ticket_type;
   const vendorId = ticketData?.vendorId;
-  const vendorName = ticketData?.vendorName;
+  const vendorName = ticketData?.vendorName; 
 
 // Only the matching vendor as an option
 const filteredVendors = vendors.filter((vendor) => vendor.id === vendorId);
@@ -884,6 +1021,9 @@ const selectedOption = selectedVendor
       setSelectedVendor(null);
     }
   }, [selectedEmployee]);
+
+  // Debug: print sidebar-related approval values on every render
+  console.log("Sidebar Debug -> ticketApprovalNumeric:", ticketApprovalNumeric, "approval_status:", ticketData?.approval_status, "approvalStatus:", ticketData?.approvalStatus, "approvalsGrouped:", ticketData?.approvalsGrouped, "approvalState(derived):", computeDerivedApprovalNumeric(ticketData));
 
   return (
     <Container fluid className="">
@@ -1298,40 +1438,54 @@ const selectedOption = selectedVendor
 
             {activeTab === "approvalstatus" && (
               <>
-                {transformedData.map((item, index) => (
-                  <Row key={index} className="mb-4 align-items-center">
-                    <Col xs={6}>
-                      <span style={{ fontSize: "14px", color: "#444" }}>
-                        {item.role}
-                      </span>
-                    </Col>
-                    <Col xs={6}>
-                      <div className="d-flex flex-wrap">
-                        {item.statuses.map((status, idx) => (
-                          <div key={idx} className="me-2 mb-2">
-                            <Badge
-                              bg={status.active ? status.color : "light"}
-                              text={status.active ? "white" : "dark"}
-                              style={{
-                                padding: "6px 12px",
-                                borderRadius: "4px",
-                                fontWeight: "400",
-                                fontSize: "12px",
-                                opacity: status.active ? 1 : 0.6,
-                                border: status.active
-                                  ? "none"
-                                  : "1px solid #dee2e6",
-                                cursor: "pointer",
-                              }}
-                            >
-                              {status.type}
-                            </Badge>
-                          </div>
-                        ))}
-                      </div>
+                <Row className="mb-3 fw-bold" style={{ fontSize: '14px', marginBottom: 5, marginTop: 30 }}>
+                  <Col xs={6} style={{ fontSize: 18 }}>List</Col>
+                  <Col xs={6} style={{ fontSize: 18 }}>Status</Col>
+                </Row>
+                
+                {transformedData.length > 0 ? (
+                  transformedData.map((item, index) => (
+                    <Row key={index} className="mb-4 align-items-center">
+                      <Col xs={6}>
+                        <span style={{ fontSize: "14px", color: "#444" }}>
+                          {item.role}
+                        </span>
+                      </Col>
+                      <Col xs={6}>
+                        <div className="d-flex flex-wrap">
+                          {item.statuses.map((status, idx) => (
+                            <div key={idx} className="me-2 mb-2">
+                              <Badge
+                                bg={status.active ? status.color : "light"}
+                                text={status.active ? "white" : "dark"}
+                                style={{
+                                  padding: "6px 12px",
+                                  borderRadius: "4px",
+                                  fontWeight: "400",
+                                  fontSize: "12px",
+                                  opacity: status.active ? 1 : 0.6,
+                                  border: status.active
+                                    ? "none"
+                                    : "1px solid #dee2e6",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                {status.type}
+                              </Badge>
+                            </div>
+                          ))}
+                        </div>
+                      </Col>
+                    </Row>
+                  ))
+                ) : (
+                  <Row>
+                    <Col xs={12} className="text-center text-muted py-5">
+                      <p>No approval data available yet.</p>
+                      <p className="small">Approval status will appear here once approvers respond.</p>
                     </Col>
                   </Row>
-                ))}
+                )}
               </>
             )}
 
@@ -1494,7 +1648,7 @@ const selectedOption = selectedVendor
                     </div>
                   </div>
 
-                  {ticketData?.isapproved !== null && (
+                  {ticketApprovalNumeric !== null && ticketApprovalNumeric !== undefined && (
                     <div className="timeline-item d-flex mb-3">
                       <div
                         className="timeline-marker bg-success rounded-circle"
@@ -1806,15 +1960,14 @@ const selectedOption = selectedVendor
 
             {/* Approval Status */}
 
-            {ticketData?.isapproved !== null &&
-              ticketData?.isapproved !== undefined && (
+            {ticketApprovalNumeric !== null && ticketApprovalNumeric !== undefined && (
                 <div className="mb-3 d-flex justify-content-between align-items-center border-bottom pb-3">
                   <span className="text-muted">Approval Status</span>
                   <Badge
-                    bg={getApprovalStatus(ticketData?.isapproved).color}
+                    bg={getApprovalStatus(ticketApprovalNumeric).color}
                     className="px-2 py-1"
                   >
-                    {getApprovalStatus(ticketData?.isapproved).text}
+                    {getApprovalStatus(ticketApprovalNumeric).text}
                   </Badge>
                 </div>
               )}

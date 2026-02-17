@@ -6,8 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 // Existing reports API
 import { getReports } from "../../../store/actions/report/reportcreateaction";
 
-// NEW — API sites slice
-import { fetchReportSites } from "../../../store/slice/Engineer/reportSlice";
+
 
 function Report() {
   const dispatch = useDispatch();
@@ -29,12 +28,11 @@ function Report() {
 
   // Fetch sites + reports on load
   useEffect(() => {
-    dispatch(fetchReportSites());
+    
     dispatch(getReports());
   }, [dispatch]);
 
-  // Selected Site
-  const [selectedSite, setSelectedSite] = useState("");
+  
 
   const reportData = Array.isArray(reportDataRaw) ? reportDataRaw : [];
 
@@ -80,24 +78,10 @@ function Report() {
     <div className="reports-container">
       {/* Header */}
       <div className="reports-header">
-        {/* ▼ NEW — Sites Dropdown from API */}
-        <select
-          className="form-select select-custom"
-          style={{ backgroundColor: "#E8E8E8" }}
-          value={selectedSite}
-          onChange={(e) => setSelectedSite(e.target.value)}
-        >
-          <option value="">Select Site</option>
+      <div className="project-name-display">
+  {reportData.length > 0 ? reportData[0].projectName : "Project Name"}
+</div>
 
-          {siteLoading && <option>Loading...</option>}
-          {siteError && <option>Error loading sites</option>}
-
-          {sites?.map((site) => (
-            <option key={site.projectId} value={site.projectId}>
-              {site.projectName}
-            </option>
-          ))}
-        </select>
 
         <button
           className="create-btn"

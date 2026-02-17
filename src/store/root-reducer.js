@@ -23,6 +23,7 @@ import aqsBoqReducer from "./slice/Aqs/aqsBoqSlice";
 import costEstimationReducer from "./slice/Aqs/costEstimationSlice";
 import aqsVendorReducer from "./slice/Aqs/aqsVendorSlice";
 import reportSitesReducer from "./slice/Engineer/reportSlice";
+import taskMilestoneReducer from "./slice/Engineer/taskMilestoneSlice";
 
 export const rootReducer = combineReducers({
   auth: authSlice.reducer,
@@ -51,6 +52,7 @@ export const rootReducer = combineReducers({
   costEstimation: costEstimationReducer,
   aqsVendor: aqsVendorReducer,
 
+   taskMilestone: taskMilestoneReducer,
    reportSites: reportSitesReducer,
 
 });

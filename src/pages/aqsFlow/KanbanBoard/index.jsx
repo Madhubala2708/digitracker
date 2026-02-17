@@ -278,7 +278,7 @@ const KanbanBoard = () => {
 
   return (
     <div className="kanban-page-container">
-      <div className="kanban-header-section">
+      {/* <div className="kanban-header-section">
         <div className="kanban-view-toggle">
           <button className="kanban-view-button active">
             <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none">
@@ -290,7 +290,7 @@ const KanbanBoard = () => {
             Kanban
           </button>
         </div>
-      </div>
+      </div> */}
       <div>
       {state?.emp_name && state?.role && (
   <div>

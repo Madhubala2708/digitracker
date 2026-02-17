@@ -710,7 +710,7 @@ const App = () => {
           }
         >
           <Route path="aqsdashboard" element={<AqsDashboard />} />
-          <Route path="aqsapprovals" element={<CommonKanban />} />
+          <Route path="aqsapprovals" element={<KanbanAqs />} />
           <Route
             path="aqsticketdetails/:ticketId"
             element={<CommonTicketDetails />}

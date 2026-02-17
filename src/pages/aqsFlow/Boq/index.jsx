@@ -4,13 +4,16 @@ import "react-datepicker/dist/react-datepicker.css";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+
 import {
   fetchBoqProjects,
   fetchApprovedBoqList,
-  fetchApprovedBoqDetails,
   setApprovedBoqList,
 } from "../../../store/slice/Aqs/aqsBoqSlice";
+
 import { getApprovedBoqDetails } from "../../../services";
+
+/* ---------------- BOQ CARD ---------------- */
 
 const BOQCard = ({ boq, onCardClick }) => {
   const approversText =
@@ -18,20 +21,25 @@ const BOQCard = ({ boq, onCardClick }) => {
       ? boq.approvers.map((a) => a.employeeName).join(", ")
       : "N/A";
 
-  // Format approvedAt
   const formattedDate = boq.approvedAt
-    ? new Date(boq.approvedAt).toLocaleString("en-GB", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      }).replace(",", " •")
+    ? new Date(boq.approvedAt)
+        .toLocaleString("en-GB", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        })
+        .replace(",", " •")
     : "N/A";
 
   return (
-    <div className="boq-card" onClick={onCardClick} style={{ cursor: "pointer" }}>
+    <div
+      className="boq-card"
+      onClick={onCardClick}
+      style={{ cursor: "pointer" }}
+    >
       <div className="boq-meta">
         <p>ID - {boq.boqCode || `BOQ#${boq.boqId}`}</p>
         <p className="date">{formattedDate}</p>
@@ -41,15 +49,21 @@ const BOQCard = ({ boq, onCardClick }) => {
 
       <div className="boq-content">
         <p>
-          Approved by <span className="badge badge-blue">{approversText}</span>
+          Approved by{" "}
+          <span className="badge badge-blue">{approversText}</span>
         </p>
+
         <p className="boq-content">
           Project: {boq.projectName} | Vendor: {boq.vendorName || "N/A"}
         </p>
+
         {boq.boqItems && boq.boqItems.length > 0 && (
           <p className="boq-content">
             Items: {boq.boqItems.length} | Total:{" "}
-            {boq.boqItems.reduce((sum, item) => sum + (item.total || 0), 0)}
+            {boq.boqItems.reduce(
+              (sum, item) => sum + (item.total || 0),
+              0
+            )}
           </p>
         )}
       </div>
@@ -57,11 +71,13 @@ const BOQCard = ({ boq, onCardClick }) => {
   );
 };
 
+/* ---------------- DASHBOARD ---------------- */
 
 const BOQDashboard = () => {
   const [selectedSite, setSelectedSite] = useState("");
   const [selectedDate, setSelectedDate] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -73,47 +89,78 @@ const BOQDashboard = () => {
     boqListError,
   } = useSelector((state) => state.aqsBoq);
 
-  // Load available projects
+  /* -------- FETCH PROJECTS -------- */
   useEffect(() => {
     dispatch(fetchBoqProjects());
   }, [dispatch]);
 
-  // Fetch BOQ list → Then fetch details for approvers (important!)
+  /* -------- FETCH APPROVED BOQs -------- */
   useEffect(() => {
+    if (!selectedSite) {
+      dispatch(setApprovedBoqList([]));
+      return;
+    }
+
     const fetchData = async () => {
-      if (!selectedSite) return;
+      try {
+        const action = await dispatch(
+          fetchApprovedBoqList(Number(selectedSite))
+        );
 
-      const result = await dispatch(fetchApprovedBoqList(selectedSite)).unwrap();
+        if (!fetchApprovedBoqList.fulfilled.match(action)) {
+          console.error("Approved BOQ list API failed");
+          dispatch(setApprovedBoqList([]));
+          return;
+        }
 
-      // Enrich each BOQ with approver names by fetching details API
-      const enrichedList = await Promise.all(
-        result.map(async (boq) => {
-          try {
-            const details = await getApprovedBoqDetails(boq.boqId);
-            return {
-              ...boq,
-              approvers: details.approvers || [],
-              boqItems: details.boqItems || [],
-            };
-          } catch {
-            return boq;
-          }
-        })
-      );
+        const list = Array.isArray(action.payload)
+          ? action.payload
+          : [];
 
-      dispatch(setApprovedBoqList(enrichedList));
+        if (list.length === 0) {
+          dispatch(setApprovedBoqList([]));
+          return;
+        }
+
+        const enrichedList = await Promise.all(
+          list.map(async (boq) => {
+            try {
+              const details = await getApprovedBoqDetails(boq.boqId);
+              return {
+                ...boq,
+                approvers: details?.approvers || [],
+                boqItems: details?.boqItems || [],
+              };
+            } catch (err) {
+              console.error("BOQ details fetch failed", err);
+              return {
+                ...boq,
+                approvers: [],
+                boqItems: [],
+              };
+            }
+          })
+        );
+
+        dispatch(setApprovedBoqList(enrichedList));
+      } catch (error) {
+        console.error("Unexpected BOQ error:", error);
+        dispatch(setApprovedBoqList([]));
+      }
     };
 
     fetchData();
   }, [selectedSite, dispatch]);
 
+  /* ---------------- UI ---------------- */
+
   return (
     <div className="page-boq container">
-      {/* Navbar */}
+      {/* NAVBAR */}
       <div className="navbar">
         <select
           value={selectedSite}
-          onChange={(e) => setSelectedSite(e.target.value)}
+          onChange={(e) => setSelectedSite(Number(e.target.value))}
         >
           <option value="">Select Project</option>
           {loading && <option>Loading...</option>}
@@ -130,17 +177,7 @@ const BOQDashboard = () => {
 
         <div className="actions">
           <button className="sort-button me-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              className="bi bi-filter-left"
-              viewBox="0 0 16 16"
-            >
-              <path d="M2 2.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm2 4a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm2 4a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5z" />
-            </svg>
-            <span className="ms-1">Sort By</span>
+            <span>Sort By</span>
           </button>
 
           <button
@@ -152,9 +189,10 @@ const BOQDashboard = () => {
         </div>
       </div>
 
-      {/* Filters */}
+      {/* FILTERS */}
       <div className="filters">
         <h2>All BOQ’s</h2>
+
         <span className="date_Picker" onClick={() => setIsOpen(!isOpen)}>
           {selectedDate
             ? selectedDate.toLocaleDateString("en-GB")
@@ -175,10 +213,10 @@ const BOQDashboard = () => {
         )}
       </div>
 
-      {/* BOQ List */}
+      {/* BOQ LIST */}
       <div className="boq-grid">
         {boqListLoading && (
-          <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "20px" }}>
+          <div style={{ gridColumn: "1 / -1", textAlign: "center" }}>
             Loading BOQs...
           </div>
         )}
@@ -188,34 +226,32 @@ const BOQDashboard = () => {
             style={{
               gridColumn: "1 / -1",
               textAlign: "center",
-              padding: "20px",
               color: "red",
             }}
           >
-            Error: {typeof boqListError === "string" ? boqListError : "Failed to load BOQs"}
+            {boqListError}
           </div>
         )}
 
         {!boqListLoading &&
         !boqListError &&
-        approvedBoqList &&
         approvedBoqList.length > 0 ? (
-          approvedBoqList.map((boq, index) => (
+          approvedBoqList.map((boq) => (
             <BOQCard
-              key={boq.boqId || index}
+              key={boq.boqId}
               boq={boq}
               onCardClick={() =>
-                navigate(`/aqs/aqsboqopen?boqId=${boq.boqId}`, {
-                  state: { boqId: boq.boqId },
-                })
+                navigate(`/aqs/aqsboqopen?boqId=${boq.boqId}`)
               }
             />
           ))
         ) : (
           !boqListLoading &&
-          !selectedSite && (
-            <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "20px" }}>
-              Please select a project to view approved BOQs
+          selectedSite && (
+            <div
+              style={{ gridColumn: "1 / -1", textAlign: "center" }}
+            >
+              No approved BOQs found
             </div>
           )
         )}

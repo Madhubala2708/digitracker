@@ -5,11 +5,50 @@
 .tbl-container {
   margin-top: 10px;
   width: 1180px !important;
+  overflow: hidden;
+}
+
+.table-figma1{
+   width: 1080px !important;
+   border-collapse: collapse !important;
+  border: 1px solid #dcdcdc !important;
+}
+.table-figma1 thead th {
+  height: 40px !important;
+  border-right: 1px solid #dcdcdc !important;
+  border-bottom: 1px solid #dcdcdc !important;
+  background: #f4f4f4 !important;
+  font-size: 12px;
+  padding: 5px ;
+  font-weight: 600;
+  color: #555;
+  vertical-align: middle !important;
+  white-space: nowrap;
+}
+
+.table-figma1 tbody td {
+  height: 40px !important;
+  padding: 2px !important;
+  border-right: 1px solid #dcdcdc !important;
+  border-bottom: 1px solid #dcdcdc !important;
+  vertical-align: middle !important;
+  font-size: 12px;
+  color: #333;
+}
+
+.table-figma1 tbody tr:nth-child(even) {
+  background-color: #fafafa !important;
+}
+.table-figma1{
+  width: 1260px !important;
+  font-size: 10px !important;
+  position: relative;
+  margin-top: 30px !important;
 }
 
 /* Full table frame 1180x240 */
 .table-figma {
-  width: 1180px !important;
+  width: 1080px !important;
   border-collapse: collapse !important;
   border: 1px solid #dcdcdc !important;
 }
@@ -20,7 +59,7 @@
 
 .table-figma thead th {
   height: 40px !important;
-  padding: 10px !important;
+
   border-right: 1px solid #dcdcdc !important;
   border-bottom: 1px solid #dcdcdc !important;
   background: #f4f4f4 !important;
@@ -37,7 +76,7 @@
 
 .table-figma tbody td {
   height: 40px !important;
-  padding: 10px !important;
+  padding: 2px !important;
   border-right: 1px solid #dcdcdc !important;
   border-bottom: 1px solid #dcdcdc !important;
   vertical-align: middle !important;
@@ -84,6 +123,7 @@
   width: 1260px !important;
   font-size: 10px !important;
   position: relative;
+  padding: 0 !important;
   margin-top: 30px !important;
 }
 
@@ -290,3 +330,125 @@ button:focus {
   height: 16px;
 }
 
+.subtask-indent {
+  padding-left: 30px;
+}
+
+.subtask-indent::before {
+  content: "↳ ";
+  color: #C95C04;
+  font-weight: bold;
+}
+
+/* DATE PICKER CONTAINER */
+.custom-date-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: #eeeeee;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.custom-date-picker:hover {
+  background: #e0e0e0;
+}
+
+/* DATE TEXT */
+.date-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* CALENDAR ICON */
+.calendar-icon {
+  display: flex;
+  align-items: center;
+}
+
+/* HIDDEN INPUT */
+.hidden-date-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+
+/* STATUS DROPDOWN */
+.status-dropdown {
+  width: 120px;
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  padding-right: 18px;
+  text-align: center;
+}
+
+/* Add custom arrow */
+.status-dropdown {
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%23666' height='16' viewBox='0 0 24 24' width='16' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 5px center;
+  background-size: 16px;
+}
+
+/* Colors */
+.status-completed {
+  color: #1aa053;
+  font-weight: 600;
+}
+
+.status-progress {
+  color: #f4a000;
+  font-weight: 600;
+}
+
+.status-todo {
+  color: #777;
+}
+/* DATE INPUT INSIDE TABLE */
+.table-date-input {
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  text-align: center;
+  outline: none;
+  cursor: pointer;
+  width: 120px;
+}
+
+/* Remove default date styling */
+.table-date-input::-webkit-calendar-picker-indicator {
+  opacity: 0.7;
+  cursor: pointer;
+}
+
+/* Active Name Editable Input */
+.active-name-input {
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  width: 100px;
+  outline: none;
+  padding: 2px 2px;
+}
+
+.active-name-input:focus {
+  border-bottom: 1px solid #C95C04;
+}
+
+.active-name-input1 {
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  width: 80px;
+  outline: none;
+  padding: 2px 2px;
+}
